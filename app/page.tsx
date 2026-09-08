@@ -1,4 +1,7 @@
 import { Button } from "@/components/Button";
+import { TypewriterRoles } from "@/components/TypewriterRoles";
+
+const roles = ["UI/UX Engineer", "Product Designer", "Front-end Engineer"];
 
 // Home page hero: title/slogan + bio cards on the left, a photo placeholder
 // on the right. No explicit grid-cols on the wrapper below md, so it
@@ -14,10 +17,15 @@ export default function Home() {
         <div className="flex flex-col gap-4 sm:gap-6">
           {/* Title + slogan */}
           <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
-            <h1 className="text-h2 md:text-h1">
-              Hi, I’m Tharindu Munasinghe, I design products, then build
-              them.
-            </h1>
+            <h1 className="text-h2 md:text-h1">Hi, I am Tharindu Munasinghe</h1>
+            <p className="text-h4 md:text-h3 mt-2 text-muted-foreground">
+              {/* Screen readers get the static list; the animated text
+                  itself is hidden from them since it's purely decorative. */}
+              <span className="sr-only">
+                UI/UX Engineer, Product Designer, Front-end Engineer
+              </span>
+              <TypewriterRoles roles={roles} />
+            </p>
           </section>
 
           {/* Bio + CTAs. flex-1 lets this card stretch to fill the
@@ -25,18 +33,18 @@ export default function Home() {
               on the right at md and up (see md:items-stretch above). */}
           <section className="flex flex-1 flex-col rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
             <p className="text-body text-muted-foreground">
-              I’m a product designer and full-stack developer based in Sri
-              Lanka. I care more about why a screen looks the way it does
-              than how it looks — mapping flows, weighing trade-offs, and
-              making deliberate calls before a single pixel gets placed.
+              User Experience Designer and Engineer with an Interactive Media background and over 5 years of experience turning complex user needs into intuitive, 
+              elegant digital products. Fluent across the full design-to-development pipeline, from user research and Figma prototyping to production-ready React 
+              and Tailwind implementation. Skilled in design systems, iconography, typography, and modern design principles, with a creative, curious, and detail
+              driven approach to solving user problems. 
             </p>
-            <p className="text-body mt-4 text-muted-foreground">
+            {/* <p className="text-body mt-4 text-muted-foreground">
               I build fast by directing AI tools like Claude Code, but I stay
               close enough to the code to know what’s real, what’s
               scaffolding, and what’s still broken. Recent work spans EV
               infrastructure design (Sri Charge) to a full-stack booking
               platform built solo, end to end (Kandy 1st Court).
-            </p>
+            </p> */}
             <div className="mt-6 flex flex-wrap gap-3">
               {/* download attribute makes this actually save the file
                   instead of just navigating to it in the browser. */}
