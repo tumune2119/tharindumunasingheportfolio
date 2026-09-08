@@ -58,6 +58,12 @@
   }
 }
 
+/*
+  Same dark values as above, duplicated here so an explicit user choice
+  (ThemeToggle sets data-theme="dark") wins even when the system is in
+  light mode. Two blocks because a @media query and a plain selector
+  can't share one rule body.
+*/
 :root[data-theme="dark"] {
   --primary: #52b788;
   --primary-variant: #74c69d;
@@ -79,6 +85,11 @@
   --info: #6fb3d9;
 }
 
+/*
+  Maps the --color-* custom properties above to Tailwind's color
+  namespace, so e.g. --color-primary generates bg-primary, text-primary,
+  border-primary, etc. --font-sans likewise plugs Inter into font-sans.
+*/
 @theme inline {
   --color-primary: var(--primary);
   --color-primary-variant: var(--primary-variant);
@@ -102,6 +113,7 @@
   --font-sans: var(--font-inter);
 }
 
+/* Applies the theme tokens site-wide; individual pages don't need to repeat this. */
 body {
   background: var(--background);
   color: var(--foreground);

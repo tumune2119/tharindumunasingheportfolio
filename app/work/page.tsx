@@ -1,3 +1,4 @@
+// Placeholder route so the nav link resolves; real project content goes here later.
 export default function WorkPage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-24 text-center">

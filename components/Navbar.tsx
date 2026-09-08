@@ -4,6 +4,7 @@ import { MobileMenu } from "./MobileMenu";
 import { NavLink } from "./NavLink";
 import { ThemeToggle } from "./ThemeToggle";
 
+// Shared between the desktop pill nav and the mobile dropdown so both stay in sync.
 const links = [
   { href: "/", label: "Home" },
   { href: "/experience", label: "Experience" },
@@ -11,6 +12,9 @@ const links = [
   { href: "/contact", label: "Contact me" },
 ];
 
+// Site-wide header: logo on the left, nav + theme toggle + CV download on
+// the right. Below the md breakpoint the nav/CV cluster collapses into
+// MobileMenu's hamburger dropdown instead.
 export function Navbar() {
   return (
     <header className="sticky top-4 z-50 px-4 md:px-6">
@@ -20,6 +24,7 @@ export function Navbar() {
           <img src="/logo.svg" alt="" className="h-7 w-auto md:h-8" />
         </Link>
 
+        {/* Desktop: full pill nav + toggle + CV button, hidden below md. */}
         <div className="hidden items-center gap-3 md:flex">
           <nav className="flex items-center gap-1 rounded-full border border-foreground/10 bg-card/70 p-1.5 shadow-sm backdrop-blur-md">
             {links.map((link) => (
@@ -39,6 +44,8 @@ export function Navbar() {
           </Button>
         </div>
 
+        {/* Mobile: just the toggle and hamburger; nav links + CV button
+            live inside the MobileMenu dropdown instead. */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <MobileMenu links={links} />

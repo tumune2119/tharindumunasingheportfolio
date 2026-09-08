@@ -6,10 +6,14 @@ import { NavLink } from "./NavLink";
 
 type NavItem = { href: string; label: string };
 
+// Hamburger button + dropdown shown below the md breakpoint, replacing the
+// horizontal pill nav that doesn't fit on small screens.
 export function MobileMenu({ links }: { links: NavItem[] }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
+  // Closes the dropdown on an outside click or Escape, but only while it's
+  // actually open (no listeners sitting around the rest of the time).
   useEffect(() => {
     if (!open) return;
 
@@ -49,6 +53,7 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
               key={link.href}
               href={link.href}
               fullWidth
+              // Close the menu once a link is actually clicked.
               onNavigate={() => setOpen(false)}
             >
               {link.label}
@@ -69,6 +74,7 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
   );
 }
 
+// Hamburger lines that morph into an X when the menu is open.
 function MenuIcon({ open }: { open: boolean }) {
   return (
     <svg

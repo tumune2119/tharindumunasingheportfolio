@@ -4,6 +4,8 @@ import { useLayoutEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
+// The user's explicit choice, persisted across visits. null means they
+// haven't picked one yet, so the OS-level preference should decide.
 function getStoredTheme(): Theme | null {
   if (typeof window === "undefined") return null;
   try {
@@ -14,6 +16,8 @@ function getStoredTheme(): Theme | null {
   }
 }
 
+// Falls back to the OS/browser color-scheme preference when there's no
+// stored override.
 function getSystemTheme(): Theme {
   if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -35,6 +39,9 @@ export function ThemeToggle() {
     if (stored) document.documentElement.setAttribute("data-theme", stored);
   }, []);
 
+  // Flips the theme: updates the button's own state, applies it to <html>
+  // immediately (so globals.css's [data-theme="dark"] rules kick in), and
+  // saves the choice so it sticks on the next visit.
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
     setTheme(next);
@@ -49,6 +56,8 @@ export function ThemeToggle() {
 
   const isDark = theme === "dark";
 
+  // A pill track with a sliding circular thumb; the thumb's icon and
+  // position both reflect the current theme.
   return (
     <button
       type="button"
@@ -72,6 +81,7 @@ export function ThemeToggle() {
   );
 }
 
+// Shown in light mode.
 function SunIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -89,6 +99,7 @@ function SunIcon({ className }: { className?: string }) {
   );
 }
 
+// Shown in dark mode.
 function MoonIcon({ className }: { className?: string }) {
   return (
     <svg

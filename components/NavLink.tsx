@@ -1,9 +1,14 @@
+// usePathname requires this to run on the client.
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+// A single nav item shared by the desktop pill nav and the mobile dropdown.
+// - fullWidth: stacks as a full-width row for the vertical mobile menu
+//   instead of the horizontal pill's inline sizing.
+// - onNavigate: lets the mobile menu close itself after a link is clicked.
 export function NavLink({
   href,
   fullWidth = false,
@@ -16,6 +21,7 @@ export function NavLink({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  // Highlights the link matching the current route.
   const active = pathname === href;
 
   return (
