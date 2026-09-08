@@ -18,11 +18,6 @@ export default function Home() {
               Hi, I’m Tharindu Munasinghe, I design products, then build
               them.
             </h1>
-            <p className="text-body md:text-body-lg mt-4 text-muted-foreground">
-              Product designer &amp; full-stack developer. I map the problem,
-              design the decision, and ship it — using AI as a tool, not a
-              shortcut around the thinking.
-            </p>
           </section>
 
           {/* Bio + CTAs. flex-1 lets this card stretch to fill the
