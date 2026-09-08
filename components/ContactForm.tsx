@@ -11,10 +11,16 @@ const fieldClasses =
 const labelClasses = "text-body-sm font-medium text-foreground";
 
 // Sends straight from the browser to EmailJS — no backend route needed, so
-// this works the same in local dev and once deployed. The three IDs below
-// come from the EmailJS dashboard and must be set as NEXT_PUBLIC_ env vars
-// (client-side code can only read env vars with that prefix — see
-// app/contact/page.tsx and the project README for the exact keys).
+// this works the same in local dev and once deployed. These IDs are from
+// the EmailJS dashboard (dashboard.emailjs.com/admin). They're safe to keep
+// in the source: this call only ever runs client-side, so the values end up
+// in the public JS bundle either way — an env var wouldn't hide them any
+// better. The actual security boundary is the allowed-domains list under
+// EmailJS's Account > Security settings.
+const EMAILJS_SERVICE_ID = "service_tdzke1d";
+const EMAILJS_TEMPLATE_ID = "template_gkjiu8e";
+const EMAILJS_PUBLIC_KEY = "fL-MrKobQa6f_A_ns";
+
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
 
@@ -22,25 +28,14 @@ export function ContactForm() {
     event.preventDefault();
     const form = event.currentTarget;
 
-    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-    if (!serviceId || !templateId || !publicKey) {
-      console.error(
-        "EmailJS env vars are missing. Set NEXT_PUBLIC_EMAILJS_SERVICE_ID, " +
-          "NEXT_PUBLIC_EMAILJS_TEMPLATE_ID and NEXT_PUBLIC_EMAILJS_PUBLIC_KEY.",
-      );
-      setStatus("error");
-      return;
-    }
-
     setStatus("sending");
     try {
       // sendForm reads each input's `name` directly as the template
       // variable — e.g. name="name" fills {{name}} in the EmailJS template.
       // These must match the variable names used in the EmailJS template body.
-      await emailjs.sendForm(serviceId, templateId, form, { publicKey });
+      await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form, {
+        publicKey: EMAILJS_PUBLIC_KEY,
+      });
       setStatus("sent");
       form.reset();
     } catch (error) {
