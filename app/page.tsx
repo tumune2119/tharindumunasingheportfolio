@@ -49,7 +49,7 @@ export default function Home() {
               {/* download attribute makes this actually save the file
                   instead of just navigating to it in the browser. */}
               <Button
-                href="/cv.pdf"
+                href="/Tharindu-Munasinghe-CV.pdf"
                 download="Tharindu-Munasinghe-CV.pdf"
                 variant="primary"
               >

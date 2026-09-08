@@ -20,7 +20,7 @@ export default function ContactPage() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <p className="text-overline text-muted-foreground">Contact</p>
-      <h1 className="text-h2 md:text-h1 mt-3">Let’s talk about your product.</h1>
+      <h1 className="text-h2 md:text-h1 mt-3">Let’s have a chat.</h1>
 
       <div className="mt-8 grid gap-4 sm:gap-6 md:grid-cols-2 md:items-start">
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">

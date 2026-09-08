@@ -36,7 +36,7 @@ export function Navbar() {
           </nav>
           <ThemeToggle />
           <Button
-            href="/cv.pdf"
+            href="/Tharindu-Munasinghe-CV.pdf"
             download="Tharindu-Munasinghe-CV.pdf"
             variant="primary"
             className="px-5 py-2.5 text-body-sm"
