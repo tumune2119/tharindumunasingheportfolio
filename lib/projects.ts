@@ -1,6 +1,21 @@
 // Case-study content for the Work page's project cards + modal. Add a new
 // entry here (and its cover/carousel images once you have them) to add a
 // new project card — ProjectsGrid renders whatever's in this array.
+
+// One named block of a case study's body copy (Problem, Approach, Outcome,
+// etc). `body` is a paragraph, `points` is a bullet list — either or both,
+// so this covers everything from a plain paragraph to an intro + bullets.
+export type ProjectSection = {
+  title: string;
+  body?: string;
+  points?: string[];
+};
+
+export type ProjectLink = {
+  label: string;
+  href: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -13,12 +28,14 @@ export type Project = {
   status: string;
   platform: string;
   tools: string;
-  problem: string;
-  approach: { intro: string; points: string[] };
-  keyDecisions: string[];
-  outcome: string;
   techStack: string;
-  // Small print shown at the end of the modal, e.g. for links that aren't ready yet.
+  // Rendered in this order — each case study's own natural structure
+  // (Problem, Approach, Real Issues Caught, Outcome, ...) rather than a
+  // fixed set of fields every project has to fit into.
+  sections: ProjectSection[];
+  // Real, working links (repo, docs, live site).
+  links?: ProjectLink[];
+  // Small print for links that aren't ready yet (e.g. a broken/private repo).
   sourceNote?: string;
 };
 
@@ -56,29 +73,103 @@ export const projects: Project[] = [
       "Design complete; core end-to-end flow (find + book a charger) built as a working MVP",
     platform: "React Native (mobile app)",
     tools: "Figma",
-    problem:
-      "Electric vehicle charging stations exist across Sri Lanka, but there's no way to reserve one ahead of time. Drivers arrive without knowing whether a charger will be free, leading to long queues and unpredictable wait times — a friction point that undermines confidence in EV ownership as adoption grows.",
-    approach: {
-      intro:
-        "Led the design process end-to-end: user research, journey mapping, and high-fidelity UI, working alongside developers who built out the app.",
-      points: [
-        "Researched how EV charging actually works in the Sri Lankan context — station types, operating models, and driver behavior — since off-the-shelf EV app patterns from other markets didn't map cleanly onto local conditions.",
-        "Mapped user flows for the two core jobs: finding a nearby station and booking a charging slot in advance.",
-        "Designed a station categorization system to structure how stations are organized and filtered, covering ownership, power type, automation level (manual/caretaker vs. semi- or fully-automated), plug types, capacity, and amenities.",
-        "Produced high-fidelity UI screens and a lightweight design system (color, type, components) to hand off for development.",
-      ],
-    },
-    keyDecisions: [
-      'Charging stations in Sri Lanka vary widely in how they\'re run — some are caretaker-operated, others semi- or fully-automated — so a flat "map of pins" model wasn\'t enough. The categorization system was designed to surface this variation to users in a way that\'s simple to scan.',
-      'Booking needed to reflect real-world availability and queuing, not just station location — this shaped the flow beyond a typical "find on map" pattern.',
-      "Kept the core flow tightly scoped (map + booking) rather than designing the full feature set up front, so there was a clear, buildable slice for the MVP.",
-    ],
-    outcome:
-      "Delivered a complete set of user flows, a station categorization framework, and high-fidelity UI for the core experience. Using these designs, the development team built a working end-to-end flow for finding and booking a charging station, validating the core product concept as a functioning MVP.",
     techStack: "React Native · Figma",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Electric vehicle charging stations exist across Sri Lanka, but there's no way to reserve one ahead of time. Drivers arrive without knowing whether a charger will be free, leading to long queues and unpredictable wait times — a friction point that undermines confidence in EV ownership as adoption grows.",
+      },
+      {
+        title: "Approach",
+        body: "Led the design process end-to-end: user research, journey mapping, and high-fidelity UI, working alongside developers who built out the app.",
+        points: [
+          "Researched how EV charging actually works in the Sri Lankan context — station types, operating models, and driver behavior — since off-the-shelf EV app patterns from other markets didn't map cleanly onto local conditions.",
+          "Mapped user flows for the two core jobs: finding a nearby station and booking a charging slot in advance.",
+          "Designed a station categorization system to structure how stations are organized and filtered, covering ownership, power type, automation level (manual/caretaker vs. semi- or fully-automated), plug types, capacity, and amenities.",
+          "Produced high-fidelity UI screens and a lightweight design system (color, type, components) to hand off for development.",
+        ],
+      },
+      {
+        title: "Key Decisions & Challenges",
+        points: [
+          'Charging stations in Sri Lanka vary widely in how they\'re run — some are caretaker-operated, others semi- or fully-automated — so a flat "map of pins" model wasn\'t enough. The categorization system was designed to surface this variation to users in a way that\'s simple to scan.',
+          'Booking needed to reflect real-world availability and queuing, not just station location — this shaped the flow beyond a typical "find on map" pattern.',
+          "Kept the core flow tightly scoped (map + booking) rather than designing the full feature set up front, so there was a clear, buildable slice for the MVP.",
+        ],
+      },
+      {
+        title: "Outcome",
+        body: "Delivered a complete set of user flows, a station categorization framework, and high-fidelity UI for the core experience. Using these designs, the development team built a working end-to-end flow for finding and booking a charging station, validating the core product concept as a functioning MVP.",
+      },
+    ],
     // Both GitHub links in the source case study 404 (private repos or a
     // typo) — the case study itself suggests this wording instead of
     // publishing dead links.
     sourceNote: "Source available on request.",
+  },
+  {
+    slug: "kandy-1st-court",
+    title: "Kandy 1st Court",
+    tagline:
+      "A full-stack booking platform for Sri Lanka's first dedicated pickleball court, built end-to-end by directing Claude Code, not by hand-coding or blind-accepting it.",
+    images: [],
+    role: "Full-stack owner: architecture, database, API, and UI decisions, implemented end-to-end via Claude Code",
+    status: "Built; core flows functional; not yet deployed publicly",
+    platform: "Web app + companion mobile app (Expo / React Native)",
+    tools: "Claude Code",
+    techStack:
+      "Next.js 16 · TypeScript · Tailwind CSS v4 · PostgreSQL (Supabase) · Drizzle ORM · Supabase Auth · PayHere · Expo / React Native · Vercel (target hosting)",
+    sections: [
+      {
+        title: "The Problem",
+        body: "A friend needed a real booking system for Sri Lanka's first dedicated pickleball court in Kandy: a public marketing site, a customer-facing booking flow, and an admin portal to manage bookings, customers, and settings. Not a toy project: a system meant to run an actual small business.",
+      },
+      {
+        title: "Why This Project",
+        body: 'This was the first project built by directing Claude Code to its full extent, deliberately used as a test case for a bigger question: can AI meaningfully accelerate a developer without replacing the judgment that makes software actually work? The goal wasn\'t to see how much code could be generated, but to prove that a developer who knows what "correct" and "done" look like can use AI as a force multiplier. Someone without that judgment would end up with something that merely looks finished.',
+      },
+      {
+        title: "Approach",
+        body: "Owned the architecture end-to-end and directed implementation through Claude Code, reviewing and correcting output rather than accepting it at face value:",
+        points: [
+          "Designed the data model first (7 tables: users, courts, bookings, payments, pricing, blackout dates, settings) with a database-level unique constraint on (court, date, time) as the actual double-booking guard, not just app-side logic.",
+          "Structured the app with Next.js route groups to cleanly separate the public marketing site, auth flow, customer area, and admin portal, each with its own layout.",
+          "Integrated Supabase Auth and wired up the (non-obvious) two-step login handshake: the server validates credentials, but the browser session has to be set separately via setSession, a step that silently breaks every \"who's logged in\" check if skipped.",
+          "Built a PayHere payment integration from scratch (no SDK available for this gateway), implementing the MD5-of-MD5 checkout-hash and webhook-signature logic by hand.",
+          "Wrote a full developer guide documenting the real state of the system, including what's hardcoded, what's a genuine security gap, and what's demo scaffolding, rather than letting a polished UI imply more completeness than the code actually has.",
+        ],
+      },
+      {
+        title: "Real Issues Caught & Fixed",
+        body: "Part of the point of this project was staying close enough to the code to catch what AI-generated output gets subtly wrong. A few examples documented in the dev guide:",
+        points: [
+          "A stray page.tsx outside a Next.js route group silently shadowed the real homepage: Next/Turbopack didn't error on the conflict, it just picked the wrong file.",
+          "Drizzle ORM's .where() only accepts one condition; chaining multiple silently produces wrong query behavior instead of a compile error unless conditions are combined with and(...).",
+          "Supabase's transaction-mode connection pooler breaks Drizzle's prepared statements, which required switching to the session-mode pooler.",
+          "Tailwind v4 renamed several utility classes used throughout the app (e.g. bg-opacity-* to color-opacity modifiers); old classes don't error, they just silently do nothing, so the failure mode is a broken-looking page, not a build failure.",
+          "Login only completing server-side, and not also setting the browser session, meant every client-side auth check silently failed, invisible until traced through the actual flow.",
+        ],
+      },
+      {
+        title: "Known Gaps (Documented, Not Hidden)",
+        body: "Rather than presenting this as a finished product, the guide is explicit about what's real vs. scaffolding, treated as part of the deliverable, not a weakness to hide:",
+        points: [
+          "Several admin/customer views (profile, dashboard stats, bookings tables) currently render hardcoded demo data pending real API wiring.",
+          "API routes trust a client-supplied user ID header rather than validating a session/JWT. This is flagged as the top priority if real security hardening is scoped in.",
+          "Pricing and blackout-date tables exist in the schema but aren't yet read by the booking flow (pricing is currently hardcoded client-side).",
+        ],
+      },
+      {
+        title: "Outcome",
+        body: "A working full-stack booking platform (public site, customer booking flow, and admin portal) built on a real, constraint-enforced data model, with a companion mobile app sharing the same API. Not yet publicly deployed, but functionally complete for its core flows, with an honest account of what remains before production readiness.",
+      },
+    ],
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/tumune2119/pickle-ball-kandy",
+      },
+    ],
+    sourceNote: "Full developer guide available on request.",
   },
 ];

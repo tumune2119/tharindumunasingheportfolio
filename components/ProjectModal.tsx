@@ -165,40 +165,24 @@ export function ProjectModal({
               <Field label="Tools" value={project.tools} />
             </dl>
 
-            <Section
-              title="The Problem"
-              style={{ animationDelay: `${nextStaggerDelay()}ms` }}
-            >
-              <p className="text-body text-muted-foreground">
-                {project.problem}
-              </p>
-            </Section>
-
-            <Section
-              title="Approach"
-              style={{ animationDelay: `${nextStaggerDelay()}ms` }}
-            >
-              <p className="text-body text-muted-foreground">
-                {project.approach.intro}
-              </p>
-              <BulletList items={project.approach.points} />
-            </Section>
-
-            <Section
-              title="Key Decisions & Challenges"
-              style={{ animationDelay: `${nextStaggerDelay()}ms` }}
-            >
-              <BulletList items={project.keyDecisions} />
-            </Section>
-
-            <Section
-              title="Outcome"
-              style={{ animationDelay: `${nextStaggerDelay()}ms` }}
-            >
-              <p className="text-body text-muted-foreground">
-                {project.outcome}
-              </p>
-            </Section>
+            {/* Each case study defines its own section order (Problem,
+                Approach, Outcome, and whatever else it actually needs) —
+                see lib/projects.ts — rather than every project being forced
+                into the same fixed fields. */}
+            {project.sections.map((section) => (
+              <Section
+                key={section.title}
+                title={section.title}
+                style={{ animationDelay: `${nextStaggerDelay()}ms` }}
+              >
+                {section.body && (
+                  <p className="text-body text-muted-foreground">
+                    {section.body}
+                  </p>
+                )}
+                {section.points && <BulletList items={section.points} />}
+              </Section>
+            ))}
 
             <Section
               title="Tech Stack"
@@ -209,13 +193,28 @@ export function ProjectModal({
               </p>
             </Section>
 
-            {project.sourceNote && (
-              <p
-                className="text-body-sm animate-fade-in-up text-muted-foreground"
+            {(project.links || project.sourceNote) && (
+              <div
+                className="animate-fade-in-up flex flex-col gap-2"
                 style={{ animationDelay: `${nextStaggerDelay()}ms` }}
               >
-                {project.sourceNote}
-              </p>
+                {project.links?.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-body-sm w-fit text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out hover:decoration-primary"
+                  >
+                    {link.label} ↗
+                  </a>
+                ))}
+                {project.sourceNote && (
+                  <p className="text-body-sm text-muted-foreground">
+                    {project.sourceNote}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>
