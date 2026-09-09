@@ -46,30 +46,39 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
         <MenuIcon open={open} />
       </button>
 
-      {open && (
-        <div className="absolute right-0 top-12 flex w-48 flex-col gap-1 rounded-2xl border border-foreground/10 bg-card/90 p-2 shadow-lg backdrop-blur-md">
-          {links.map((link) => (
-            <NavLink
-              key={link.href}
-              href={link.href}
-              fullWidth
-              // Close the menu once a link is actually clicked.
-              onNavigate={() => setOpen(false)}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-          <Button
-            href="/cv.pdf"
-            download="Tharindu-Munasinghe-CV.pdf"
-            variant="primary"
-            className="mt-1 justify-center px-4 py-2 text-body-sm"
-            onClick={() => setOpen(false)}
+      {/* Always rendered (not conditionally mounted) so closing can
+          animate out instead of vanishing instantly — visibility is purely
+          a CSS transition, gated by pointer-events and inert so it's
+          neither clickable nor keyboard-focusable while hidden. */}
+      <div
+        inert={!open}
+        className={`absolute right-0 top-12 flex w-48 origin-top-right flex-col gap-1 rounded-2xl border border-foreground/10 bg-card/90 p-2 shadow-lg backdrop-blur-md transition-all duration-500 ease-in-out ${
+          open
+            ? "scale-100 opacity-100"
+            : "pointer-events-none scale-95 opacity-0"
+        }`}
+      >
+        {links.map((link) => (
+          <NavLink
+            key={link.href}
+            href={link.href}
+            fullWidth
+            // Close the menu once a link is actually clicked.
+            onNavigate={() => setOpen(false)}
           >
-            Download CV
-          </Button>
-        </div>
-      )}
+            {link.label}
+          </NavLink>
+        ))}
+        <Button
+          href="/cv.pdf"
+          download="Tharindu-Munasinghe-CV.pdf"
+          variant="primary"
+          className="mt-1 justify-center px-4 py-2 text-body-sm"
+          onClick={() => setOpen(false)}
+        >
+          Download CV
+        </Button>
+      </div>
     </div>
   );
 }

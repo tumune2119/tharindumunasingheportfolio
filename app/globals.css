@@ -1,6 +1,52 @@
 @import "tailwindcss";
 
 /*
+  Redefines Tailwind's hover: variant to require a real hover-capable
+  pointer. Without this, tapping a card/button on a touch device leaves it
+  visually "stuck" in its hover state until the user taps elsewhere.
+*/
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/*
+  Baseline smooth color transition for every element — covers the
+  light/dark theme swap (background/text/border colors) even on elements
+  that don't declare their own transition utility. Lower specificity than
+  any Tailwind transition-* class, so components that need to animate
+  transform/shadow/etc. too just add their own utility and it wins outright.
+*/
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+}
+
+/*
+  Reduced-motion fallback for every animation on the site, including the
+  page-transition keyframes and browser view-transition pseudo-elements.
+  This is the one place that needs to cover all of it — individual
+  components don't need their own prefers-reduced-motion branches for
+  pure-CSS transitions/animations.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
   Design tokens — Forest & Mint Portfolio Spec v1.2.0-beta.
   Light values live on :root; dark values override under the
   prefers-color-scheme media query, matching each named role
@@ -197,4 +243,75 @@ body {
   letter-spacing: 1.5px;
   font-weight: 500;
   text-transform: uppercase;
+}
+
+/*
+  Shared motion vocabulary. Everything uses ease-in-out (eases in AND out,
+  rather than snapping to full speed or stopping abruptly) at 500-700ms —
+  slow enough to actually register as deliberate motion rather than a
+  flicker. Reusing one curve and a narrow duration band is what makes it
+  read as one system instead of a pile of one-off effects.
+*/
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 600ms ease-in-out both;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 500ms ease-in-out both;
+}
+
+@utility animate-scale-fade-in {
+  animation: scale-fade-in 700ms ease-in-out both;
+}
+
+/*
+  Route-change transition (see components/PageTransition.tsx). Keyed by
+  pathname so React remounts this wrapper on every navigation, replaying
+  the enter keyframe — a dependency-free stand-in for the browser's View
+  Transitions API, which isn't available in this project's React build.
+*/
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-page-enter {
+  animation: page-enter 700ms ease-in-out both;
 }

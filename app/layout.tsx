@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
+import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
 
 // Self-hosted Google font. The CSS variable is consumed by --font-sans in
@@ -35,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Navbar />
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

@@ -14,17 +14,20 @@ export function ProjectCard({
     // Fixed overall height so every card in the grid matches regardless of
     // how long its tagline is — the tagline clamps instead of growing the
     // card, and the button always sits at the same spot at the bottom.
-    <div className="flex h-105 flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card">
+    // group + hover:-translate-y-1/shadow give the whole card a subtle
+    // lift; the image zooms slightly via group-hover on its own img below.
+    <div className="group flex h-105 flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card transition-all duration-700 ease-in-out hover:-translate-y-1 hover:shadow-lg">
       {/* Fixed-height image area; object-cover crops to fill it exactly
           rather than stretching or leaving gaps, whatever the source image's
-          own dimensions are. */}
-      <div className="flex h-48 shrink-0 items-center justify-center bg-surface">
+          own dimensions are. overflow-hidden clips the zoomed image to
+          this box instead of spilling over the card's rounded corners. */}
+      <div className="flex h-48 shrink-0 items-center justify-center overflow-hidden bg-surface">
         {project.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element -- arbitrary case-study screenshots added later, no need for next/image optimization
           <img
             src={project.coverImage}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
           />
         ) : (
           <p className="text-body-sm px-6 text-center text-muted-foreground">

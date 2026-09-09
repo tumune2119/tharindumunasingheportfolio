@@ -5,13 +5,22 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 // primary color token from globals.css.
 type ButtonVariant = "primary" | "outline";
 
+// transition-all (not just transition-colors) so hover/press scale and the
+// disabled fade animate too, not just background color. Focus ring uses
+// box-shadow under the hood, so it's covered by transition-all as well —
+// it grows in on focus instead of just appearing.
 const baseClasses =
-  "inline-flex items-center justify-center rounded-full text-body font-medium transition-colors px-6 py-3 disabled:pointer-events-none disabled:opacity-60";
+  "inline-flex items-center justify-center rounded-full text-body font-medium px-6 py-3 " +
+  "transition-all duration-500 ease-in-out " +
+  "hover:scale-[1.03] active:scale-[0.97] " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background " +
+  "disabled:pointer-events-none disabled:opacity-60 disabled:hover:scale-100";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-primary-foreground hover:bg-primary-variant",
+  primary:
+    "bg-primary text-primary-foreground shadow-sm hover:bg-primary-variant hover:shadow-md",
   outline:
-    "border border-primary text-primary hover:bg-surface bg-transparent",
+    "border border-primary text-primary bg-transparent hover:bg-surface",
 };
 
 type CommonProps = {

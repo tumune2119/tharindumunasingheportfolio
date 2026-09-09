@@ -7,7 +7,7 @@ import { Button } from "./Button";
 type Status = "idle" | "sending" | "sent" | "error";
 
 const fieldClasses =
-  "rounded-xl border border-foreground/10 bg-surface px-4 py-3 text-body text-foreground outline-none focus:border-primary";
+  "rounded-xl border border-foreground/10 bg-surface px-4 py-3 text-body text-foreground outline-none transition-all duration-500 ease-in-out focus:border-primary focus:ring-2 focus:ring-primary/30";
 const labelClasses = "text-body-sm font-medium text-foreground";
 
 // Sends straight from the browser to EmailJS — no backend route needed, so
@@ -108,12 +108,12 @@ export function ContactForm() {
       </Button>
 
       {status === "sent" && (
-        <p className="text-body-sm text-success">
+        <p className="text-body-sm animate-fade-in-up text-success">
           Message sent — thanks! I’ll get back to you soon.
         </p>
       )}
       {status === "error" && (
-        <p className="text-body-sm text-error">
+        <p className="text-body-sm animate-fade-in-up text-error">
           Something went wrong sending that. Please try again or email me
           directly.
         </p>

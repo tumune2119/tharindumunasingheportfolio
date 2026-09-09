@@ -1,3 +1,5 @@
+import { Reveal } from "@/components/Reveal";
+
 // Work history, newest first, sourced from the CV. Rendered as a timeline below.
 const experience = [
   {
@@ -126,6 +128,7 @@ export default function ExperiencePage() {
         {/* Work history timeline: a vertical rule (border-l) with a dot
             positioned on top of it for each role, via the absolutely
             positioned span offset by half its own width. */}
+        <Reveal>
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
           <ol className="relative flex flex-col gap-10 border-l border-foreground/10 pl-6 md:pl-8">
             {experience.map((role) => (
@@ -156,8 +159,10 @@ export default function ExperiencePage() {
             ))}
           </ol>
         </section>
+        </Reveal>
 
         {/* Skills grouped under an overline label per category, each item a pill. */}
+        <Reveal delay={80}>
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
           <h2 className="text-h3">Skills</h2>
           <div className="mt-4 flex flex-col gap-5">
@@ -180,8 +185,10 @@ export default function ExperiencePage() {
             ))}
           </div>
         </section>
+        </Reveal>
 
         {/* Same timeline treatment as the work history, above. */}
+        <Reveal delay={160}>
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
           <h2 className="text-h3">Education</h2>
           <ol className="relative mt-4 flex flex-col gap-8 border-l border-foreground/10 pl-6 md:pl-8">
@@ -206,6 +213,7 @@ export default function ExperiencePage() {
             ))}
           </ol>
         </section>
+        </Reveal>
       </div>
     </main>
   );

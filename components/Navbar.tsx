@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "./Button";
 import { MobileMenu } from "./MobileMenu";
-import { NavLink } from "./NavLink";
+import { NavLinksList } from "./NavLinksList";
 import { ThemeToggle } from "./ThemeToggle";
 
 // Shared between the desktop pill nav and the mobile dropdown so both stay in sync.
@@ -27,13 +27,7 @@ export function Navbar() {
 
         {/* Desktop: full pill nav + toggle + CV button, hidden below md. */}
         <div className="hidden items-center gap-3 md:flex">
-          <nav className="flex items-center gap-1 rounded-full border border-foreground/10 bg-card/70 p-1.5 shadow-sm backdrop-blur-md">
-            {links.map((link) => (
-              <NavLink key={link.href} href={link.href}>
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
+          <NavLinksList links={links} />
           <ThemeToggle />
           <Button
             href="/Tharindu-Munasinghe-CV.pdf"

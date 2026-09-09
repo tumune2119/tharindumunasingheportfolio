@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/ContactForm";
+import { Reveal } from "@/components/Reveal";
 
 // Contact card entries. Entries without an href (Location) render as plain text.
 const contactDetails = [
@@ -23,6 +24,7 @@ export default function ContactPage() {
       <h1 className="text-h2 md:text-h1 mt-3">Let’s have a chat.</h1>
 
       <div className="mt-8 grid gap-4 sm:gap-6 md:grid-cols-2 md:items-start">
+        <Reveal>
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
           <h2 className="text-h4">Tharindu Munasinghe</h2>
           <p className="text-body-sm mt-1 text-muted-foreground">
@@ -47,7 +49,7 @@ export default function ContactPage() {
                           ? "noopener noreferrer"
                           : undefined
                       }
-                      className="text-body text-foreground underline decoration-foreground/20 underline-offset-4 hover:text-primary hover:decoration-primary"
+                      className="text-body text-foreground underline decoration-foreground/20 underline-offset-4 transition-colors duration-500 ease-in-out hover:text-primary hover:decoration-primary"
                     >
                       {item.value}
                     </a>
@@ -61,7 +63,9 @@ export default function ContactPage() {
             ))}
           </dl>
         </section>
+        </Reveal>
 
+        <Reveal delay={80}>
         <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
           <h2 className="text-h4">Send a message</h2>
           <p className="text-body-sm mt-1 text-muted-foreground">
@@ -71,6 +75,7 @@ export default function ContactPage() {
             <ContactForm />
           </div>
         </section>
+        </Reveal>
       </div>
     </main>
   );
