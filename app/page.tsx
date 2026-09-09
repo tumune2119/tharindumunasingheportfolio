@@ -1,8 +1,15 @@
 import { Button } from "@/components/Button";
+import { HeroImageCycle } from "@/components/HeroImageCycle";
 import { Reveal } from "@/components/Reveal";
 import { TypewriterRoles } from "@/components/TypewriterRoles";
 
 const roles = ["UI/UX Engineer", "Product Designer", "Front-end Engineer"];
+
+const heroImages = [
+  "/hero/coding.png",
+  "/hero/designing.png",
+  "/hero/planning.png",
+];
 
 // Home page hero: title/slogan + bio cards on the left, a photo placeholder
 // on the right. No explicit grid-cols on the wrapper below md, so it
@@ -69,17 +76,15 @@ export default function Home() {
           </Reveal>
         </div>
 
-        {/* Placeholder until a real photo is ready — swap for next/image
-            once one exists. md:h-full stretches it to match the left
-            column's total height (see md:items-stretch on the grid). */}
+        {/* Loops through three illustrations with a digital-glitch
+            transition between them. md:h-full stretches it to match the
+            left column's total height (see md:items-stretch on the grid). */}
         <Reveal delay={160} className="md:h-full">
-          <div className="flex min-h-64 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-foreground/20 bg-surface p-6 text-center sm:min-h-80 md:h-full md:p-8">
-            <p className="text-body-sm font-medium text-muted-foreground">
-              Photo coming soon
-            </p>
-            <p className="text-caption max-w-56 text-muted-foreground">
-              Candid working shot, high contrast against the dark theme.
-            </p>
+          <div className="min-h-64 overflow-hidden rounded-2xl border border-foreground/10 bg-surface p-6 sm:min-h-80 md:h-full md:p-8">
+            <HeroImageCycle
+              images={heroImages}
+              alt="Illustration of Tharindu coding, designing, and planning"
+            />
           </div>
         </Reveal>
       </div>
