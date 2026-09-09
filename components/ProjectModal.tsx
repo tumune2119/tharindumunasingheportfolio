@@ -7,6 +7,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import type { Project } from "@/lib/projects";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { ImageCarousel } from "./ImageCarousel";
@@ -104,7 +105,12 @@ export function ProjectModal({
     return delay;
   }
 
-  return (
+  // Portaled straight to <body> so it stacks above everything, including
+  // the Navbar — the page-transition wrapper around {children} animates
+  // transform, which creates a stacking context with no explicit z-index,
+  // trapping this modal below the Navbar's own z-50 context if rendered
+  // in place instead.
+  return createPortal(
     <div
       className={`fixed inset-0 z-60 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm transition-opacity duration-700 ease-in-out ${
         visible ? "opacity-100" : "opacity-0"
@@ -219,7 +225,8 @@ export function ProjectModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

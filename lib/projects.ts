@@ -172,4 +172,56 @@ export const projects: Project[] = [
     ],
     sourceNote: "Full developer guide available on request.",
   },
+  {
+    slug: "portfolio",
+    title: "This Portfolio",
+    tagline:
+      "This very site: a personal portfolio designed and built end-to-end with Claude Code assisting, one real feature at a time.",
+    images: [],
+    role: "Sole designer and developer, built end-to-end with Claude Code assisting",
+    status: "Live and actively maintained",
+    platform: "Web (responsive, desktop and mobile)",
+    tools: "Claude Code",
+    techStack: "Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · EmailJS · Vercel",
+    sections: [
+      {
+        title: "The Problem",
+        body: "A portfolio needed to exist: one place showing who Tharindu is, the real projects he's shipped, and a working way for people to actually reach him, built on a real design system instead of a generic template.",
+      },
+      {
+        title: "Approach",
+        body: "Built up in layers, starting with tokens and primitives before any page content existed:",
+        points: [
+          "Turned a supplied color palette and type scale (the Forest and Mint palette, an Inter type ramp) into actual CSS custom properties and Tailwind utilities, not just a reference document.",
+          "Built a small component library first, a Button, NavLink, Navbar, and ThemeToggle, before writing any page content, so every later page reused the same primitives instead of one-off styles.",
+          "Added a manual light/dark toggle on top of the system preference, using a data-theme override and an inline script so the stored theme applies before first paint instead of flashing the default.",
+          "Wired the contact form straight to EmailJS with no backend, since a static portfolio has nowhere to run server code, then confirmed the same setup actually worked once deployed to Vercel, not just in local dev.",
+        ],
+      },
+      {
+        title: "Real Decisions & Fixes",
+        body: "Part of using an AI coding agent well is checking its claims instead of accepting them. A few examples from this build:",
+        points: [
+          "React's ViewTransition component, documented for this Next.js version, turned out not to exist in the installed stable React build. That got checked with a one-line Node script before any code was written around it, rather than shipping something that would silently do nothing.",
+          "The theme toggle's icon briefly mismatched between server and client, because its initial state read localStorage during render. Fixed by always rendering the same default on both sides and correcting it in a layout effect just before paint.",
+          "Tapping a card or button on a phone left it visually stuck in its hover state until tapping elsewhere. Fixed once, site-wide, by redefining Tailwind's hover variant to require an actual hover-capable pointer.",
+          "EmailJS's service ID, template ID, and public key are safe to keep in the client code itself. The whole integration runs in the browser, so an environment variable would not have hidden them any better; the real safeguard is the allowed-domains list in the EmailJS dashboard.",
+        ],
+      },
+      {
+        title: "Outcome",
+        body: "A live, responsive portfolio with a real design system, working project case studies with an image carousel, and a working contact form, built with iterative assistance from Claude Code, with the developer checking claims and fixing what it got wrong along the way, rather than accepting output at face value.",
+      },
+    ],
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/tumune2119/tharindumunasingheportfolio",
+      },
+      {
+        label: "Live Site",
+        href: "https://tharindumunasingheportfolio.vercel.app",
+      },
+    ],
+  },
 ];
