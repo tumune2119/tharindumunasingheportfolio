@@ -25,9 +25,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // suppressHydrationWarning: the inline script below can change
     // data-theme before React hydrates, which would otherwise be flagged
     // as a server/client mismatch on this element.
+    // scroll-smooth: eases anchor jumps (chapter TOC / copy-link
+    // navigation) instead of an instant snap. Safe alongside
+    // prefers-reduced-motion — globals.css already forces
+    // scroll-behavior: auto !important for that case.
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      className={`${inter.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
       <head>

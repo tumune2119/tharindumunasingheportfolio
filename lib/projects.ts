@@ -201,7 +201,14 @@ export const projects: Project[] = [
     title: "This Portfolio",
     tagline:
       "This very site: a personal portfolio designed and built end-to-end with Claude Code assisting, one real feature at a time.",
-    images: [],
+    coverImage: "/work/portfolio/01-home.png",
+    images: [
+      "/work/portfolio/01-home.png",
+      "/work/portfolio/02-experience.png",
+      "/work/portfolio/03-work.png",
+      "/work/portfolio/04-contact.png",
+      "/work/portfolio/05-project-modal.png",
+    ],
     role: "Sole designer and developer, built end-to-end with Claude Code assisting",
     status: "Live and actively maintained",
     platform: "Web (responsive, desktop and mobile)",
