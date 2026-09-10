@@ -36,6 +36,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <InlineScript html='(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()' />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        {/* Sits behind the Navbar (z-40 < Navbar's z-50) so content
+            scrolling up fades into the background before it reaches the
+            nav pill, instead of sitting flush against it. Fixed (not
+            sticky) so it stays put at the very top of the viewport
+            regardless of scroll, matching the Navbar's own behavior. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 top-0 z-40 h-28 bg-gradient-to-b from-background via-background/80 to-transparent md:h-32"
+        />
         <Navbar />
         <PageTransition>{children}</PageTransition>
         <Footer />
