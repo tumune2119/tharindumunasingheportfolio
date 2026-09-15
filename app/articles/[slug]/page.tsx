@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyChapterLink } from "@/components/CopyChapterLink";
+import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { articles } from "@/lib/articles";
 
 // Prerenders every known article at build time — the list is small and
@@ -31,6 +32,7 @@ export default async function ArticlePage({
 
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
+      <ScrollProgressBar />
       <Link
         href="/articles"
         className="text-body-sm text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"

@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -16,25 +17,84 @@ import { ImageCarousel } from "./ImageCarousel";
 // parent actually unmounts this component has to line up with it, or the
 // exit animation gets cut off (or there's an awkward dead pause after it).
 const CLOSE_MS = 700;
+// Matches the FLIP morph's own transition duration below.
+const MORPH_MS = 700;
 
 export function ProjectModal({
   project,
+  originRect,
   onClose,
 }: {
   project: Project;
+  // The clicked card's image rect, if any — enables the shared-element
+  // morph. Falls back to the plain fade/scale-in when absent (e.g. the
+  // project has no coverImage to morph from).
+  originRect?: DOMRect | null;
   onClose: () => void;
 }) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const imageSlotRef = useRef<HTMLDivElement>(null);
+  const morphRef = useRef<HTMLImageElement>(null);
   const reducedMotion = useReducedMotion();
+  const hasMorph = Boolean(originRect && project.coverImage);
   // Drives the backdrop/dialog transition classes. Starts false so the
   // initial (hidden) styles paint first; flipping to true a tick later is
   // what makes the transition actually run instead of snapping straight
   // to the visible state.
   const [visible, setVisible] = useState(false);
+  // True while the morph clone is flying from the card's position into
+  // the modal's image slot — hides the real ImageCarousel underneath it
+  // until it lands, then hands off.
+  const [morphing, setMorphing] = useState(hasMorph);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setVisible(true));
     return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // The actual FLIP animation: First (the card's rect, already known),
+  // Last (the modal's image slot, measured here), Invert (jump the clone
+  // to the slot's position/size, then transform it to look like it's
+  // still at the card), Play (animate that transform back to identity on
+  // the next frame). Only transform/opacity are animated, so this is
+  // compositor-only despite moving/resizing an element across the page.
+  useLayoutEffect(() => {
+    if (!hasMorph || !imageSlotRef.current || !morphRef.current) {
+      setMorphing(false);
+      return;
+    }
+    const origin = originRect as DOMRect;
+    const target = imageSlotRef.current.getBoundingClientRect();
+    const morphImg = morphRef.current;
+
+    const deltaX = origin.left - target.left;
+    const deltaY = origin.top - target.top;
+    const scaleX = origin.width / target.width;
+    const scaleY = origin.height / target.height;
+
+    morphImg.style.top = `${target.top}px`;
+    morphImg.style.left = `${target.left}px`;
+    morphImg.style.width = `${target.width}px`;
+    morphImg.style.height = `${target.height}px`;
+    morphImg.style.transformOrigin = "top left";
+    morphImg.style.transition = "none";
+    morphImg.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+
+    const raf = requestAnimationFrame(() => {
+      const duration = reducedMotion ? 0 : MORPH_MS;
+      morphImg.style.transition = `transform ${duration}ms ease-in-out`;
+      morphImg.style.transform = "translate(0px, 0px) scale(1, 1)";
+    });
+    const timeout = window.setTimeout(
+      () => setMorphing(false),
+      reducedMotion ? 0 : MORPH_MS,
+    );
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only ever needs to run once per mount, using the rect captured at open time
   }, []);
 
   // Plays the exit transition, then tells the parent to actually unmount
@@ -121,6 +181,21 @@ export function ProjectModal({
         if (event.target === event.currentTarget) handleClose();
       }}
     >
+      {/* The morph clone: a sibling of the dialog (not a descendant), so
+          the dialog's own transform doesn't change its fixed-position
+          containing block. z-70 keeps it above the dialog while flying
+          from the card's position to the image slot below. */}
+      {hasMorph && project.coverImage && (
+        // eslint-disable-next-line @next/next/no-img-element -- transient FLIP clone, not real content
+        <img
+          ref={morphRef}
+          src={project.coverImage}
+          alt=""
+          aria-hidden="true"
+          className={`pointer-events-none fixed z-70 object-cover ${morphing ? "" : "hidden"}`}
+        />
+      )}
+
       <div
         ref={dialogRef}
         role="dialog"
@@ -128,7 +203,9 @@ export function ProjectModal({
         aria-labelledby={`${project.slug}-title`}
         tabIndex={-1}
         className={`flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card outline-none transition-all duration-700 ease-in-out ${
-          visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          visible
+            ? "scale-100 opacity-100"
+            : `opacity-0 ${hasMorph ? "scale-100" : "scale-95"}`
         }`}
       >
         <div className="flex items-center justify-between border-b border-foreground/10 px-6 py-4">
@@ -148,7 +225,17 @@ export function ProjectModal({
         {/* The scrolling region the user asked for — everything below the
             fixed header scrolls, the header itself stays put. */}
         <div className="overflow-y-auto">
-          <ImageCarousel images={project.images} alt={project.title} />
+          {/* Hidden behind the morph clone (via opacity) until it lands,
+              then fades in — the handoff from the flying card image to
+              the real carousel. */}
+          <div
+            ref={imageSlotRef}
+            className={`transition-opacity duration-300 ease-in-out ${
+              morphing ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            <ImageCarousel images={project.images} alt={project.title} />
+          </div>
 
           <div className="flex flex-col gap-6 p-6">
             <p

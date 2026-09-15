@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { DownloadCVButton } from "@/components/DownloadCVButton";
 import { HeroImageCycle } from "@/components/HeroImageCycle";
 import { Reveal } from "@/components/Reveal";
 import { TypewriterRoles } from "@/components/TypewriterRoles";
@@ -59,16 +60,8 @@ export default function Home() {
                 platform built solo, end to end (Kandy 1st Court).
               </p> */}
               <div className="mt-6 flex flex-wrap gap-3">
-                {/* download attribute makes this actually save the file
-                    instead of just navigating to it in the browser. */}
-                <Button
-                  href="/Tharindu-Munasinghe-CV.pdf"
-                  download="Tharindu-Munasinghe-CV.pdf"
-                  variant="primary"
-                >
-                  Download CV
-                </Button>
-                <Button href="/contact" variant="outline">
+                <DownloadCVButton magnetic />
+                <Button href="/contact" variant="outline" magnetic>
                   Contact me
                 </Button>
               </div>

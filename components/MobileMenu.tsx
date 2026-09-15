@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./Button";
+import { DownloadCVButton } from "./DownloadCVButton";
 import { NavLink } from "./NavLink";
 
 type NavItem = { href: string; label: string };
@@ -69,15 +69,10 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
             {link.label}
           </NavLink>
         ))}
-        <Button
-          href="/cv.pdf"
-          download="Tharindu-Munasinghe-CV.pdf"
-          variant="primary"
+        <DownloadCVButton
           className="mt-1 justify-center px-4 py-2 text-body-sm"
           onClick={() => setOpen(false)}
-        >
-          Download CV
-        </Button>
+        />
       </div>
     </div>
   );

@@ -46,6 +46,14 @@
   }
 }
 
+/* Hides the native cursor once CustomCursor takes over (JS-gated: only
+   added on pointer:fine/hover:hover devices with no reduced-motion
+   preference, so this never runs where there's no replacement drawn). */
+html.custom-cursor-active,
+html.custom-cursor-active * {
+  cursor: none !important;
+}
+
 /*
   Design tokens — Forest & Mint Portfolio Spec v1.2.0-beta.
   Light values live on :root; dark values override under the
@@ -421,4 +429,14 @@ body {
 
 @utility animate-glitch-shift-b {
   animation: glitch-shift-b 520ms steps(2, jump-none) both;
+}
+
+/*
+  Reuses the same glitch-burst keyframe (see GlitchEasterEgg) at a longer
+  duration and more steps for a full-page moment, rather than the quick
+  per-image swap glitch above — the keyframe is percentage-based so it
+  scales to any duration without new keyframe rules.
+*/
+@utility animate-page-glitch {
+  animation: glitch-burst 900ms steps(3, jump-none) both;
 }

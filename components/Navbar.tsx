@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "./Button";
+import { DownloadCVButton } from "./DownloadCVButton";
 import { MobileMenu } from "./MobileMenu";
 import { NavLinksList } from "./NavLinksList";
 import { ThemeToggle } from "./ThemeToggle";
@@ -29,14 +29,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           <NavLinksList links={links} />
           <ThemeToggle />
-          <Button
-            href="/Tharindu-Munasinghe-CV.pdf"
-            download="Tharindu-Munasinghe-CV.pdf"
-            variant="primary"
-            className="px-5 py-2.5 text-body-sm"
-          >
-            Download CV
-          </Button>
+          <DownloadCVButton className="px-5 py-2.5 text-body-sm" />
         </div>
 
         {/* Mobile: just the toggle and hamburger; nav links + CV button

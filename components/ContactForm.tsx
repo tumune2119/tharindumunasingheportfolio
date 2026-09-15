@@ -102,6 +102,7 @@ export function ContactForm() {
         type="submit"
         variant="primary"
         disabled={status === "sending"}
+        magnetic
         className="self-start"
       >
         {status === "sending" ? "Sending…" : "Send message"}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { CustomCursor } from "@/components/CustomCursor";
 import { Footer } from "@/components/Footer";
+import { GlitchEasterEgg } from "@/components/GlitchEasterEgg";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
 import { PageTransition } from "@/components/PageTransition";
@@ -52,6 +54,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Navbar />
         <PageTransition>{children}</PageTransition>
         <Footer />
+        <GlitchEasterEgg />
+        <CustomCursor />
       </body>
     </html>
   );
