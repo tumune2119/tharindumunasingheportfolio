@@ -3,6 +3,7 @@
 import emailjs from "@emailjs/browser";
 import { useState, type FormEvent } from "react";
 import { Button } from "./Button";
+import { SuccessBurst } from "./SuccessBurst";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -98,15 +99,17 @@ export function ContactForm() {
         />
       </div>
 
-      <Button
-        type="submit"
-        variant="primary"
-        disabled={status === "sending"}
-        magnetic
-        className="self-start"
-      >
-        {status === "sending" ? "Sending…" : "Send message"}
-      </Button>
+      <div className="relative self-start">
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={status === "sending"}
+          magnetic
+        >
+          {status === "sending" ? "Sending…" : "Send message"}
+        </Button>
+        <SuccessBurst trigger={status === "sent"} />
+      </div>
 
       {status === "sent" && (
         <p className="text-body-sm animate-fade-in-up text-success">

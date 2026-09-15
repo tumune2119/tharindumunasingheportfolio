@@ -1,3 +1,4 @@
+import { CountUp } from "@/components/CountUp";
 import { Reveal } from "@/components/Reveal";
 
 // Work history, newest first, sourced from the CV. Rendered as a timeline below.
@@ -121,7 +122,8 @@ export default function ExperiencePage() {
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <p className="text-overline text-muted-foreground">Experience</p>
       <h1 className="text-h2 md:text-h1 mt-3">
-        5+ years across the design-to-development pipeline.
+        <CountUp end={5} suffix="+" /> years across the design-to-development
+        pipeline.
       </h1>
 
       <div className="mt-8 flex flex-col gap-4 sm:gap-6">

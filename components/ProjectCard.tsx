@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
+import { useInView } from "@/lib/useInView";
 import type { Project } from "@/lib/projects";
 
 const MAX_TILT_DEG = 7;
@@ -16,7 +17,10 @@ export function ProjectCard({
   onLearnMore: (originRect: DOMRect | null) => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const imageWrapRef = useRef<HTMLDivElement>(null);
+  // Doubles as the shared-element morph's origin rect measurement (used
+  // by onLearnMore below) and the trigger for the image's clip-path
+  // wipe-in once the card scrolls into view.
+  const { ref: imageWrapRef, inView: imageInView } = useInView<HTMLDivElement>();
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
     const card = cardRef.current;
@@ -84,7 +88,8 @@ export function ProjectCard({
           <img
             src={project.coverImage}
             alt=""
-            className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+            style={{ clipPath: imageInView ? "inset(0 0 0 0%)" : "inset(0 0 0 100%)" }}
+            className="h-full w-full object-cover transition-[clip-path,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
           />
         ) : (
           <p className="text-body-sm px-6 text-center text-muted-foreground">

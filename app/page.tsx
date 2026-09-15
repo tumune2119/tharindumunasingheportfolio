@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { DownloadCVButton } from "@/components/DownloadCVButton";
+import { HeroAura } from "@/components/HeroAura";
 import { HeroImageCycle } from "@/components/HeroImageCycle";
 import { Reveal } from "@/components/Reveal";
 import { TypewriterRoles } from "@/components/TypewriterRoles";
@@ -20,9 +21,10 @@ export default function Home() {
   return (
     <main
       id="home"
-      className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24"
+      className="relative mx-auto w-full max-w-6xl flex-1 overflow-hidden px-4 py-12 sm:px-6 md:px-8 md:py-24"
     >
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 md:items-stretch">
+      <HeroAura />
+      <div className="relative z-10 grid gap-4 sm:gap-6 md:grid-cols-2 md:items-stretch">
         <div className="flex flex-col gap-4 sm:gap-6">
           {/* Title + slogan */}
           <Reveal>
