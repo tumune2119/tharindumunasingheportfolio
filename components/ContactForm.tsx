@@ -104,7 +104,6 @@ export function ContactForm() {
           type="submit"
           variant="primary"
           disabled={status === "sending"}
-          magnetic
         >
           {status === "sending" ? "Sending…" : "Send message"}
         </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 type Variant = "default" | "pointer" | "text" | "label";
@@ -11,11 +11,16 @@ const TEXT_SELECTOR =
   "input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=submit]):not([type=button]):not([type=file]):not([type=color]), textarea, [contenteditable=''], [contenteditable=true]";
 const POINTER_SELECTOR = "a, button, [role=button], select, summary, .cursor-pointer";
 
-const SIZE: Record<Variant, string> = {
-  default: "h-4 w-4",
-  pointer: "h-11 w-11",
-  text: "h-6 w-0.5",
-  label: "h-24 w-24",
+// Reticle tick geometry per variant, in px — offset is the gap between the
+// center and the near edge of each tick, length/thickness the tick itself.
+// Kept as plain numbers (not Tailwind classes) since the four ticks are
+// positioned with calc() off the container's own 50%/50% center, which
+// needs real px math rather than a fixed set of utility offsets. "label"
+// spreads the widest since that's the "Learn more" hover state.
+const TICK_CONFIG: Record<"default" | "pointer" | "label", { offset: number; length: number; thickness: number }> = {
+  default: { offset: 4, length: 12, thickness: 5 },
+  pointer: { offset: 7, length: 14, thickness: 5 },
+  label: { offset: 11, length: 14, thickness: 5 },
 };
 
 // Fraction of the remaining distance to the real pointer closed per
@@ -119,22 +124,86 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
+  // Off-white fill with a thin green outline, no glow — plain rounded-full
+  // "pill" ticks read as a clean crosshair icon rather than a soft blob.
+  const tickClasses = "absolute rounded-full border-[1.5px] border-primary bg-[#f5f3ee]";
+
   return (
     <div
       ref={cursorRef}
       aria-hidden="true"
-      style={
-        {
-          "--cursor-glow": "color-mix(in srgb, var(--color-primary) 55%, transparent)",
-        } as CSSProperties
-      }
-      className={`pointer-events-none fixed left-0 top-0 z-100 flex items-center justify-center text-center text-body-sm font-medium text-primary shadow-[0_0_18px_4px_var(--cursor-glow)] transition-[width,height] duration-300 ease-in-out ${SIZE[variant]} ${
-        variant === "text"
-          ? "rounded-sm bg-primary"
-          : "rounded-full border-2 border-primary bg-transparent backdrop-blur-[1px]"
-      }`}
+      className="pointer-events-none fixed left-0 top-0 z-100 h-0 w-0"
     >
-      {variant === "label" ? label : null}
+      {variant === "text" ? (
+        // Text caret: one tall pill standing in for the native I-beam.
+        <span
+          className={`${tickClasses} h-7 w-1.5`}
+          style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
+        />
+      ) : (
+        (() => {
+          const { offset, length, thickness } = TICK_CONFIG[variant];
+          return (
+            <>
+              <span
+                className={tickClasses}
+                style={{
+                  left: "50%",
+                  top: `calc(50% - ${offset + length}px)`,
+                  width: thickness,
+                  height: length,
+                  transform: "translateX(-50%)",
+                }}
+              />
+              <span
+                className={tickClasses}
+                style={{
+                  left: "50%",
+                  top: `calc(50% + ${offset}px)`,
+                  width: thickness,
+                  height: length,
+                  transform: "translateX(-50%)",
+                }}
+              />
+              <span
+                className={tickClasses}
+                style={{
+                  top: "50%",
+                  left: `calc(50% - ${offset + length}px)`,
+                  width: length,
+                  height: thickness,
+                  transform: "translateY(-50%)",
+                }}
+              />
+              <span
+                className={tickClasses}
+                style={{
+                  top: "50%",
+                  left: `calc(50% + ${offset}px)`,
+                  width: length,
+                  height: thickness,
+                  transform: "translateY(-50%)",
+                }}
+              />
+              {/* "Learn more →" (see ProjectCard's data-cursor value) sits
+                  beside the widened crosshair as plain text, not inside a
+                  bubble. */}
+              {variant === "label" && label && (
+                <span
+                  className="absolute whitespace-nowrap text-body-sm font-medium text-primary"
+                  style={{
+                    top: "50%",
+                    left: `calc(50% + ${offset + length + 10}px)`,
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  {label}
+                </span>
+              )}
+            </>
+          );
+        })()
+      )}
     </div>
   );
 }

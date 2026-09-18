@@ -9,11 +9,11 @@ const experience = [
     location: "Colombo, Sri Lanka",
     period: "Mar 2025 – Aug 2026",
     highlights: [
-      "Lead end-to-end UI/UX delivery for key product areas, from user research and wireframes through to production-ready front-end code.",
-      "Led the design and rollout of a major product version launch, owning the UI/UX overhaul from concept through release.",
-      "Lead and mentor a cross-functional team extending beyond UI/UX engineers, building onboarding and training plans and tracking progress to accelerate ramp-up.",
-      "Define and maintain design guidelines and component libraries to ensure visual and interaction consistency across the product.",
-      "Partner closely with product and engineering teams to translate user needs into scalable, accessible interfaces.",
+      "Own end-to-end UI/UX strategy and delivery for key product areas, from user research, wireframing, and interaction design through to production-ready, pixel-perfect front-end code.",
+      "Spearheaded the design and rollout of a major product version launch, driving the full UI/UX overhaul from concept and design system definition through release, improving product consistency and user satisfaction.",
+      "Lead and mentor a cross-functional team of designers and engineers, architecting onboarding and training programs and tracking progress metrics to accelerate ramp-up and elevate team design maturity.",
+      "Define, document, and maintain scalable design guidelines, UI kits, and component libraries to ensure visual and interaction consistency across the product ecosystem.",
+      "Partner closely with Product and Engineering leadership to translate complex user needs into accessible, scalable, data-informed interfaces, aligning design decisions with business goals.",
     ],
   },
   {
@@ -22,9 +22,9 @@ const experience = [
     location: "Colombo, Western Province, Sri Lanka",
     period: "Mar 2023 – Mar 2025",
     highlights: [
-      "Designed and built responsive, pixel-perfect interfaces using Figma, React, and Tailwind.",
-      "Conducted usability testing and iterated on designs based on user feedback and data.",
-      "Collaborated cross-functionally to ship features from concept to release.",
+      "Designed and built responsive, pixel-perfect, accessible interfaces using Figma, React, and Tailwind CSS, ensuring seamless design-to-development handoff.",
+      "Conducted usability testing and heuristic evaluations, iterating on designs based on qualitative user feedback and quantitative product data to continuously improve UX outcomes.",
+      "Collaborated cross-functionally with product managers and engineers to ship user-centered features from concept to release within Agile sprint cycles.",
     ],
   },
   {
@@ -33,8 +33,8 @@ const experience = [
     location: "Colombo, Sri Lanka",
     period: "Dec 2021 – Mar 2023",
     highlights: [
-      "Contributed to interface design and front-end development for core product features.",
-      "Supported research and testing efforts to validate design decisions early in the process.",
+      "Contributed to interface design and front-end development for core product features, applying modern design principles and interaction patterns.",
+      "Supported user research and usability testing efforts to validate design decisions early in the product development process.",
     ],
   },
   {
@@ -43,7 +43,7 @@ const experience = [
     location: "Colombo, Western Province, Sri Lanka",
     period: "Jun 2021 – Dec 2021",
     highlights: [
-      "Assisted senior designers with wireframing, prototyping, and visual design tasks, gaining hands-on exposure to the end-to-end UX workflow.",
+      "Assisted senior designers with wireframing, prototyping, and visual design tasks, gaining hands-on exposure to the end-to-end UX design and product development workflow.",
     ],
   },
 ];

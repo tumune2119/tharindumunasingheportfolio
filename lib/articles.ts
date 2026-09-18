@@ -2,6 +2,11 @@
 // new article — the list page's search and the [slug] route both just
 // read from this array, no other wiring needed.
 
+// Flip to true to bring the section back — the list page shows a "coming
+// soon" message and individual article pages 404 while this is false, but
+// none of the underlying article content below is touched.
+export const ARTICLES_ENABLED = false;
+
 export type ArticleChapter = {
   // Anchor id (#slug) — also what CopyChapterLink copies a link to.
   slug: string;

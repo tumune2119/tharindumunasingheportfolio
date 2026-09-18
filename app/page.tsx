@@ -62,8 +62,8 @@ export default function Home() {
                 platform built solo, end to end (Kandy 1st Court).
               </p> */}
               <div className="mt-6 flex flex-wrap gap-3">
-                <DownloadCVButton magnetic />
-                <Button href="/contact" variant="outline" magnetic>
+                <DownloadCVButton />
+                <Button href="/contact" variant="outline">
                   Contact me
                 </Button>
               </div>

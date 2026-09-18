@@ -1,5 +1,5 @@
 import { ArticleSearch } from "@/components/ArticleSearch";
-import { articles } from "@/lib/articles";
+import { ARTICLES_ENABLED, articles } from "@/lib/articles";
 
 export default function ArticlesPage() {
   return (
@@ -7,9 +7,17 @@ export default function ArticlesPage() {
       <p className="text-overline text-muted-foreground">Articles</p>
       <h1 className="text-h2 md:text-h1 mt-3">Writing.</h1>
 
-      <div className="mt-8">
-        <ArticleSearch articles={articles} />
-      </div>
+      {ARTICLES_ENABLED ? (
+        <div className="mt-8">
+          <ArticleSearch articles={articles} />
+        </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-dashed border-foreground/20 bg-surface p-8 text-center">
+          <p className="text-body text-muted-foreground">
+            Coming soon, I’m still writing these up.
+          </p>
+        </div>
+      )}
     </main>
   );
 }

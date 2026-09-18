@@ -3,17 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyChapterLink } from "@/components/CopyChapterLink";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
-import { articles } from "@/lib/articles";
+import { ARTICLES_ENABLED, articles } from "@/lib/articles";
 
 // Prerenders every known article at build time — the list is small and
 // fully static, so there's no need to fall back to on-demand rendering.
+// Skipped while the section is disabled so no article routes get built.
 export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
+  return ARTICLES_ENABLED ? articles.map((article) => ({ slug: article.slug })) : [];
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/articles/[slug]">): Promise<Metadata> {
+  if (!ARTICLES_ENABLED) return {};
   const { slug } = await params;
   const article = articles.find((item) => item.slug === slug);
   if (!article) return {};
@@ -26,6 +28,7 @@ export async function generateMetadata({
 export default async function ArticlePage({
   params,
 }: PageProps<"/articles/[slug]">) {
+  if (!ARTICLES_ENABLED) notFound();
   const { slug } = await params;
   const article = articles.find((item) => item.slug === slug);
   if (!article) notFound();

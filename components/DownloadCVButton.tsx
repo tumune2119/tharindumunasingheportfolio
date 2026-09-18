@@ -6,11 +6,9 @@ import { Button } from "./Button";
 // stale /cv.pdf while Navbar's had already been updated.
 export function DownloadCVButton({
   className,
-  magnetic,
   onClick,
 }: {
   className?: string;
-  magnetic?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -18,7 +16,6 @@ export function DownloadCVButton({
       href="/Tharindu-Munasinghe-CV.pdf"
       download="Tharindu-Munasinghe-CV.pdf"
       variant="primary"
-      magnetic={magnetic}
       className={className}
       onClick={onClick}
     >

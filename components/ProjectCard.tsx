@@ -61,7 +61,7 @@ export function ProjectCard({
       ref={cardRef}
       role="button"
       tabIndex={0}
-      data-cursor="Learn more"
+      data-cursor="Learn more →"
       aria-label={`View ${project.title} project details`}
       onClick={handleActivate}
       onKeyDown={handleKeyDown}
@@ -104,7 +104,10 @@ export function ProjectCard({
             {project.tagline}
           </p>
         </div>
-        <span className="text-body-sm self-start font-medium text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out group-hover:decoration-primary">
+        {/* Desktop relies on the custom cursor's "Learn more →" label
+            instead (see data-cursor above) — this text stays only for
+            touch devices, which never see that cursor. */}
+        <span className="text-body-sm self-start font-medium text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out group-hover:decoration-primary md:hidden">
           Learn more →
         </span>
       </div>
