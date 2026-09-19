@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { isActiveRoute } from "@/lib/isActiveRoute";
 
 // A single nav item shared by the desktop pill nav and the mobile dropdown.
 // - fullWidth: stacks as a full-width row for the vertical mobile menu
@@ -22,7 +23,7 @@ export function NavLink({
 }) {
   const pathname = usePathname();
   // Highlights the link matching the current route.
-  const active = pathname === href;
+  const active = isActiveRoute(pathname, href);
 
   return (
     <Link

@@ -1,28 +1,22 @@
 "use client";
 
-import { useRef, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
+import Link from "next/link";
+import { useRef, type CSSProperties, type MouseEvent } from "react";
 import { useInView } from "@/lib/useInView";
 import type { Project } from "@/lib/projects";
 
 const MAX_TILT_DEG = 7;
 
-// Whole card is the click target (role="button", keyboard-operable) — the
-// "Learn more" text is just a visual affordance, not a separate control.
-// data-cursor picks up the label shown by CustomCursor while hovering.
-export function ProjectCard({
-  project,
-  onLearnMore,
-}: {
-  project: Project;
-  onLearnMore: (originRect: DOMRect | null) => void;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  // Doubles as the shared-element morph's origin rect measurement (used
-  // by onLearnMore below) and the trigger for the image's clip-path
-  // wipe-in once the card scrolls into view.
+// The whole card is one link to the project's own page — the "Learn more"
+// text is just a visual affordance, not a separate control. data-cursor
+// picks up the label shown by CustomCursor while hovering.
+export function ProjectCard({ project }: { project: Project }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  // Triggers the cover image's clip-path wipe-in once the card scrolls
+  // into view.
   const { ref: imageWrapRef, inView: imageInView } = useInView<HTMLDivElement>();
 
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  function handleMouseMove(event: MouseEvent<HTMLAnchorElement>) {
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
@@ -45,30 +39,16 @@ export function ProjectCard({
     card.style.setProperty("--spot-opacity", "0");
   }
 
-  function handleActivate() {
-    onLearnMore(imageWrapRef.current?.getBoundingClientRect() ?? null);
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleActivate();
-    }
-  }
-
   return (
-    <div
+    <Link
       ref={cardRef}
-      role="button"
-      tabIndex={0}
+      href={`/work/${project.slug}`}
       data-cursor="Learn more →"
       aria-label={`View ${project.title} project details`}
-      onClick={handleActivate}
-      onKeyDown={handleKeyDown}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ "--spot-opacity": 0 } as CSSProperties}
-      className="group relative flex h-105 cursor-pointer flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card shadow-sm will-change-transform hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group relative flex h-105 flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card shadow-sm will-change-transform hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div
         aria-hidden="true"
@@ -84,7 +64,7 @@ export function ProjectCard({
         className="flex h-48 shrink-0 items-center justify-center overflow-hidden bg-surface"
       >
         {project.coverImage ? (
-          // eslint-disable-next-line @next/next/no-img-element -- source image is part of the shared-element morph rect measurement, next/image's wrapper markup would break it
+          // eslint-disable-next-line @next/next/no-img-element -- plain img keeps the clip-path reveal simple; no need for next/image's wrapper markup
           <img
             src={project.coverImage}
             alt=""
@@ -111,6 +91,6 @@ export function ProjectCard({
           Learn more →
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -1,6 +1,16 @@
-// Case-study content for the Work page's project cards + modal. Add a new
-// entry here (and its cover/carousel images once you have them) to add a
-// new project card — ProjectsGrid renders whatever's in this array.
+// Case-study content for the Work page's project cards and each project's
+// own /work/[slug] page. Add a new entry here (and its cover/carousel
+// images once you have them) to add a new project — the grid, the detail
+// route, and its static params all just read this array.
+
+// Anchor id for a section's heading (#slug), derived from its title so
+// sections don't each need a hand-written slug.
+export function sectionSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 // One named block of a case study's body copy (Problem, Approach, Outcome,
 // etc). `body` is a paragraph, `points` is a bullet list — either or both,
@@ -22,7 +32,7 @@ export type Project = {
   tagline: string;
   // Card thumbnail. Undefined shows a placeholder until a real image exists.
   coverImage?: string;
-  // Carousel screenshots shown inside the modal. Empty shows a placeholder.
+  // Carousel screenshots shown on the project's page. Empty shows a placeholder.
   images: string[];
   role: string;
   status: string;

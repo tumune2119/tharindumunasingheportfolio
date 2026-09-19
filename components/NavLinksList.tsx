@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
+import { isActiveRoute } from "@/lib/isActiveRoute";
 
 type NavItem = { href: string; label: string };
 
@@ -21,7 +22,10 @@ export function NavLinksList({ links }: { links: NavItem[] }) {
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    const activeLink = linkRefs.current.get(pathname);
+    const activeHref = links.find((link) =>
+      isActiveRoute(pathname, link.href),
+    )?.href;
+    const activeLink = activeHref ? linkRefs.current.get(activeHref) : undefined;
     if (container && activeLink) {
       const containerRect = container.getBoundingClientRect();
       const linkRect = activeLink.getBoundingClientRect();
@@ -47,7 +51,7 @@ export function NavLinksList({ links }: { links: NavItem[] }) {
         />
       )}
       {links.map((link) => {
-        const active = pathname === link.href;
+        const active = isActiveRoute(pathname, link.href);
         return (
           <Link
             key={link.href}

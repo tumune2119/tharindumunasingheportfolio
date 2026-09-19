@@ -24,7 +24,7 @@ export function CopyChapterLink({ chapterSlug }: { chapterSlug: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      aria-label="Copy link to this chapter"
+      aria-label="Copy link to this section"
       className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-foreground/10 bg-surface px-3 py-1.5 text-caption font-medium text-muted-foreground transition-all duration-500 ease-in-out hover:text-foreground active:scale-95"
     >
       {copied ? (
