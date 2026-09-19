@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CopyChapterLink } from "@/components/CopyChapterLink";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { projects, sectionSlug } from "@/lib/projects";
@@ -108,15 +107,10 @@ export default async function ProjectPage({
               id={id}
               className="scroll-mt-28 rounded-2xl border border-foreground/10 bg-card p-6 md:scroll-mt-32 md:p-8"
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-overline text-muted-foreground">
-                    Section {sectionIndex + 1}
-                  </p>
-                  <h2 className="text-h3 mt-1">{section.title}</h2>
-                </div>
-                <CopyChapterLink chapterSlug={id} />
-              </div>
+              <p className="text-overline text-muted-foreground">
+                Section {sectionIndex + 1}
+              </p>
+              <h2 className="text-h3 mt-1">{section.title}</h2>
 
               {section.body && (
                 <p className="text-body mt-4 text-muted-foreground">
