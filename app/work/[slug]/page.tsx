@@ -42,6 +42,7 @@ export default async function ProjectPage({
       <ScrollProgressBar />
       <Link
         href="/work"
+        title="Back to Work"
         className="text-body-sm text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
       >
         ← Work
@@ -87,6 +88,7 @@ export default async function ProjectPage({
               <span className="absolute -left-7.25 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-primary md:-left-9.25" />
               <a
                 href={`#${sectionSlug(section.title)}`}
+                title={`Jump to "${section.title}"`}
                 className="text-body-sm block font-medium text-foreground transition-colors duration-500 ease-in-out hover:text-primary"
               >
                 {sectionIndex + 1}. {section.title}
@@ -147,6 +149,7 @@ export default async function ProjectPage({
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={`Open ${link.label} (opens in a new tab)`}
                   className="text-body-sm w-fit text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out hover:decoration-primary"
                 >
                   {link.label} ↗
@@ -164,6 +167,7 @@ export default async function ProjectPage({
         {nextProject.slug !== project.slug && (
           <Link
             href={`/work/${nextProject.slug}`}
+            title={`View next project: ${nextProject.title}`}
             className="group rounded-2xl border border-foreground/10 bg-card p-6 transition-shadow duration-500 ease-in-out hover:shadow-lg md:p-8"
           >
             <p className="text-overline text-muted-foreground">Next project</p>

@@ -38,6 +38,7 @@ export default async function ArticlePage({
       <ScrollProgressBar />
       <Link
         href="/articles"
+        title="Back to Articles"
         className="text-body-sm text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
       >
         ← Articles
@@ -61,6 +62,7 @@ export default async function ArticlePage({
               <span className="absolute -left-7.25 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-primary md:-left-9.25" />
               <a
                 href={`#${chapter.slug}`}
+                title={`Jump to "${chapter.title}"`}
                 className="text-body-sm block font-medium text-foreground transition-colors duration-500 ease-in-out hover:text-primary"
               >
                 {index + 1}. {chapter.title}

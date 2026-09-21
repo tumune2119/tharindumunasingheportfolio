@@ -14,11 +14,13 @@ export function NavLink({
   href,
   fullWidth = false,
   onNavigate,
+  title,
   children,
 }: {
   href: string;
   fullWidth?: boolean;
   onNavigate?: () => void;
+  title?: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -29,6 +31,7 @@ export function NavLink({
     <Link
       href={href}
       onClick={onNavigate}
+      title={title}
       className={`rounded-full px-4 py-2 text-body-sm font-medium transition-colors ${
         fullWidth ? "block w-full text-left" : ""
       } ${

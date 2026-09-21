@@ -61,6 +61,7 @@ export function NavLinksList({ links }: { links: NavItem[] }) {
               else linkRefs.current.delete(link.href);
             }}
             aria-current={active ? "page" : undefined}
+            title={link.label}
             className={`relative z-10 rounded-full px-4 py-2 text-body-sm font-medium transition-colors duration-500 ease-in-out ${
               active
                 ? "text-foreground"

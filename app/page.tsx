@@ -63,7 +63,7 @@ export default function Home() {
               </p> */}
               <div className="mt-6 flex flex-wrap gap-3">
                 <DownloadCVButton />
-                <Button href="/contact" variant="outline">
+                <Button href="/contact" variant="outline" title="Go to the Contact page">
                   Contact me
                 </Button>
               </div>

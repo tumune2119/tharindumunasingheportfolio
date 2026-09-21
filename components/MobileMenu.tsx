@@ -41,6 +41,7 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={open ? "Close menu" : "Open menu"}
+        title={open ? "Close menu" : "Open menu"}
         className="flex h-10 w-10 items-center justify-center rounded-full border border-foreground/10 bg-card/70 text-foreground shadow-sm backdrop-blur-md"
       >
         <MenuIcon open={open} />
@@ -63,6 +64,7 @@ export function MobileMenu({ links }: { links: NavItem[] }) {
             key={link.href}
             href={link.href}
             fullWidth
+            title={link.label}
             // Close the menu once a link is actually clicked.
             onNavigate={() => setOpen(false)}
           >

@@ -4,16 +4,23 @@ import { Reveal } from "@/components/Reveal";
 // Contact card entries. Entries without an href (Location) render as plain text.
 const contactDetails = [
   { label: "Location", value: "Colombo, Western Province, Sri Lanka" },
-  { label: "Phone", value: "+94 77 268 1057", href: "tel:+94772681057" },
+  {
+    label: "Phone",
+    value: "+94 77 268 1057",
+    href: "tel:+94772681057",
+    title: "Call +94 77 268 1057",
+  },
   {
     label: "Email",
     value: "tumune2119@gmail.com",
     href: "mailto:tumune2119@gmail.com",
+    title: "Email tumune2119@gmail.com",
   },
   {
     label: "LinkedIn",
     value: "linkedin.com/in/tharindu-munasinghe-45b053184",
     href: "https://www.linkedin.com/in/tharindu-munasinghe-45b053184/",
+    title: "Open LinkedIn profile",
   },
 ];
 
@@ -49,6 +56,7 @@ export default function ContactPage() {
                           ? "noopener noreferrer"
                           : undefined
                       }
+                      title={item.title}
                       className="text-body text-foreground underline decoration-foreground/20 underline-offset-4 transition-colors duration-500 ease-in-out hover:text-primary hover:decoration-primary"
                     >
                       {item.value}

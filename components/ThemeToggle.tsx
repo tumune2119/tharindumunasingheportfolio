@@ -13,6 +13,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
       aria-pressed={isDark}
       className="relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border border-foreground/10 bg-surface px-1 transition-all duration-500 ease-in-out active:scale-95"
     >

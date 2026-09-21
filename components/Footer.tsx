@@ -1,12 +1,17 @@
 import Link from "next/link";
 
 const links = [
-  { label: "Email", href: "mailto:tumune2119@gmail.com" },
+  {
+    label: "Email",
+    href: "mailto:tumune2119@gmail.com",
+    title: "Email tumune2119@gmail.com",
+  },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/tharindu-munasinghe-45b053184/",
+    title: "Open LinkedIn profile",
   },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact", href: "/contact", title: "Go to the Contact page" },
 ];
 
 // Rendered once in the root layout (outside PageTransition), so it stays
@@ -31,6 +36,7 @@ export function Footer() {
                   ? "noopener noreferrer"
                   : undefined
               }
+              title={link.title}
               className="text-caption text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
             >
               {link.label}

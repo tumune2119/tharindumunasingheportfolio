@@ -45,6 +45,7 @@ export function ProjectCard({ project }: { project: Project }) {
       href={`/work/${project.slug}`}
       data-cursor="Learn more →"
       aria-label={`View ${project.title} project details`}
+      title={`View ${project.title} project details`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ "--spot-opacity": 0 } as CSSProperties}

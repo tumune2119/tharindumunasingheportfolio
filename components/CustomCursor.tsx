@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 type Variant = "default" | "pointer" | "text" | "label";
@@ -27,9 +27,10 @@ const TICK_CONFIG: Record<"default" | "pointer" | "label", { offset: number; len
 // animation frame — smaller trails more (softer), larger snaps tighter.
 const TRAIL_EASE = 0.2;
 
-// Global replacement for the native cursor. Any element can opt into a
-// custom label by adding data-cursor="..." — the ring grows into a
-// glowing label bubble showing that text while hovering it (see
+// Global replacement for the native cursor: a small green-stroked crosshair
+// (off-white pill ticks with a green outline and a soft green glow) that
+// spreads wider over clickable things and, on an element with
+// data-cursor="...", spreads widest and shows that text beside it (see
 // ProjectCard's "Learn more" card). Position tracking is done by writing
 // directly to the DOM node's transform (not React state) so it can follow
 // mousemove at full frequency without triggering re-renders; only the
@@ -54,7 +55,7 @@ export function CustomCursor() {
     setEnabled(true);
     document.documentElement.classList.add("custom-cursor-active");
 
-    // target = latest real pointer position, pos = where the dot is
+    // target = latest real pointer position, pos = where the crosshair is
     // currently drawn. Each animation frame nudges pos a fraction of the
     // way toward target instead of snapping straight there, giving the
     // cursor a soft trailing follow instead of an instant jump.
@@ -80,7 +81,7 @@ export function CustomCursor() {
       pos.y += (target.y - pos.y) * TRAIL_EASE;
       const el = cursorRef.current;
       if (el) {
-        el.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`;
+        el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
       }
       frameId = requestAnimationFrame(tick);
     }
@@ -124,14 +125,20 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
-  // Off-white fill with a thin green outline, no glow — plain rounded-full
-  // "pill" ticks read as a clean crosshair icon rather than a soft blob.
-  const tickClasses = "absolute rounded-full border-[1.5px] border-primary bg-[#f5f3ee]";
+  // Off-white fill, a green stroke, and a soft green glow — the pill ticks
+  // read as a lit-up crosshair icon rather than a flat cutout.
+  const tickClasses =
+    "absolute rounded-full border-[1.5px] border-primary bg-[#f5f3ee] shadow-[0_0_6px_1px_var(--cursor-glow)]";
 
   return (
     <div
       ref={cursorRef}
       aria-hidden="true"
+      style={
+        {
+          "--cursor-glow": "color-mix(in srgb, var(--color-primary) 55%, transparent)",
+        } as CSSProperties
+      }
       className="pointer-events-none fixed left-0 top-0 z-100 h-0 w-0"
     >
       {variant === "text" ? (

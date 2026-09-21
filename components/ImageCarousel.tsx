@@ -52,6 +52,7 @@ export function ImageCarousel({
             type="button"
             onClick={() => goTo(index - 1)}
             aria-label="Previous image"
+            title="Previous image"
             className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-foreground shadow-sm backdrop-blur-sm transition-all duration-500 ease-in-out hover:scale-110 hover:bg-card active:scale-95"
           >
             ‹
@@ -60,6 +61,7 @@ export function ImageCarousel({
             type="button"
             onClick={() => goTo(index + 1)}
             aria-label="Next image"
+            title="Next image"
             className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-foreground shadow-sm backdrop-blur-sm transition-all duration-500 ease-in-out hover:scale-110 hover:bg-card active:scale-95"
           >
             ›
@@ -71,6 +73,7 @@ export function ImageCarousel({
                 type="button"
                 onClick={() => goTo(i)}
                 aria-label={`Go to image ${i + 1}`}
+                title={`Go to image ${i + 1}`}
                 className={`h-1.5 rounded-full transition-all duration-500 ease-in-out hover:scale-125 ${
                   i === index ? "w-4 bg-primary" : "w-1.5 bg-card/80"
                 }`}

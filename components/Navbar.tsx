@@ -20,7 +20,7 @@ export function Navbar() {
   return (
     <header className="sticky top-4 z-50 px-4 md:px-6">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-        <Link href="/" aria-label="Tharindu Munasinghe - Home">
+        <Link href="/" aria-label="Tharindu Munasinghe - Home" title="Home">
           {/* eslint-disable-next-line @next/next/no-img-element -- brand mark, no need for next/image optimization */}
           <img src="/logo.svg" alt="" className="h-7 w-auto md:h-8" />
         </Link>

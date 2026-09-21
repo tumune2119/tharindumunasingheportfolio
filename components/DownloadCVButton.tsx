@@ -15,6 +15,7 @@ export function DownloadCVButton({
     <Button
       href="/Tharindu-Munasinghe-CV.pdf"
       download="Tharindu-Munasinghe-CV.pdf"
+      title="Download CV (PDF)"
       variant="primary"
       className={className}
       onClick={onClick}

@@ -33,6 +33,7 @@ export function ArticleSearch({ articles }: { articles: Article[] }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search articles…"
           aria-label="Search articles"
+          title="Search articles"
           className="w-full rounded-xl border border-foreground/10 bg-surface py-3 pl-11 pr-4 text-body text-foreground outline-none transition-all duration-500 ease-in-out focus:border-primary focus:ring-2 focus:ring-primary/30"
         />
       </div>
@@ -47,6 +48,7 @@ export function ArticleSearch({ articles }: { articles: Article[] }) {
             <Link
               key={article.slug}
               href={`/articles/${article.slug}`}
+              title={`Read "${article.title}"`}
               className="group block rounded-2xl border border-foreground/10 bg-card p-6 transition-all duration-700 ease-in-out hover:-translate-y-1 hover:shadow-lg md:p-8"
             >
               <h2 className="text-h4 transition-colors duration-500 ease-in-out group-hover:text-primary">
