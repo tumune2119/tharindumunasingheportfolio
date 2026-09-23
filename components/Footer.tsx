@@ -1,17 +1,22 @@
 import Link from "next/link";
+import { MailIcon, LinkedinIcon, PhoneIcon } from "./icons";
 
-const links = [
+const socialLinks = [
   {
-    label: "Email",
     href: "mailto:tumune2119@gmail.com",
     title: "Email tumune2119@gmail.com",
+    icon: MailIcon,
   },
   {
-    label: "LinkedIn",
     href: "https://www.linkedin.com/in/tharindu-munasinghe-45b053184/",
     title: "Open LinkedIn profile",
+    icon: LinkedinIcon,
   },
-  { label: "Contact", href: "/contact", title: "Go to the Contact page" },
+  {
+    href: "/contact",
+    title: "Go to the Contact page",
+    icon: PhoneIcon,
+  },
 ];
 
 // Rendered once in the root layout (outside PageTransition), so it stays
@@ -25,8 +30,8 @@ export function Footer() {
         <p className="text-caption text-muted-foreground">
           © {year} Tharindu Munasinghe. All rights reserved.
         </p>
-        <nav className="flex items-center gap-4">
-          {links.map((link) => (
+        <nav className="flex items-center gap-2">
+          {socialLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -37,9 +42,10 @@ export function Footer() {
                   : undefined
               }
               title={link.title}
-              className="text-caption text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
+              aria-label={link.title}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-all duration-500 ease-in-out hover:bg-surface hover:text-foreground"
             >
-              {link.label}
+              <link.icon className="h-4 w-4" />
             </Link>
           ))}
         </nav>

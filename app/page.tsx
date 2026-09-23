@@ -3,7 +3,7 @@ import { DownloadCVButton } from "@/components/DownloadCVButton";
 import { HeroAura } from "@/components/HeroAura";
 import { HeroImageCycle } from "@/components/HeroImageCycle";
 import { Reveal } from "@/components/Reveal";
-import { TypewriterRoles } from "@/components/TypewriterRoles";
+import { Tag } from "@/components/Tag";
 
 const roles = ["UI/UX Engineer", "Product Designer", "Front-end Engineer"];
 
@@ -26,20 +26,21 @@ export default function Home() {
       <HeroAura />
       <div className="relative z-10 grid gap-4 sm:gap-6 md:grid-cols-2 md:items-stretch">
         <div className="flex flex-col gap-4 sm:gap-6">
-          {/* Title + slogan */}
+          {/* Title + roles. All roles show at once, as tags, instead of a
+              typewriter cycle — a visitor who doesn't wait through an
+              animation still sees the full picture immediately. */}
           <Reveal>
             <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
               <h1 className="text-h2 md:text-h1">
                 Hi, I am Tharindu Munasinghe
               </h1>
-              <p className="text-h4 md:text-h3 mt-2 text-muted-foreground">
-                {/* Screen readers get the static list; the animated text
-                    itself is hidden from them since it's purely decorative. */}
-                <span className="sr-only">
-                  UI/UX Engineer, Product Designer, Front-end Engineer
-                </span>
-                <TypewriterRoles roles={roles} />
-              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {roles.map((role, index) => (
+                  <Tag key={role} delay={index * 100}>
+                    {role}
+                  </Tag>
+                ))}
+              </div>
             </section>
           </Reveal>
 
@@ -49,18 +50,24 @@ export default function Home() {
           <Reveal delay={80} className="flex flex-1 flex-col">
             <section className="flex flex-1 flex-col rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
               <p className="text-body text-muted-foreground">
-                User Experience Designer and Engineer with an Interactive Media background and over 5 years of experience turning complex user needs into intuitive,
-                elegant digital products. Fluent across the full design-to-development pipeline, from user research and Figma prototyping to production-ready React
-                and Tailwind implementation. Skilled in design systems, iconography, typography, and modern design principles, with a creative, curious, and detail
+                <span className="font-semibold text-primary">
+                  User Experience Designer and Engineer
+                </span>{" "}
+                with an Interactive Media background and over{" "}
+                <span className="font-semibold text-primary">
+                  5 years of experience
+                </span>{" "}
+                turning complex user needs into intuitive, elegant digital
+                products. Fluent across the full{" "}
+                <span className="font-semibold text-primary">
+                  design-to-development pipeline
+                </span>
+                , from user research and Figma prototyping to
+                production-ready React and Tailwind implementation. Skilled
+                in design systems, iconography, typography, and modern
+                design principles, with a creative, curious, and detail
                 driven approach to solving user problems.
               </p>
-              {/* <p className="text-body mt-4 text-muted-foreground">
-                I build fast by directing AI tools like Claude Code, but I stay
-                close enough to the code to know what’s real, what’s
-                scaffolding, and what’s still broken. Recent work spans EV
-                infrastructure design (Sri Charge) to a full-stack booking
-                platform built solo, end to end (Kandy 1st Court).
-              </p> */}
               <div className="mt-6 flex flex-wrap gap-3">
                 <DownloadCVButton />
                 <Button href="/contact" variant="outline" title="Go to the Contact page">

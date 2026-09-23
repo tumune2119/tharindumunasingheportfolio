@@ -112,7 +112,7 @@ export function ContactForm() {
 
       {status === "sent" && (
         <p className="text-body-sm animate-fade-in-up text-success">
-          Message sent — thanks! I’ll get back to you soon.
+          Message sent, thanks! I’ll get back to you soon.
         </p>
       )}
       {status === "error" && (

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
+import { ExternalLinkIcon, GithubIcon } from "@/components/icons";
 import { projects, sectionSlug } from "@/lib/projects";
 
 export function generateStaticParams() {
@@ -143,18 +144,22 @@ export default async function ProjectPage({
           <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
             <h2 className="text-h4">Links</h2>
             <div className="mt-3 flex flex-col gap-2">
-              {project.links?.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`Open ${link.label} (opens in a new tab)`}
-                  className="text-body-sm w-fit text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out hover:decoration-primary"
-                >
-                  {link.label} ↗
-                </a>
-              ))}
+              {project.links?.map((link) => {
+                const Icon = link.label === "GitHub" ? GithubIcon : ExternalLinkIcon;
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Open ${link.label} (opens in a new tab)`}
+                    className="text-body-sm inline-flex w-fit items-center gap-1.5 text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-500 ease-in-out hover:decoration-primary"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {link.label}
+                  </a>
+                );
+              })}
               {project.sourceNote && (
                 <p className="text-body-sm text-muted-foreground">
                   {project.sourceNote}

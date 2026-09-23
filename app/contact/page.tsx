@@ -1,26 +1,37 @@
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/Reveal";
+import { LinkedinIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
-// Contact card entries. Entries without an href (Location) render as plain text.
+// Contact card entries. Entries without an href (Location) render as plain
+// text. LinkedIn's value is a short label, not the raw profile URL — the
+// icon plus a short label carries the same meaning without spelling out a
+// long link on the page.
 const contactDetails = [
-  { label: "Location", value: "Colombo, Western Province, Sri Lanka" },
+  {
+    label: "Location",
+    value: "Colombo, Western Province, Sri Lanka",
+    icon: MapPinIcon,
+  },
   {
     label: "Phone",
     value: "+94 77 268 1057",
     href: "tel:+94772681057",
     title: "Call +94 77 268 1057",
+    icon: PhoneIcon,
   },
   {
     label: "Email",
     value: "tumune2119@gmail.com",
     href: "mailto:tumune2119@gmail.com",
     title: "Email tumune2119@gmail.com",
+    icon: MailIcon,
   },
   {
     label: "LinkedIn",
-    value: "linkedin.com/in/tharindu-munasinghe-45b053184",
+    value: "View profile",
     href: "https://www.linkedin.com/in/tharindu-munasinghe-45b053184/",
     title: "Open LinkedIn profile",
+    icon: LinkedinIcon,
   },
 ];
 
@@ -41,7 +52,8 @@ export default function ContactPage() {
           <dl className="mt-6 flex flex-col gap-4">
             {contactDetails.map((item) => (
               <div key={item.label}>
-                <dt className="text-overline text-muted-foreground">
+                <dt className="flex items-center gap-1.5 text-overline text-muted-foreground">
+                  <item.icon className="h-3.5 w-3.5" />
                   {item.label}
                 </dt>
                 <dd className="mt-1">

@@ -46,14 +46,6 @@
   }
 }
 
-/* Hides the native cursor once CustomCursor takes over (JS-gated: only
-   added on pointer:fine/hover:hover devices with no reduced-motion
-   preference, so this never runs where there's no replacement drawn). */
-html.custom-cursor-active,
-html.custom-cursor-active * {
-  cursor: none !important;
-}
-
 /*
   Design tokens — Forest & Mint Portfolio Spec v1.2.0-beta.
   Light values live on :root; dark values override under the
