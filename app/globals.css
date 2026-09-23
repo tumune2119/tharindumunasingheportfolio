@@ -159,6 +159,17 @@
   --font-sans: var(--font-inter);
 }
 
+/*
+  Reserves the vertical scrollbar's width up front, on every page, instead
+  of only when a page's content is tall enough to need one. Without this,
+  navigating between a short page (no scrollbar) and a tall one (scrollbar
+  appears) shifts the whole layout sideways by the scrollbar's width — the
+  "jump" this fixes.
+*/
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Applies the theme tokens site-wide; individual pages don't need to repeat this. */
 body {
   background: var(--background);
