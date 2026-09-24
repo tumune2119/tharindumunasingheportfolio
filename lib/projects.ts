@@ -12,6 +12,15 @@ export function sectionSlug(title: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+// Pre-filled mailto for the "Request source access" button on a project
+// page — the project's own title flows into the subject/body so this is one
+// generic builder rather than a hardcoded link per project.
+export function sourceRequestMailto(projectTitle: string): string {
+  const subject = `Source access request: ${projectTitle}`;
+  const body = `Hi Tharindu,\n\nI'd like to request access to the source for ${projectTitle}.\n\n`;
+  return `mailto:tumune2119@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 // One named block of a case study's body copy (Problem, Approach, Outcome,
 // etc). `body` is a paragraph, `points` is a bullet list — either or both,
 // so this covers everything from a plain paragraph to an intro + bullets.

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import { MoreProjects } from "@/components/MoreProjects";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
-import { ExternalLinkIcon, GithubIcon } from "@/components/icons";
-import { projects, sectionSlug } from "@/lib/projects";
+import { ArrowLeftIcon, ExternalLinkIcon, GithubIcon, MailIcon } from "@/components/icons";
+import { projects, sectionSlug, sourceRequestMailto } from "@/lib/projects";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -30,7 +31,6 @@ export default async function ProjectPage({
   if (index === -1) notFound();
 
   const project = projects[index];
-  const nextProject = projects[(index + 1) % projects.length];
   const details = [
     { label: "Role", value: project.role },
     { label: "Status", value: project.status },
@@ -44,9 +44,10 @@ export default async function ProjectPage({
       <Link
         href="/projects"
         title="Back to Projects"
-        className="text-body-sm text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
+        className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-surface px-4 py-2 text-body-sm font-medium text-muted-foreground transition-all duration-500 ease-in-out hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
       >
-        ← Projects
+        <ArrowLeftIcon className="h-4 w-4" />
+        Projects
       </Link>
 
       <p className="text-overline mt-6 text-muted-foreground">Case study</p>
@@ -161,26 +162,25 @@ export default async function ProjectPage({
                 );
               })}
               {project.sourceNote && (
-                <p className="text-body-sm text-muted-foreground">
-                  {project.sourceNote}
-                </p>
+                <div className="flex flex-col items-start gap-2">
+                  <p className="text-body-sm text-muted-foreground">
+                    {project.sourceNote}
+                  </p>
+                  <a
+                    href={sourceRequestMailto(project.title)}
+                    title={`Email a source access request for ${project.title}`}
+                    className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary bg-transparent px-4 py-2 text-body-sm font-medium text-primary transition-all duration-500 ease-in-out hover:scale-[1.03] hover:bg-surface active:scale-[0.97]"
+                  >
+                    <MailIcon className="h-4 w-4" />
+                    Request source access
+                  </a>
+                </div>
               )}
             </div>
           </section>
         )}
 
-        {nextProject.slug !== project.slug && (
-          <Link
-            href={`/projects/${nextProject.slug}`}
-            title={`View next project: ${nextProject.title}`}
-            className="group rounded-2xl border border-foreground/10 bg-card p-6 transition-shadow duration-500 ease-in-out hover:shadow-lg md:p-8"
-          >
-            <p className="text-overline text-muted-foreground">Next project</p>
-            <p className="text-h4 mt-1 transition-colors duration-500 ease-in-out group-hover:text-primary">
-              {nextProject.title} →
-            </p>
-          </Link>
-        )}
+        <MoreProjects projects={projects} currentSlug={project.slug} />
       </div>
     </main>
   );
