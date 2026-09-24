@@ -1,9 +1,12 @@
 import { Button } from "@/components/Button";
 import { DownloadCVButton } from "@/components/DownloadCVButton";
 import { HeroAura } from "@/components/HeroAura";
+import { HeroCipherClue } from "@/components/HeroCipherClue";
 import { HeroImageCycle } from "@/components/HeroImageCycle";
+import { HtmlComment } from "@/components/HtmlComment";
 import { Reveal } from "@/components/Reveal";
 import { Tag } from "@/components/Tag";
+import { HERO_CIPHER_MESSAGE } from "@/lib/heroCipherMessage";
 
 const roles = ["UI/UX Engineer", "Product Designer", "Front-end Engineer"];
 
@@ -82,11 +85,13 @@ export default function Home() {
             transition between them. md:h-full stretches it to match the
             left column's total height (see md:items-stretch on the grid). */}
         <Reveal delay={160} className="md:h-full">
-          <div className="min-h-64 overflow-hidden rounded-2xl border border-foreground/10 bg-surface p-6 sm:min-h-80 md:h-full md:p-8">
+          <div className="relative min-h-64 overflow-hidden rounded-2xl border border-foreground/10 bg-surface p-6 sm:min-h-80 md:h-full md:p-8">
+            <HtmlComment text={HERO_CIPHER_MESSAGE} />
             <HeroImageCycle
               images={heroImages}
               alt="Illustration of Tharindu coding, designing, and planning"
             />
+            <HeroCipherClue />
           </div>
         </Reveal>
       </div>

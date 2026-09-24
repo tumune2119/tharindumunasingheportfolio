@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { EasterEgg } from "@/components/EasterEgg";
 import { Footer } from "@/components/Footer";
-import { GlitchEasterEgg } from "@/components/GlitchEasterEgg";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
 import { PageTransition } from "@/components/PageTransition";
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Navbar />
         <PageTransition>{children}</PageTransition>
         <Footer />
-        <GlitchEasterEgg />
+        <EasterEgg />
       </body>
     </html>
   );

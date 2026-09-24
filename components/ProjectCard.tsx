@@ -54,7 +54,7 @@ export function ProjectCard({
   return (
     <Link
       ref={cardRef}
-      href={`/work/${project.slug}`}
+      href={`/projects/${project.slug}`}
       aria-label={`View ${project.title} project details`}
       title={`View ${project.title} project details`}
       onMouseMove={handleMouseMove}

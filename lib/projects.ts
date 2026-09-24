@@ -1,5 +1,5 @@
-// Case-study content for the Work page's project cards and each project's
-// own /work/[slug] page. Add a new entry here (and its cover/carousel
+// Case-study content for the Projects page's project cards and each
+// project's own /projects/[slug] page. Add a new entry here (and its cover/carousel
 // images once you have them) to add a new project — the grid, the detail
 // route, and its static params all just read this array.
 

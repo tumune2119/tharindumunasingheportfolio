@@ -1,4 +1,5 @@
 import Link from "next/link";
+import packageJson from "@/package.json";
 import { MailIcon, LinkedinIcon, PhoneIcon } from "./icons";
 
 const socialLinks = [
@@ -28,7 +29,13 @@ export function Footer() {
     <footer className="border-t border-foreground/10 px-4 py-6 md:px-6">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
         <p className="text-caption text-muted-foreground">
-          © {year} Tharindu Munasinghe. All rights reserved.
+          © {year} Tharindu Munasinghe. All rights reserved.{" "}
+          <span
+            title="Site version"
+            className="text-foreground/40"
+          >
+            v{packageJson.version}
+          </span>
         </p>
         <nav className="flex items-center gap-2">
           {socialLinks.map((link) => (

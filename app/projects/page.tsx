@@ -1,10 +1,10 @@
 import { ProjectsGrid } from "@/components/ProjectsGrid";
 import { projects } from "@/lib/projects";
 
-export default function WorkPage() {
+export default function ProjectsPage() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
-      <p className="text-overline text-muted-foreground">Work</p>
+      <p className="text-overline text-muted-foreground">Projects</p>
       <h1 className="text-h2 md:text-h1 mt-3">What I’ve done.</h1>
 
       <div className="mt-8">

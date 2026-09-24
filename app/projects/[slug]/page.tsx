@@ -12,7 +12,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: PageProps<"/work/[slug]">): Promise<Metadata> {
+}: PageProps<"/projects/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug);
   if (!project) return {};
@@ -24,7 +24,7 @@ export async function generateMetadata({
 
 export default async function ProjectPage({
   params,
-}: PageProps<"/work/[slug]">) {
+}: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
   const index = projects.findIndex((item) => item.slug === slug);
   if (index === -1) notFound();
@@ -42,11 +42,11 @@ export default async function ProjectPage({
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <ScrollProgressBar />
       <Link
-        href="/work"
-        title="Back to Work"
+        href="/projects"
+        title="Back to Projects"
         className="text-body-sm text-muted-foreground transition-colors duration-500 ease-in-out hover:text-foreground"
       >
-        ← Work
+        ← Projects
       </Link>
 
       <p className="text-overline mt-6 text-muted-foreground">Case study</p>
@@ -171,7 +171,7 @@ export default async function ProjectPage({
 
         {nextProject.slug !== project.slug && (
           <Link
-            href={`/work/${nextProject.slug}`}
+            href={`/projects/${nextProject.slug}`}
             title={`View next project: ${nextProject.title}`}
             className="group rounded-2xl border border-foreground/10 bg-card p-6 transition-shadow duration-500 ease-in-out hover:shadow-lg md:p-8"
           >
