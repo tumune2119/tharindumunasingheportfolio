@@ -159,7 +159,7 @@ export const projects: Project[] = [
     role: "Full-stack owner: architecture, database, API, and UI decisions, implemented end-to-end via Claude Code",
     status: "Built; core flows functional; not yet deployed publicly",
     platform: "Web app + companion mobile app (Expo / React Native)",
-    tools: "Claude Code",
+    tools: "Claude Code · VS Code · Git · GitHub · Supabase · Vercel",
     techStack:
       "Next.js 16 · TypeScript · Tailwind CSS v4 · PostgreSQL (Supabase) · Drizzle ORM · Supabase Auth · PayHere · Expo / React Native · Vercel (target hosting)",
     sections: [
@@ -231,7 +231,7 @@ export const projects: Project[] = [
     role: "Sole designer and developer, built end-to-end with Claude Code assisting",
     status: "Live and actively maintained",
     platform: "Web (responsive, desktop and mobile)",
-    tools: "Claude Code",
+    tools: "Claude Code · VS Code · Git · GitHub · Vercel",
     techStack: "Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · EmailJS · Vercel",
     sections: [
       {
@@ -297,7 +297,7 @@ export const projects: Project[] = [
     status: "Live, personal daily-use tool (local-first desktop web app)",
     platform:
       "Local web app on Windows, opened as a Chrome/Edge app window; also installable as a PWA",
-    tools: "Claude Code",
+    tools: "Claude Code · VS Code · Git",
     techStack:
       "Next.js 16 · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer Motion · SQLite · Drizzle ORM · Anthropic SDK · Zod",
     sections: [
