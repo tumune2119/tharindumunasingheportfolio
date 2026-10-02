@@ -1,0 +1,105 @@
+{
+  "light": {
+    "color": {
+      "primary": { "value": "#2d6a4f", "type": "color", "description": "Brand actions, links, active nav state, focus rings." },
+      "primary-variant": { "value": "#1b4332", "type": "color", "description": "Hover/active fill for primary buttons." },
+      "secondary": { "value": "#95d5b2", "type": "color", "description": "Hero aura gradient, inner stop." },
+      "secondary-variant": { "value": "#b7e4c7", "type": "color", "description": "Hero aura gradient, outer stop." },
+      "background": { "value": "#ffffff", "type": "color", "description": "Page canvas." },
+      "surface": { "value": "#f0faf4", "type": "color", "description": "Inputs, nav pill, chip backgrounds." },
+      "card": { "value": "#ffffff", "type": "color", "description": "Elevated container background." },
+      "foreground": { "value": "#1b1b1b", "type": "color", "description": "Primary text." },
+      "muted-foreground": { "value": "#4a4a4a", "type": "color", "description": "Secondary text." },
+      "primary-foreground": { "value": "#ffffff", "type": "color", "description": "Text on a primary-filled surface." },
+      "accent": { "value": "#d4a373", "type": "color", "description": "Rare decorative highlight." },
+      "success": { "value": "#40916c", "type": "color", "description": "Success state." },
+      "warning": { "value": "#e9c46a", "type": "color", "description": "Warning state." },
+      "error": { "value": "#e76f51", "type": "color", "description": "Error state." },
+      "info": { "value": "#457b9d", "type": "color", "description": "Informational state." }
+    },
+    "spacing": {
+      "space-2": { "value": "8", "type": "spacing" },
+      "space-3": { "value": "12", "type": "spacing" },
+      "space-4": { "value": "16", "type": "spacing" },
+      "space-6": { "value": "24", "type": "spacing" },
+      "space-8": { "value": "32", "type": "spacing" },
+      "space-10": { "value": "40", "type": "spacing" }
+    },
+    "radius": {
+      "radius-md": { "value": "12", "type": "borderRadius" },
+      "radius-lg": { "value": "16", "type": "borderRadius" },
+      "radius-full": { "value": "9999", "type": "borderRadius" }
+    },
+    "shadow": {
+      "shadow-sm": {
+        "value": [{ "x": "0", "y": "1", "blur": "2", "spread": "0", "color": "rgba(0,0,0,0.05)", "type": "dropShadow" }],
+        "type": "boxShadow"
+      },
+      "shadow-md": {
+        "value": [
+          { "x": "0", "y": "4", "blur": "6", "spread": "-1", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" },
+          { "x": "0", "y": "2", "blur": "4", "spread": "-2", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" }
+        ],
+        "type": "boxShadow"
+      },
+      "shadow-lg": {
+        "value": [
+          { "x": "0", "y": "10", "blur": "15", "spread": "-3", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" },
+          { "x": "0", "y": "4", "blur": "6", "spread": "-4", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" }
+        ],
+        "type": "boxShadow"
+      },
+      "shadow-xl": {
+        "value": [
+          { "x": "0", "y": "20", "blur": "25", "spread": "-5", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" },
+          { "x": "0", "y": "8", "blur": "10", "spread": "-6", "color": "rgba(0,0,0,0.1)", "type": "dropShadow" }
+        ],
+        "type": "boxShadow"
+      }
+    },
+    "typography": {
+      "display": { "value": { "fontFamily": "Inter", "fontWeight": "700", "fontSize": "64", "lineHeight": "72", "letterSpacing": "-1.5" }, "type": "typography" },
+      "h1": { "value": { "fontFamily": "Inter", "fontWeight": "700", "fontSize": "48", "lineHeight": "56", "letterSpacing": "-1" }, "type": "typography" },
+      "h2": { "value": { "fontFamily": "Inter", "fontWeight": "600", "fontSize": "36", "lineHeight": "44", "letterSpacing": "-0.5" }, "type": "typography" },
+      "h3": { "value": { "fontFamily": "Inter", "fontWeight": "600", "fontSize": "28", "lineHeight": "36", "letterSpacing": "0" }, "type": "typography" },
+      "h4": { "value": { "fontFamily": "Inter", "fontWeight": "500", "fontSize": "22", "lineHeight": "30", "letterSpacing": "0" }, "type": "typography" },
+      "h5": { "value": { "fontFamily": "Inter", "fontWeight": "500", "fontSize": "18", "lineHeight": "26", "letterSpacing": "0.15" }, "type": "typography" },
+      "body-lg": { "value": { "fontFamily": "Inter", "fontWeight": "400", "fontSize": "18", "lineHeight": "28", "letterSpacing": "0" }, "type": "typography" },
+      "body": { "value": { "fontFamily": "Inter", "fontWeight": "400", "fontSize": "16", "lineHeight": "24", "letterSpacing": "0" }, "type": "typography" },
+      "body-sm": { "value": { "fontFamily": "Inter", "fontWeight": "400", "fontSize": "14", "lineHeight": "20", "letterSpacing": "0.1" }, "type": "typography" },
+      "caption": { "value": { "fontFamily": "Inter", "fontWeight": "400", "fontSize": "12", "lineHeight": "16", "letterSpacing": "0.4" }, "type": "typography" },
+      "overline": { "value": { "fontFamily": "Inter", "fontWeight": "500", "fontSize": "11", "lineHeight": "16", "letterSpacing": "1.5", "textCase": "uppercase" }, "type": "typography" }
+    }
+  },
+  "dark": {
+    "color": {
+      "primary": { "value": "#52b788", "type": "color" },
+      "primary-variant": { "value": "#74c69d", "type": "color" },
+      "secondary": { "value": "#40916c", "type": "color" },
+      "secondary-variant": { "value": "#2d6a4f", "type": "color" },
+      "background": { "value": "#1a1a2e", "type": "color" },
+      "surface": { "value": "#222236", "type": "color" },
+      "card": { "value": "#2a2a40", "type": "color" },
+      "foreground": { "value": "#e8e8e8", "type": "color" },
+      "muted-foreground": { "value": "#b0b0b0", "type": "color" },
+      "primary-foreground": { "value": "#ffffff", "type": "color" },
+      "accent": { "value": "#e9c46a", "type": "color" },
+      "success": { "value": "#74c69d", "type": "color" },
+      "warning": { "value": "#f4a261", "type": "color" },
+      "error": { "value": "#e76f51", "type": "color" },
+      "info": { "value": "#6fb3d9", "type": "color" }
+    }
+  },
+  "$themes": [
+    {
+      "id": "light",
+      "name": "Light",
+      "selectedTokenSets": { "light": "enabled" }
+    },
+    {
+      "id": "dark",
+      "name": "Dark",
+      "selectedTokenSets": { "light": "source", "dark": "enabled" }
+    }
+  ]
+}

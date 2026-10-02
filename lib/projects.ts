@@ -274,4 +274,73 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: "mune-tasks",
+    title: "MUNE TASKS",
+    tagline:
+      "A local-first AI project planner that turns a description into a phased, trackable to-do list in about 20 seconds.",
+    coverImage: "/work/mune-tasks/04-new-project-draft-ready.png",
+    images: [
+      "/work/mune-tasks/01-dashboard.png",
+      "/work/mune-tasks/02-new-project-empty.png",
+      "/work/mune-tasks/03-new-project-streaming.png",
+      "/work/mune-tasks/04-new-project-draft-ready.png",
+      "/work/mune-tasks/05-project-page-top.png",
+      "/work/mune-tasks/06-project-page-subtasks.png",
+      "/work/mune-tasks/07-expand-into-steps-modal.png",
+      "/work/mune-tasks/08-claude-usage-dashboard.png",
+      "/work/mune-tasks/09-settings.png",
+      "/work/mune-tasks/10-project-complete-confetti.png",
+      "/work/mune-tasks/11-dashboard-archived.png",
+    ],
+    role: "Product owner, designer, and developer, built with Claude Code as an AI pair programmer",
+    status: "Live, personal daily-use tool (local-first desktop web app)",
+    platform:
+      "Local web app on Windows, opened as a Chrome/Edge app window; also installable as a PWA",
+    tools: "Claude Code",
+    techStack:
+      "Next.js 16 · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer Motion · SQLite · Drizzle ORM · Anthropic SDK · Zod",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Starting a project means breaking it into steps, and that planning work is slow and easy to skip. Generic to-do apps require typing every item by hand, while chat assistants produce a plan that still has to be copied somewhere and tracked manually. The goal was one tool that writes the plan from a free-text description and attached documents, then lets the actual work be tracked afterward.",
+      },
+      {
+        title: "Approach",
+        body: "Built as a fully local-first desktop web app on Windows: no account, no cloud database, no telemetry, with the server listening only on 127.0.0.1.",
+        points: [
+          "Generates a plan from a free-text prompt plus attached files (.md, .txt, code, .pdf, .docx), with a detail-level slider from vague milestones up to 5 to 15 minute steps and an optional target item count.",
+          "Streams Claude's JSON response as it's written, parsing it with a tolerant partial-JSON parser so the plan's section and task tree builds up live instead of appearing after a long spinner.",
+          "Every project gets its own page with an overall progress bar, per-section percentages, collapsible subtasks, drag-and-drop reordering, and an 'Original prompt' panel recording the prompt, settings, attachments, and that project's own Claude spend.",
+          "Any task can be expanded into concrete 5 to 15 minute steps, and any section regenerated with optional guidance, both previewed in a dialog with their own cost shown before being applied.",
+          "Logs every Claude request (tokens, cost, duration, retries, errors) to a usage dashboard with 7/30/90-day totals and breakdowns by feature, model, and project.",
+        ],
+      },
+      {
+        title: "Architecture & Key Decisions",
+        points: [
+          "Every Claude request passes through one AI layer that validates the response against Zod schemas and logs its cost; an invalid or off-schema response triggers exactly one retry with the validation errors fed back to the model.",
+          "Running on a Claude subscription through the Claude Code CLI hit command-line length limits with large attachments and pulled in the CLI's own tools and settings. Fixed by piping the prompt over stdin, passing the system prompt through a temp file, and switching off tools, MCP servers, and settings, cutting per-request context from roughly 35k tokens to about 700.",
+          "A Next.js proxy rejects foreign Host headers and cross-site origins on every write, since any page open in a browser can otherwise reach a server listening on localhost.",
+          "Every edit on a project page (tick, rename, reorder, add, delete, replace a section) is one typed action validated by Zod and applied in a SQLite transaction, with the UI updating optimistically and requests queued so responses can't arrive out of order.",
+        ],
+      },
+      {
+        title: "Real Issues Caught & Fixed",
+        points: [
+          "The latest better-sqlite3 crashed on load because it only ships prebuilt Windows binaries for Node 22+, and compiling it needs Python and Visual Studio. Pinned to 12.9.0, the newest version with a Node 20 Windows binary.",
+          "Renaming the app required moving the database file from its old name to mune-tasks.db, but most of the data was still sitting in SQLite's write-ahead log rather than the main file. Fixed by checkpointing the WAL into the main file before the rename, with a retry on next launch if the old file was still in use.",
+        ],
+      },
+      {
+        title: "Design",
+        body: "A dark-only interface built around a deep navy background, slate-blue surface cards, and electric blue accents, with a soft glow on primary buttons and progress bars to draw the eye to the next action. Geist throughout, rounded-2xl cards, thin borders, generous spacing. Framer Motion draws the checkmark stroke, springs progress bars and rings to their new value, fades new tasks in, and bursts confetti at 100% completion (skipped under reduced motion). Fully keyboard-first: N for a new project, / for search, Space to tick the focused task, arrow keys or J and K to move between tasks, Enter to rename.",
+      },
+      {
+        title: "Testing & Outcome",
+        body: "A detailed plan arrives in about 20 seconds for roughly 3 cents of API-equivalent usage. An end-to-end Playwright script drives a real Chrome browser through the full flow: creating a project from a prompt plus an attached file, editing the plan before saving, ticking tasks and subtasks, using the keyboard shortcuts, renaming and adding tasks, restarting the server to confirm persistence, then completing and archiving the project. TypeScript, ESLint, and the production build all pass cleanly.",
+      },
+    ],
+    sourceNote: "Personal local-first tool; source available on request.",
+  },
 ];
