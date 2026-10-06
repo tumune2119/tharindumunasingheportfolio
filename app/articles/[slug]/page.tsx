@@ -109,6 +109,25 @@ export default async function ArticlePage({
                     {paragraph}
                   </p>
                 ))}
+                {chapter.images?.map((image) => (
+                  <figure
+                    key={image.src}
+                    className="overflow-hidden rounded-2xl border border-foreground/10 bg-surface"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- long screenshots and annotated boards, no need for next/image optimization */}
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      loading="lazy"
+                      className="h-auto w-full"
+                    />
+                    {image.caption && (
+                      <figcaption className="text-caption border-t border-foreground/10 px-4 py-3 text-muted-foreground">
+                        {image.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
               </div>
             ) : (
               <div className="mt-4 rounded-xl border border-dashed border-foreground/20 bg-surface p-6 text-center">
