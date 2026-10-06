@@ -7,7 +7,7 @@ import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useTheme } from "@/lib/useTheme";
 
-// First-visit intro: a desktop with a PORTFOLIO folder, a window with one
+// First-visit intro: a desktop with a MUNE folder, a window with one
 // RUN_PORTFOLIO.EXE file, and a terminal that prints a burst of fake boot
 // output before the site appears. Purely aesthetic. Nothing here runs a
 // real process or touches a real system.
@@ -33,7 +33,7 @@ function hex(length: number) {
 // Fresh random output each time the terminal opens, so no two sessions match.
 function buildTerminalLines(): string[] {
   return [
-    "C:\\PORTFOLIO> RUN_PORTFOLIO.EXE",
+    "C:\\MUNE> RUN_PORTFOLIO.EXE",
     `[ OK ] Routing through node ${hex(4)}:${hex(4)}`,
     "[ OK ] Initialising kernel modules",
     `[ OK ] Mapping memory 0x${hex(8)} - 0x${hex(8)}`,
@@ -94,6 +94,18 @@ export function IntroGate() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [phase, menuOpen, notepadOpen]);
+
+  // Clicking anywhere outside the Start menu or its button closes the menu.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target as Element | null;
+      if (target?.closest("[data-start-menu]")) return;
+      setMenuOpen(false);
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [menuOpen]);
 
   // The top-left readout reopens the desktop with its Start menu open, so the
   // visitor can get back to Notepad or the theme switch without a refresh.
@@ -209,6 +221,7 @@ function StartMenu({
   return (
     <div
       role="menu"
+      data-start-menu="menu"
       aria-label="Start menu"
       className="intro-menu absolute bottom-10 left-0 z-10 flex w-64 flex-col py-2"
     >
@@ -307,7 +320,7 @@ function DesktopFolder({ onOpen }: { onOpen: () => void }) {
   return (
     <div className="absolute left-6 top-6 md:left-10 md:top-10">
       <DesktopIcon
-        label="PORTFOLIO"
+        label="MUNE"
         selected={selected}
         onSelect={() => setSelected(true)}
         onOpen={onOpen}
@@ -315,7 +328,7 @@ function DesktopFolder({ onOpen }: { onOpen: () => void }) {
         <FolderIcon className="h-14 w-14 text-primary" />
       </DesktopIcon>
       <p className="hud-label mt-6 max-w-xs">
-        Double-click PORTFOLIO to open
+        Double-click MUNE to open
       </p>
     </div>
   );
@@ -349,6 +362,7 @@ function Taskbar({
       <button
         type="button"
         onClick={onStart}
+        data-start-menu="toggle"
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         className={`hud-cta px-3 py-1 text-caption ${menuOpen ? "bg-primary-variant" : ""}`}
@@ -374,7 +388,7 @@ function FolderWindow({
     <div className="absolute inset-0 flex items-center justify-center p-4">
       <div className="hud-window">
         <div className="hud-window-bar">
-          <span>PORTFOLIO</span>
+          <span>MUNE</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
@@ -422,7 +436,7 @@ function TerminalWindow({
     <div className="absolute inset-0 flex items-center justify-center p-4">
       <div className="hud-window">
         <div className="hud-window-bar">
-          <span>C:\PORTFOLIO\RUN_PORTFOLIO.EXE</span>
+          <span>C:\MUNE\RUN_PORTFOLIO.EXE</span>
         </div>
         <div className="space-y-1 p-5 text-caption leading-relaxed" aria-live="polite">
           {lines.slice(0, shown).map((line, i) => (
