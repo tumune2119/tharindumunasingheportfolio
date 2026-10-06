@@ -1066,6 +1066,55 @@ html[data-ui="hud"] .rounded-full:hover {
   color: var(--background);
 }
 
+/*
+  Contact actions (components/ContactPreview.tsx, app/contact/page.tsx).
+  .hud-chip is the compact mono chip used for the quick links; .hud-action is
+  the full-width row on the contact page, which keeps the label/value layout
+  and turns the value into a button. Both carry an inset accent ring that
+  brightens on hover.
+*/
+.hud-chip,
+.hud-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--foreground);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent);
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+  transition-duration: 140ms;
+}
+
+.hud-chip {
+  padding: 0.4rem 0.75rem;
+  font-family: var(--hud-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hud-action {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.hud-chip:hover,
+.hud-chip:focus-visible,
+.hud-action:hover,
+.hud-action:focus-visible {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
 .hud-tip {
   max-width: 16rem;
   padding: 0.5rem 0.75rem;

@@ -48,9 +48,13 @@ export default function ContactPage() {
                           : undefined
                       }
                       title={item.title}
-                      className="text-body text-foreground underline decoration-foreground/20 underline-offset-4 transition-colors duration-500 ease-in-out hover:text-primary hover:decoration-primary"
+                      className="hud-action text-body"
                     >
-                      {item.value}
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span className="min-w-0 truncate">{item.value}</span>
+                      <span aria-hidden="true" className="ml-auto shrink-0">
+                        ↗
+                      </span>
                     </a>
                   ) : (
                     <span className="text-body text-foreground">

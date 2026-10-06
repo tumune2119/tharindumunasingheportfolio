@@ -45,7 +45,7 @@ export function ContactPreview() {
                 : undefined
             }
             title={detail.title}
-            className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-surface px-3 py-1.5 text-body-sm text-foreground transition-all duration-500 ease-in-out hover:border-primary/30 hover:text-primary"
+            className="hud-chip"
           >
             <detail.icon className="h-3.5 w-3.5" />
             {detail.label}
