@@ -32,10 +32,10 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Desktop: full pill nav + toggle + CV button, hidden below md. */}
+        {/* Desktop: full pill nav + CV button, hidden below md. The theme
+            switch lives under the ONLINE tag in the HUD frame instead. */}
         <div className="hidden items-center gap-3 md:flex">
           <NavLinksList links={links} />
-          <ThemeToggle />
           <DownloadCVButton className="px-5 py-2.5 text-body-sm" />
         </div>
 

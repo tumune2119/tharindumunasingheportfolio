@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Colombo",
@@ -56,6 +57,7 @@ export function HudFrame() {
         <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
         <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
+        {/* Level with the top bracket arms, and clear of the logo below it. */}
         <div className="hud-readout absolute left-10 top-1 hidden md:block">
           <p className="text-accent">DIR // THARINDU MUNASINGHE</p>
         </div>
@@ -74,6 +76,14 @@ export function HudFrame() {
           <p className="text-accent">{sectionLabel(pathname)}</p>
           <p>SCROLL {String(scrollPercent).padStart(3, "0")}%</p>
         </div>
+      </div>
+
+      {/* Sits under the ONLINE tag in the top-right corner. The frame above
+          ignores the pointer, so this wrapper turns it back on for the
+          switch. It's outside the aria-hidden frame so it stays in the
+          accessibility tree. Desktop only; phones keep it in the header. */}
+      <div className="fixed right-7 top-12 z-60 hidden md:block">
+        <ThemeToggle />
       </div>
     </>
   );
