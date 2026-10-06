@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { IntroNotepad } from "@/components/IntroNotepad";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
@@ -54,6 +55,7 @@ export function IntroGate() {
   const [shutdown, setShutdown] = useState(false);
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
+  const router = useRouter();
   const isDark = theme === "dark";
 
   useEffect(() => {
@@ -113,7 +115,7 @@ export function IntroGate() {
     function reopen() {
       setShutdown(false);
       setNotepadOpen(false);
-      setMenuOpen(true);
+      setMenuOpen(false);
       setPhase("desktop");
     }
     window.addEventListener(INTRO_OPEN_EVENT, reopen);
@@ -132,6 +134,12 @@ export function IntroGate() {
     setMenuOpen(false);
     setShutdown(true);
     window.close();
+  }
+
+  // Folder shortcut: close the intro and go straight to a page.
+  function openPage(href: string) {
+    finish();
+    router.push(href);
   }
 
   if (!phase) return null;
@@ -163,6 +171,7 @@ export function IntroGate() {
           <FolderWindow
             onClose={() => setPhase("desktop")}
             onRun={() => setPhase("terminal")}
+            onOpenPage={openPage}
           />
         )}
 
@@ -327,9 +336,6 @@ function DesktopFolder({ onOpen }: { onOpen: () => void }) {
       >
         <FolderIcon className="h-14 w-14 text-primary" />
       </DesktopIcon>
-      <p className="hud-label mt-6 max-w-xs">
-        Double-click MUNE to open
-      </p>
     </div>
   );
 }
@@ -375,14 +381,41 @@ function Taskbar({
   );
 }
 
+const SHORTCUTS = [
+  { label: "EXPERIENCE", href: "/experience" },
+  { label: "PROJECTS", href: "/projects" },
+  { label: "ARTICLES", href: "/articles" },
+  { label: "CONTACT", href: "/contact" },
+];
+
+// Plain square with an arrow, so the shortcuts read as links, not files.
+function ShortcutIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="6" y="6" width="36" height="36" />
+      <path d="M18 30l12-12M20 18h10v10" />
+    </svg>
+  );
+}
+
 function FolderWindow({
   onClose,
   onRun,
+  onOpenPage,
 }: {
   onClose: () => void;
   onRun: () => void;
+  onOpenPage: (href: string) => void;
 }) {
-  const [selected, setSelected] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -395,15 +428,26 @@ function FolderWindow({
             </button>
           </div>
         </div>
-        <div className="flex min-h-48 p-6">
+        <div className="flex flex-wrap gap-2 p-4">
           <DesktopIcon
             label="RUN_PORTFOLIO.EXE"
-            selected={selected}
-            onSelect={() => setSelected(true)}
+            selected={selectedId === "run"}
+            onSelect={() => setSelectedId("run")}
             onOpen={onRun}
           >
             <ExeIcon className="h-12 w-12 text-primary" />
           </DesktopIcon>
+          {SHORTCUTS.map((shortcut) => (
+            <DesktopIcon
+              key={shortcut.href}
+              label={shortcut.label}
+              selected={selectedId === shortcut.href}
+              onSelect={() => setSelectedId(shortcut.href)}
+              onOpen={() => onOpenPage(shortcut.href)}
+            >
+              <ShortcutIcon className="h-12 w-12 text-primary" />
+            </DesktopIcon>
+          ))}
         </div>
       </div>
     </div>
