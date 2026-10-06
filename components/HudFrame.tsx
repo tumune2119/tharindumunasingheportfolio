@@ -12,6 +12,12 @@ const clockFormat = new Intl.DateTimeFormat("en-GB", {
   hour12: false,
 });
 
+// The current site path as a folder-style trail, e.g. PORTFOLIO/PROJECTS/SRI-CHARGE/.
+function sitePath(pathname: string) {
+  const segments = pathname.split("/").filter(Boolean);
+  return ["PORTFOLIO", ...segments].join("/").toUpperCase() + "/";
+}
+
 function sectionLabel(pathname: string) {
   if (pathname === "/") return "HOME";
   if (pathname.startsWith("/projects/")) return "CASE STUDY";
@@ -59,7 +65,10 @@ export function HudFrame() {
 
         {/* Level with the top bracket arms, and clear of the logo below it. */}
         <div className="hud-readout absolute left-10 top-1 hidden md:block">
-          <p className="text-accent">DIR // THARINDU MUNASINGHE</p>
+          <p>
+            <span className="text-accent">DIR: // </span>
+            <span className="text-foreground">{sitePath(pathname)}</span>
+          </p>
         </div>
 
         <div className="hud-readout absolute right-7 top-5 hidden items-center gap-2 md:flex">
