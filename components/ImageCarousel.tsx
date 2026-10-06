@@ -94,29 +94,30 @@ export function ImageCarousel({
 
         {images.length > 1 && (
           <>
-            {/* Solid dark circle (independent of the light/dark theme)
-                rather than the card-tinted background these used to have —
-                a screenshot behind the arrow can be any color, so a
-                theme-matched background sometimes nearly disappeared
-                against it. Sized to a 40x40px hit target per WCAG's minimum
-                touch-target guidance. */}
+            {/* Chamfered HUD arrows sized to a 40x40px hit target per WCAG's
+                minimum touch-target guidance. Tinted from the theme
+                background so they read on both light and dark screenshots. */}
             <button
               type="button"
               onClick={() => handleManualNav(index - 1)}
               aria-label="Previous image"
               title="Previous image"
-              className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-xl text-white shadow-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:scale-110 hover:bg-black/75 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              className="hud-arrow absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center transition-transform duration-300 ease-in-out hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              ‹
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="square" aria-hidden="true">
+                <path d="M15 5l-7 7 7 7" />
+              </svg>
             </button>
             <button
               type="button"
               onClick={() => handleManualNav(index + 1)}
               aria-label="Next image"
               title="Next image"
-              className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-xl text-white shadow-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:scale-110 hover:bg-black/75 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              className="hud-arrow absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center transition-transform duration-300 ease-in-out hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              ›
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="square" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </>
         )}
@@ -141,10 +142,8 @@ export function ImageCarousel({
               aria-label={`Go to image ${i + 1} of ${images.length}`}
               title={`Go to image ${i + 1} of ${images.length}`}
               onClick={() => handleManualNav(i)}
-              className={`relative h-12 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 ease-in-out ${
-                i === index
-                  ? "border-primary opacity-100"
-                  : "border-transparent opacity-60 hover:opacity-100"
+              className={`hud-thumb relative h-12 w-16 shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+                i === index ? "opacity-100" : "opacity-60 hover:opacity-100"
               }`}
             >
               <Image

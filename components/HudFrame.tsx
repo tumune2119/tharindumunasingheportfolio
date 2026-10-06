@@ -56,6 +56,10 @@ export function HudFrame() {
         <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
         <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
+        <div className="hud-readout absolute left-10 top-1 hidden text-[0.625rem] md:block">
+          <span className="text-accent">DIR // </span>THARINDU MUNASINGHE
+        </div>
+
         <div className="hud-readout absolute right-7 top-1 hidden text-[0.625rem] md:block">
           <span className="text-accent">DIR // </span>THARINDU MUNASINGHE
         </div>

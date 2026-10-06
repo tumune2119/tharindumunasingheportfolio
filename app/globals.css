@@ -750,32 +750,63 @@ html[data-ui="hud"] .rounded-full:hover {
 
 /* Themed scrollbars for the HUD: a thin accent thumb with chamfered ends on a
    hairline track, instead of the browser default. */
-html[data-ui="hud"] {
+/* Applies to the page and to any scrolling element inside it (the thumbnail
+   strip, for example). The step arrows at each end are hidden. */
+[data-ui="hud"] * {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--primary) 55%, transparent) transparent;
 }
 
-html[data-ui="hud"]::-webkit-scrollbar {
+[data-ui="hud"] ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-html[data-ui="hud"]::-webkit-scrollbar-track {
+[data-ui="hud"] ::-webkit-scrollbar-track {
   background: transparent;
   box-shadow: inset 1px 0 0 color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
-html[data-ui="hud"]::-webkit-scrollbar-thumb {
+[data-ui="hud"] ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--primary) 55%, transparent);
   clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
 }
 
-html[data-ui="hud"]::-webkit-scrollbar-thumb:hover {
+[data-ui="hud"] ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
-html[data-ui="hud"]::-webkit-scrollbar-corner {
+[data-ui="hud"] ::-webkit-scrollbar-button,
+[data-ui="hud"] ::-webkit-scrollbar-corner {
+  display: none;
   background: transparent;
+}
+
+/* Chamfered HUD controls for the project carousel: square arrows and
+   thumbnails with an inset accent ring instead of rounded borders. */
+.hud-arrow {
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  background: color-mix(in srgb, var(--background) 78%, transparent);
+  color: var(--primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 60%, transparent);
+  backdrop-filter: blur(4px);
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.hud-arrow:hover {
+  background: var(--primary);
+  color: var(--background);
+}
+
+.hud-thumb {
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.hud-thumb[aria-selected="true"] {
+  box-shadow: inset 0 0 0 2px var(--primary);
 }
 
 .hud-status-dot {
