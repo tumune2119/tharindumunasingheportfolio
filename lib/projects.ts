@@ -343,4 +343,75 @@ export const projects: Project[] = [
     ],
     sourceNote: "Personal local-first tool; source available on request.",
   },
+  {
+    slug: "mune-splits",
+    title: "MUNE Splits",
+    tagline:
+      "A local-first expense splitter that works out who owes whom in the fewest possible payments.",
+    coverImage: "/work/mune-splits/02-event-overview.png",
+    images: [
+      "/work/mune-splits/01-events-home.png",
+      "/work/mune-splits/02-event-overview.png",
+      "/work/mune-splits/03-expenses.png",
+      "/work/mune-splits/04-balances.png",
+      "/work/mune-splits/05-settle-up.png",
+      "/work/mune-splits/06-add-expense.png",
+      "/work/mune-splits/07-add-expense-shares.png",
+      "/work/mune-splits/08-people.png",
+      "/work/mune-splits/09-settings.png",
+      "/work/mune-splits/10-print-report.png",
+      "/work/mune-splits/11-event-mobile.png",
+      "/work/mune-splits/12-events-home-light.png",
+    ],
+    role: "Product owner, designer, and developer, with the app built from a written brief using an AI coding assistant",
+    status: "Working local app with a demo trip, PDF and CSV export, and backup and restore",
+    platform:
+      "Local web app on Windows, installable as a PWA; runs without an internet connection",
+    tools: "Claude Code",
+    techStack:
+      "Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Radix UI · SQLite (better-sqlite3) · Recharts · jsPDF · Vitest",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Splitting trip costs is slow and easy to get wrong. One person paid for dinner, another covered the villa, and by the end nobody remembers who owes whom. Most splitting apps want an account, a cloud sync and your data on their servers. The goal was a personal tool that keeps everything on the computer and still works out the fewest payments needed to settle up.",
+      },
+      {
+        title: "Approach",
+        body: "Built as a local-first web app with no accounts, no cloud sync and no tracking. The server only listens on 127.0.0.1, and all data lives in a local SQLite file.",
+        points: [
+          "Create an event or trip, add the people, and log each expense with one payer or several, and a split mode: equal, weighted shares, exact amounts or percentages.",
+          "Weights are set per expense, so a partner can count as two people and a half portion as 0.5.",
+          "Simplified balances show the fewest payments that settle everyone, while the raw view lists each direct debt.",
+          "Record full or partial settlements, undo any payment, and lock an event as settled once everyone is at zero.",
+          "Export a PDF report, a CSV or a plain-text summary, and back up or restore everything as JSON, including receipt images.",
+        ],
+      },
+      {
+        title: "Key Decisions & Challenges",
+        points: [
+          "Money is stored as integer minor units (paise or cents), so there are no floating-point errors.",
+          "Shares are rounded with the largest-remainder method, so they always add up exactly to the total.",
+          "Debts are simplified greedily by matching the largest creditor with the largest debtor, which takes at most people minus one payments.",
+          "The split and settle maths lives in a pure module with its own unit tests. The UI, PDF and CSV export all share the same balance code.",
+          "Every event edit is one typed action validated on the server. A proxy rejects foreign Host headers and cross-site writes, so other websites can't drive the local server.",
+        ],
+      },
+      {
+        title: "Known Risks",
+        points: [
+          "better-sqlite3 is pinned to 12.9.0 because it ships prebuilt Windows binaries for Node 20, which avoids a local compile step.",
+          "The data folder sits inside OneDrive, and syncing a live SQLite database can conflict. The app's own notes recommend pausing sync while it runs, or moving the data folder and relying on JSON backups.",
+        ],
+      },
+      {
+        title: "Design",
+        body: "A dark-first interface with a light mode, an orange accent and rounded cards. Each event has its own emoji and colour, and a floating Add expense button keeps the main action in reach. Press N to add an expense or event. On phones the navigation moves to a bottom bar.",
+      },
+      {
+        title: "Testing & Outcome",
+        body: "A demo trip, Goa Trip, loads with four people, weighted shares, a multi-payer villa, every split mode and a partial settlement. The engine's unit tests cover equal, weighted with decimals, exact, percent, multi-payer, rounding remainders and partial settlements. The production build was run and the demo trip was walked through in Chrome, from the events list to the print report.",
+      },
+    ],
+    sourceNote: "Personal local-first tool; source available on request.",
+  },
 ];
