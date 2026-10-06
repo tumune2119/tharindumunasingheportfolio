@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
 import { PageTransition } from "@/components/PageTransition";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PageTransition>{children}</PageTransition>
         <Footer />
         <EasterEgg />
+        <Analytics />
       </body>
     </html>
   );
