@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
 import { PageTransition } from "@/components/PageTransition";
+import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Self-hosted Google font. The CSS variable is consumed by --font-sans in
@@ -14,10 +15,37 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Default <title>/<meta description> for every route that doesn't override them.
+// Preview deployments (and local builds) stay out of search results; only
+// the production domain is indexable.
+const isProduction = process.env.VERCEL_ENV === "production";
+
+// Defaults for every route. Each page sets its own title and canonical;
+// the title template is what gives child pages their " · Tharindu Munasinghe" suffix.
 export const metadata: Metadata = {
-  title: "Tharindu Munasinghe - Portfolio",
-  description: "Portfolio of Tharindu Munasinghe.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    template: "%s · Tharindu Munasinghe",
+  },
+  description: SITE.shortDescription,
+  keywords: [...SITE.keywords],
+  authors: [{ name: SITE.name, url: SITE_URL }],
+  creator: SITE.name,
+  alternates: { canonical: "/" },
+  robots: { index: isProduction, follow: isProduction },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    locale: "en_US",
+    url: SITE_URL,
+    title: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    description: SITE.shortDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    description: SITE.shortDescription,
+  },
 };
 
 // Wraps every page: sets up fonts, the dark/light theme, and the site nav.

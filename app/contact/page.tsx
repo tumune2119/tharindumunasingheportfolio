@@ -1,12 +1,24 @@
+import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/Reveal";
 import { contactDetails } from "@/lib/contact";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Contact",
+  description:
+    "Get in touch with Tharindu Munasinghe about UI/UX design, product design or front-end engineering work, from Colombo, Sri Lanka.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <p className="text-overline text-muted-foreground">Contact</p>
-      <h1 className="text-h2 md:text-h1 mt-3">Let’s have a chat.</h1>
+      <h1 className="text-h2 md:text-h1 mt-3">
+        <span className="sr-only">Contact Tharindu Munasinghe: </span>Let’s have
+        a chat.
+      </h1>
 
       <div className="mt-8 grid gap-4 sm:gap-6 md:grid-cols-2 md:items-start">
         <Reveal>
