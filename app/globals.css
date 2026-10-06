@@ -487,3 +487,105 @@ body {
 @utility animate-burst-particle {
   animation: burst-particle 700ms ease-in-out both;
 }
+
+/*
+  HUD interface. Everything under html[data-ui="hud"] is switched on from the
+  navbar toggle; with the attribute removed, the classic interface is exactly
+  as it was. Shapes, chamfers and type treatments follow the HUD reference;
+  every colour is an existing token.
+*/
+html[data-ui="hud"] {
+  --hud-cut: 9px;
+  --hud-cut-lg: 16px;
+  --hud-display: var(--font-rajdhani), var(--font-sans), sans-serif;
+  --hud-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+html[data-ui="hud"] body {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/*
+  Panels: chamfered on the top-left and bottom-right. The corner brackets are
+  background gradients rather than pseudo-elements, so panels never change
+  their positioning (absolutely positioned menus inside them keep working).
+*/
+html[data-ui="hud"] .rounded-2xl {
+  border-radius: 0;
+  background-image:
+    linear-gradient(var(--primary), var(--primary)),
+    linear-gradient(var(--primary), var(--primary)),
+    linear-gradient(var(--primary), var(--primary)),
+    linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 14px 2px, 2px 14px, 14px 2px, 2px 14px;
+  background-position: top right, top right, bottom left, bottom left;
+  clip-path: polygon(
+    var(--hud-cut-lg) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut-lg)),
+    calc(100% - var(--hud-cut-lg)) 100%,
+    0 100%,
+    0 var(--hud-cut-lg)
+  );
+}
+
+/*
+  Pills, buttons and tags become chamfered mono labels. Dots, avatars and
+  icon-sized circles keep their round shape, so they're excluded by size class.
+*/
+html[data-ui="hud"] .rounded-full:not(.h-1):not(.w-1):not(.h-2\.5):not(.w-2\.5):not(.h-6):not(.w-6):not(.h-8):not(.h-10) {
+  border-radius: 0;
+  clip-path: polygon(
+    var(--hud-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut)),
+    calc(100% - var(--hud-cut)) 100%,
+    0 100%,
+    0 var(--hud-cut)
+  );
+  font-family: var(--hud-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+html[data-ui="hud"] h1,
+html[data-ui="hud"] h2,
+html[data-ui="hud"] h3,
+html[data-ui="hud"] h4 {
+  font-family: var(--hud-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+html[data-ui="hud"] h1 {
+  text-shadow:
+    -1px 0 color-mix(in srgb, var(--accent) 25%, transparent),
+    1px 0 color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+html[data-ui="hud"] .text-overline {
+  font-family: var(--hud-mono);
+  color: var(--accent);
+  letter-spacing: 0.18em;
+}
+
+/* HUD viewport chrome (components/HudFrame.tsx). Only rendered while the HUD is on. */
+.hud-readout {
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.hud-bracket {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: color-mix(in srgb, var(--primary) 70%, transparent);
+}

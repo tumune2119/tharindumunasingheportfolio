@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono, Rajdhani } from "next/font/google";
 import { EasterEgg } from "@/components/EasterEgg";
+import { HudFrame } from "@/components/HudFrame";
 import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
@@ -14,6 +15,20 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+// Display and mono faces for the HUD interface. Only the HUD styles use them,
+// so the classic interface looks the same with or without these loaded.
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 // Preview deployments (and local builds) stay out of search results; only
@@ -61,13 +76,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // scroll-behavior: auto !important for that case.
     <html
       lang="en"
-      className={`${inter.variable} h-full scroll-smooth antialiased`}
+      className={`${inter.variable} ${rajdhani.variable} ${jetbrainsMono.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
       <head>
         {/* Runs before first paint so the stored theme applies immediately
             instead of flashing the default light/dark theme first. */}
         <InlineScript html='(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()' />
+        <InlineScript html='(function(){try{if(localStorage.getItem("ui-style")==="hud")document.documentElement.setAttribute("data-ui","hud")}catch(e){}})()' />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/* Sits behind the Navbar (z-40 < Navbar's z-50) so content
@@ -83,6 +99,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PageTransition>{children}</PageTransition>
         <Footer />
         <EasterEgg />
+        <HudFrame />
         <Analytics />
       </body>
     </html>
