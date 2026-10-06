@@ -1026,6 +1026,21 @@ html[data-ui="hud"] .rounded-full:hover {
   }
 }
 
+/*
+  From xl up the footer becomes the bottom readout row. Its bottom edge sits on
+  the same line as the fixed corner readouts, and its side padding leaves room
+  for them, so the copyright, build line and social icons read as one line
+  with the frame. Below xl the readouts would collide with the footer, so it
+  keeps the stacked layout above.
+*/
+@media (min-width: 1280px) {
+  .hud-footer {
+    padding-left: 18rem;
+    padding-right: 11rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
 .hud-footer-link {
   display: grid;
   place-items: center;
