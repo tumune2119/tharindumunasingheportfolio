@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { CopyChapterLink } from "@/components/CopyChapterLink";
+import { JsonLd } from "@/components/JsonLd";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { ARTICLES_ENABLED, articles } from "@/lib/articles";
+import { pageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 // Prerenders every known article at build time — the list is small and
 // fully static, so there's no need to fall back to on-demand rendering.
@@ -19,10 +23,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const article = articles.find((item) => item.slug === slug);
   if (!article) return {};
-  return {
-    title: `${article.title} - Tharindu Munasinghe`,
+  return pageMetadata({
+    title: article.title,
     description: article.excerpt,
-  };
+    path: `/articles/${article.slug}`,
+    ogType: "article",
+  });
 }
 
 export default async function ArticlePage({
@@ -33,9 +39,25 @@ export default async function ArticlePage({
   const article = articles.find((item) => item.slug === slug);
   if (!article) notFound();
 
+  const articleUrl = `${SITE_URL}/articles/${article.slug}`;
+  const firstImage = article.chapters.flatMap((chapter) => chapter.images ?? [])[0];
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    url: articleUrl,
+    mainEntityOfPage: articleUrl,
+    inLanguage: "en",
+    image: firstImage ? `${SITE_URL}${firstImage.src}` : undefined,
+    author: { "@id": `${SITE_URL}/#person` },
+    publisher: { "@id": `${SITE_URL}/#person` },
+  };
+
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <ScrollProgressBar />
+      <JsonLd data={articleJsonLd} />
       <Link
         href="/articles"
         title="Back to Articles"
@@ -114,11 +136,12 @@ export default async function ArticlePage({
                     key={image.src}
                     className="overflow-hidden rounded-2xl border border-foreground/10 bg-surface"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element -- long screenshots and annotated boards, no need for next/image optimization */}
-                    <img
+                    <Image
                       src={image.src}
                       alt={image.alt}
-                      loading="lazy"
+                      width={image.width}
+                      height={image.height}
+                      sizes="(min-width: 768px) 672px, 100vw"
                       className="h-auto w-full"
                     />
                     {image.caption && (

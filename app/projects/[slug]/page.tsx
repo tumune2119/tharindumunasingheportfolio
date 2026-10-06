@@ -3,9 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { MoreProjects } from "@/components/MoreProjects";
+import { JsonLd } from "@/components/JsonLd";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { ArrowLeftIcon, ExternalLinkIcon, GithubIcon, MailIcon } from "@/components/icons";
 import { projects, sectionSlug, sourceRequestMailto } from "@/lib/projects";
+import { pageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -17,10 +20,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug);
   if (!project) return {};
-  return {
-    title: `${project.title} - Tharindu Munasinghe`,
+  return pageMetadata({
+    title: project.title,
     description: project.tagline,
-  };
+    path: `/projects/${project.slug}`,
+    image: null,
+  });
 }
 
 export default async function ProjectPage({
@@ -31,6 +36,29 @@ export default async function ProjectPage({
   if (index === -1) notFound();
 
   const project = projects[index];
+  const projectUrl = `${SITE_URL}/projects/${project.slug}`;
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": `${projectUrl}#work`,
+        name: project.title,
+        description: project.tagline,
+        url: projectUrl,
+        image: project.coverImage ? `${SITE_URL}${project.coverImage}` : undefined,
+        author: { "@id": `${SITE_URL}/#person` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Projects", item: `${SITE_URL}/projects` },
+          { "@type": "ListItem", position: 3, name: project.title, item: projectUrl },
+        ],
+      },
+    ],
+  };
   const details = [
     { label: "Role", value: project.role },
     { label: "Status", value: project.status },
@@ -41,6 +69,7 @@ export default async function ProjectPage({
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6 md:px-8 md:py-24">
       <ScrollProgressBar />
+      <JsonLd data={projectJsonLd} />
       <Link
         href="/projects"
         title="Back to Projects"

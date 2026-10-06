@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ArticlesPreview } from "@/components/ArticlesPreview";
 import { Button } from "@/components/Button";
 import { ContactPreview } from "@/components/ContactPreview";
@@ -7,10 +8,65 @@ import { HeroAura } from "@/components/HeroAura";
 import { HeroCipherClue } from "@/components/HeroCipherClue";
 import { HeroImageCycle } from "@/components/HeroImageCycle";
 import { HtmlComment } from "@/components/HtmlComment";
+import { JsonLd } from "@/components/JsonLd";
 import { ProjectsPreview } from "@/components/ProjectsPreview";
 import { ScrollFade } from "@/components/ScrollFade";
 import { Tag } from "@/components/Tag";
 import { HERO_CIPHER_MESSAGE } from "@/lib/heroCipherMessage";
+import { SITE, SITE_URL } from "@/lib/site";
+
+const HOME_TITLE = "Tharindu Munasinghe — UI/UX Engineer & Product Designer";
+
+export const metadata: Metadata = {
+  title: { absolute: HOME_TITLE },
+  description: SITE.shortDescription,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    locale: "en_US",
+    url: "/",
+    title: HOME_TITLE,
+    description: SITE.shortDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_TITLE,
+    description: SITE.shortDescription,
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: SITE.name,
+      jobTitle: SITE.jobTitle,
+      description: SITE.bio,
+      url: SITE_URL,
+      email: SITE.email,
+      worksFor: { "@type": "Organization", name: SITE.employer },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: SITE.location.city,
+        addressRegion: SITE.location.region,
+        addressCountry: SITE.location.country,
+      },
+      knowsAbout: [...SITE.knowsAbout],
+      sameAs: [...SITE.sameAs],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE.name,
+      url: SITE_URL,
+      inLanguage: "en",
+      publisher: { "@id": `${SITE_URL}/#person` },
+    },
+  ],
+};
 
 const roles = ["UI/UX Engineer", "Product Designer", "Front-end Engineer"];
 
@@ -30,6 +86,7 @@ export default function Home() {
       id="home"
       className="relative mx-auto w-full max-w-6xl flex-1 overflow-hidden px-4 py-12 sm:px-6 md:px-8 md:py-24"
     >
+      <JsonLd data={personJsonLd} />
       {/* One flex column, one gap value, for the hero block and every
           preview section below it — so the gap above the first preview
           section matches the gap between each section after it, instead of
