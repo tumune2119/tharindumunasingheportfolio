@@ -33,7 +33,7 @@ const HELP = [
   "whoami      who am i",
   "date        current date",
   "clear       clear the screen",
-  "exit        close notepad",
+  "exit        close CLI",
 ];
 
 const RUN_STEP_MS = 110;
@@ -68,7 +68,7 @@ export function IntroNotepad({
   isDark: boolean;
 }) {
   const [history, setHistory] = useState<Line[]>([
-    { kind: "out", text: "Notepad ready. Type 'help' for commands." },
+    { kind: "out", text: "CLI ready. Type 'help' for commands." },
   ]);
   const [input, setInput] = useState("");
   const [hintIndex, setHintIndex] = useState(0);
@@ -155,17 +155,17 @@ export function IntroNotepad({
   return (
     <div
       role="dialog"
-      aria-label="Notepad"
+      aria-label="CLI"
       className="hud-window fixed left-1/2 top-1/2 z-210 -translate-x-1/2 -translate-y-1/2"
       onClick={() => inputRef.current?.focus()}
     >
       <div className="hud-window-bar">
-        <span>NOTEPAD.TXT · MUNE</span>
+        <span>CLI · MUNE</span>
         <div className="hud-window-controls">
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close notepad"
+            aria-label="Close CLI"
             className="hud-window-btn"
           >
             ×

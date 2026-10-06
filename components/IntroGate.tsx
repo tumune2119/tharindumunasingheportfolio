@@ -235,7 +235,7 @@ function StartMenu({
       className="intro-menu absolute bottom-10 left-0 z-10 flex w-64 flex-col py-2"
     >
       <button type="button" role="menuitem" onClick={onNotepad} className={itemClass}>
-        <span>Notepad</span>
+        <span>CLI</span>
         <span aria-hidden="true" className="text-accent">&gt;_</span>
       </button>
       <button type="button" role="menuitem" onClick={onTheme} className={itemClass}>
