@@ -501,13 +501,6 @@ html[data-ui="hud"] {
   --hud-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
-html[data-ui="hud"] body {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
 /*
   Panels: chamfered on the top-left and bottom-right. The corner brackets are
   background gradients rather than pseudo-elements, so panels never change
@@ -621,6 +614,128 @@ html[data-ui="hud"] nav a.relative:hover,
 html[data-ui="hud"] a[aria-current="page"] {
   color: var(--primary);
   text-shadow: 0 0 10px color-mix(in srgb, var(--primary) var(--hud-glow), transparent);
+}
+
+/*
+  Permanent HUD motion. Every animation here is decorative and falls back to
+  the global reduced-motion block, which collapses it to a single frame.
+*/
+.hud-grid {
+  inset: -40px;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: hud-grid-drift 24s linear infinite;
+}
+
+@keyframes hud-grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(40px, 40px, 0);
+  }
+}
+
+.hud-scanline {
+  top: -120px;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--primary) 9%, transparent) 70%,
+    color-mix(in srgb, var(--primary) 18%, transparent)
+  );
+  animation: hud-scan 7s linear infinite;
+}
+
+@keyframes hud-scan {
+  to {
+    transform: translateY(calc(100vh + 240px));
+  }
+}
+
+.hud-switch {
+  border-radius: 0;
+  background: var(--surface);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+.hud-switch-thumb {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+.hud-label {
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--foreground);
+}
+
+@keyframes hud-flicker {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  24%,
+  55% {
+    opacity: 0.6;
+  }
+}
+
+html[data-ui="hud"] h1 {
+  animation: hud-flicker 1.2s steps(1, end) 1 both;
+}
+
+@keyframes hud-caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+html[data-ui="hud"] .text-overline::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.9em;
+  margin-left: 0.35em;
+  vertical-align: -0.1em;
+  background: var(--accent);
+  animation: hud-caret 1s steps(1, end) infinite;
+}
+
+html[data-ui="hud"] a.rounded-2xl,
+html[data-ui="hud"] a.rounded-xl {
+  transition: transform 500ms ease-in-out;
+}
+
+html[data-ui="hud"] a.rounded-2xl:hover,
+html[data-ui="hud"] a.rounded-xl:hover {
+  transform: translateY(-3px);
+}
+
+html[data-ui="hud"] .rounded-full:hover {
+  text-shadow:
+    1px 0 color-mix(in srgb, var(--accent) 45%, transparent),
+    -1px 0 color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
 /* HUD viewport chrome (components/HudFrame.tsx). Only rendered while the HUD is on. */

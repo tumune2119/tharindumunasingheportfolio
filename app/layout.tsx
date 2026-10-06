@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Rajdhani } from "next/font/google";
 import { EasterEgg } from "@/components/EasterEgg";
 import { HudFrame } from "@/components/HudFrame";
+import { ThemeGlitch } from "@/components/ThemeGlitch";
 import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
 import { Navbar } from "@/components/Navbar";
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // scroll-behavior: auto !important for that case.
     <html
       lang="en"
+      data-ui="hud"
       className={`${inter.variable} ${rajdhani.variable} ${jetbrainsMono.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
@@ -83,7 +85,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Runs before first paint so the stored theme applies immediately
             instead of flashing the default light/dark theme first. */}
         <InlineScript html='(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()' />
-        <InlineScript html='(function(){try{if(localStorage.getItem("ui-style")==="hud")document.documentElement.setAttribute("data-ui","hud")}catch(e){}})()' />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/* Sits behind the Navbar (z-40 < Navbar's z-50) so content
@@ -100,6 +101,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
         <EasterEgg />
         <HudFrame />
+        <ThemeGlitch />
         <Analytics />
       </body>
     </html>

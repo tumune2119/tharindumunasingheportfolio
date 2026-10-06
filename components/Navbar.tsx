@@ -4,7 +4,6 @@ import { DownloadCVButton } from "./DownloadCVButton";
 import { MobileMenu } from "./MobileMenu";
 import { NavLinksList } from "./NavLinksList";
 import { ThemeToggle } from "./ThemeToggle";
-import { UiStyleToggle } from "./UiStyleToggle";
 
 // Shared between the desktop pill nav and the mobile dropdown so both stay in sync.
 const links = [
@@ -37,7 +36,6 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           <NavLinksList links={links} />
           <ThemeToggle />
-          <UiStyleToggle />
           <DownloadCVButton className="px-5 py-2.5 text-body-sm" />
         </div>
 
@@ -45,7 +43,6 @@ export function Navbar() {
             live inside the MobileMenu dropdown instead. */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <UiStyleToggle />
           <MobileMenu links={links} />
         </div>
       </div>

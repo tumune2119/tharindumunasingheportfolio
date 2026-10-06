@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useUiStyle } from "@/lib/useUiStyle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Colombo",
@@ -19,54 +18,58 @@ function sectionLabel(pathname: string) {
   return pathname.split("/")[1]?.toUpperCase() || "HOME";
 }
 
-// Decorative viewport chrome for the HUD style. Only rendered while the HUD is
-// on, and hidden below md so it never covers content on phones.
+// Viewport chrome for the HUD: a drifting grid behind the page, a scan line
+// sweeping down, corner brackets and live readouts. All decorative, and the
+// readouts are hidden below md so they never cover content on phones.
 export function HudFrame() {
-  const { style } = useUiStyle();
   const pathname = usePathname();
   const [clock, setClock] = useState("");
   const [scrollPercent, setScrollPercent] = useState(0);
-  const isHud = style === "hud";
 
   useEffect(() => {
-    if (!isHud) return;
     const id = setInterval(() => setClock(clockFormat.format(new Date())), 1000);
     return () => clearInterval(id);
-  }, [isHud]);
+  }, []);
 
   useEffect(() => {
-    if (!isHud) return;
     function onScroll() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       setScrollPercent(max > 0 ? Math.round((window.scrollY / max) * 100) : 0);
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHud]);
-
-  if (!isHud) return null;
+  }, []);
 
   return (
-    <div aria-hidden="true" className="hud-frame pointer-events-none fixed inset-0 z-[60] hidden md:block">
-      <span className="hud-bracket left-3 top-3 border-l-2 border-t-2" />
-      <span className="hud-bracket right-3 top-3 border-r-2 border-t-2" />
-      <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
-      <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
+    <>
+      <div aria-hidden="true" className="hud-grid pointer-events-none fixed inset-0 -z-10" />
 
-      <div className="hud-readout absolute right-7 top-5 flex items-center gap-2">
-        <span className="hud-status-dot" />
-        <span className="text-success">ONLINE</span>
-      </div>
+      <div
+        aria-hidden="true"
+        className="hud-frame pointer-events-none fixed inset-0 z-60 overflow-hidden"
+      >
+        <div className="hud-scanline absolute inset-x-0" />
 
-      <div className="hud-readout absolute bottom-5 left-7">
-        <p>LAT 06.9271° N / LON 79.8612° E</p>
-        <p className="text-accent">COLOMBO {clock}</p>
-      </div>
+        <span className="hud-bracket left-3 top-3 border-l-2 border-t-2" />
+        <span className="hud-bracket right-3 top-3 border-r-2 border-t-2" />
+        <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
+        <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
-      <div className="hud-readout absolute bottom-5 right-7 text-right">
-        <p className="text-accent">{sectionLabel(pathname)}</p>
-        <p>SCROLL {String(scrollPercent).padStart(3, "0")}%</p>
+        <div className="hud-readout absolute right-7 top-5 hidden items-center gap-2 md:flex">
+          <span className="hud-status-dot" />
+          <span className="text-success">ONLINE</span>
+        </div>
+
+        <div className="hud-readout absolute bottom-5 left-7 hidden md:block">
+          <p>LAT 06.9271° N / LON 79.8612° E</p>
+          <p className="text-accent">COLOMBO {clock}</p>
+        </div>
+
+        <div className="hud-readout absolute bottom-5 right-7 hidden text-right md:block">
+          <p className="text-accent">{sectionLabel(pathname)}</p>
+          <p>SCROLL {String(scrollPercent).padStart(3, "0")}%</p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

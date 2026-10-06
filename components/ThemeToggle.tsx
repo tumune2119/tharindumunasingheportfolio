@@ -1,30 +1,39 @@
 "use client";
 
 import { useTheme } from "@/lib/useTheme";
+import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 
+// A chamfered HUD switch: a square track with a mono label, and a chamfered
+// thumb that slides to the other side and carries the sun or moon icon. The
+// press also fires the theme-switch event, which plays the glitch overlay.
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
+  const label = isDark ? "Switch to light mode" : "Switch to dark mode";
 
-  // A pill track with a sliding circular thumb; the thumb's icon and
-  // position both reflect the current theme.
+  function handlePress() {
+    toggleTheme();
+    window.dispatchEvent(new Event(THEME_SWITCH_EVENT));
+  }
+
   return (
     <button
       type="button"
-      onClick={toggleTheme}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      onClick={handlePress}
+      aria-label={label}
+      title={label}
       aria-pressed={isDark}
-      className="relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border border-foreground/10 bg-surface px-1 transition-all duration-500 ease-in-out active:scale-95"
+      className={`hud-switch relative inline-flex h-8 w-24 shrink-0 items-center transition-all duration-500 ease-in-out active:scale-95 ${
+        isDark ? "pl-2 pr-10" : "pl-10 pr-2"
+      }`}
     >
       <span
-        className={`relative flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform duration-500 ease-in-out ${
-          isDark ? "translate-x-6" : "translate-x-0"
+        aria-hidden="true"
+        className={`hud-switch-thumb absolute left-1 top-1 flex h-6 w-7 items-center justify-center transition-transform duration-500 ease-in-out ${
+          isDark ? "translate-x-15" : "translate-x-0"
         }`}
       >
-        {/* Both icons stay mounted and crossfade + morph via opacity/scale/
-            rotate — swapping them outright (conditional render) would just
-            cut instantly with no transition at all. */}
+        {/* Both icons stay mounted and crossfade, so the change animates. */}
         <SunIcon
           className={`absolute h-3.5 w-3.5 transition-all duration-500 ease-in-out ${
             isDark ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"
@@ -36,6 +45,7 @@ export function ThemeToggle() {
           }`}
         />
       </span>
+      <span className="hud-label">{isDark ? "Dark" : "Light"}</span>
     </button>
   );
 }
