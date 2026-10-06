@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { EasterEgg } from "@/components/EasterEgg";
 import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PageTransition>{children}</PageTransition>
         <Footer />
         <EasterEgg />
+        <Analytics />
       </body>
     </html>
   );
