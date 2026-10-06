@@ -401,6 +401,10 @@ function LoginWindow({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // Inputs stay read-only until they're focused. Browsers only autofill fields
+  // they can write to, so this keeps saved logins out, and the fields stay
+  // empty every time the window opens.
+  const [editable, setEditable] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -426,16 +430,22 @@ function LoginWindow({
             </button>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4 p-6">
+        <form
+          onSubmit={handleSubmit}
+          autoComplete="off"
+          className="space-y-4 p-6"
+        >
           <p className="hud-label">// Restricted folder</p>
           <label className="block">
             <span className="text-caption uppercase tracking-wider">Username</span>
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
+              onFocus={() => setEditable(true)}
+              readOnly={!editable}
+              name="intro-login-user"
               autoComplete="off"
               spellCheck={false}
-              autoFocus
               className="intro-input mt-1 w-full px-3 py-2"
             />
           </label>
@@ -445,7 +455,10 @@ function LoginWindow({
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              autoComplete="off"
+              onFocus={() => setEditable(true)}
+              readOnly={!editable}
+              name="intro-login-secret"
+              autoComplete="new-password"
               className="intro-input mt-1 w-full px-3 py-2"
             />
           </label>
