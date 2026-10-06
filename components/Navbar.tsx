@@ -21,7 +21,8 @@ export function Navbar() {
   return (
     <header className="sticky top-4 z-50 px-4 md:px-6">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-        <Link href="/" aria-label="Tharindu Munasinghe - Home" title="Home">
+        {/* Logo hidden for now. Remove the `hidden` class to bring it back. */}
+        <Link href="/" aria-label="Tharindu Munasinghe - Home" title="Home" className="hidden">
           <Image
             src="/logo.svg"
             alt="Tharindu Munasinghe"
