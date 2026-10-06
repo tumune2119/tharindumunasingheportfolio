@@ -590,6 +590,39 @@ html[data-ui="hud"] .text-overline {
   letter-spacing: 0.18em;
 }
 
+/*
+  Nav states. The active link is marked by aria-current, and the sliding
+  indicator is the nav's first aria-hidden span. The indicator uses a tinted
+  fill, an inset outline and a bottom tick so it reads in light mode too, where
+  the classic background-coloured pill nearly disappears.
+*/
+html[data-ui="hud"] {
+  --hud-glow: 18%;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-ui="hud"]:not([data-theme="light"]) {
+    --hud-glow: 45%;
+  }
+}
+
+html[data-ui="hud"][data-theme="dark"] {
+  --hud-glow: 45%;
+}
+
+html[data-ui="hud"] nav > span[aria-hidden="true"] {
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent),
+    inset 0 -2px 0 var(--primary);
+}
+
+html[data-ui="hud"] nav a.relative:hover,
+html[data-ui="hud"] a[aria-current="page"] {
+  color: var(--primary);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--primary) var(--hud-glow), transparent);
+}
+
 /* HUD viewport chrome (components/HudFrame.tsx). Only rendered while the HUD is on. */
 .hud-readout {
   font-family: var(--hud-mono);
