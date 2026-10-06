@@ -1115,6 +1115,41 @@ html[data-ui="hud"] .rounded-full:hover {
   box-shadow: inset 0 0 0 1px var(--primary);
 }
 
+/*
+  First-visit intro (components/IntroGate.tsx). While the session's intro is
+  pending, the site underneath is hidden so only the intro shows. The intro
+  is a desktop with a grid wallpaper, selectable icons and a taskbar.
+*/
+html[data-intro="pending"] body > :not(#intro-root) {
+  visibility: hidden;
+}
+
+.intro-desktop {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.intro-icon {
+  color: var(--foreground);
+}
+
+.intro-icon:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.intro-icon[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.intro-taskbar {
+  background: var(--card);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
 .hud-tip {
   max-width: 16rem;
   padding: 0.5rem 0.75rem;

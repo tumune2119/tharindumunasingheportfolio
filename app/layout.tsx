@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Rajdhani } from "next/font/google";
 import { EasterEgg } from "@/components/EasterEgg";
 import { HudFrame } from "@/components/HudFrame";
+import { IntroGate } from "@/components/IntroGate";
 import { ThemeGlitch } from "@/components/ThemeGlitch";
 import { Footer } from "@/components/Footer";
 import { InlineScript } from "@/components/InlineScript";
@@ -85,6 +86,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Runs before first paint so the stored theme applies immediately
             instead of flashing the default light/dark theme first. */}
         <InlineScript html='(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()' />
+        {/* Intro gate. A reload skips the first-visit intro and lands on home;
+            a fresh session with no intro seen yet hides the site until
+            IntroGate plays it (see components/IntroGate.tsx). */}
+        <InlineScript html='(function(){try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){sessionStorage.setItem("intro-seen","1");if(location.pathname!=="/")location.replace("/");return}if(!sessionStorage.getItem("intro-seen"))document.documentElement.setAttribute("data-intro","pending")}catch(e){}})()' />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/* Sits behind the Navbar (z-40 < Navbar's z-50) so content
@@ -101,6 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
         <EasterEgg />
         <HudFrame />
+        <IntroGate />
         <ThemeGlitch />
         <Analytics />
       </body>
