@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { ThemeToggle } from "./ThemeToggle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
@@ -63,14 +64,6 @@ export function HudFrame() {
         <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
         <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
-        {/* Level with the top bracket arms, and clear of the logo below it. */}
-        <div className="hud-readout absolute left-7 top-5 hidden md:block">
-          <p>
-            <span className="text-accent">DIR: //MUNE// </span>
-            <span className="text-foreground">{sitePath(pathname)}</span>
-          </p>
-        </div>
-
         <div className="hud-readout absolute right-7 top-5 hidden items-center gap-2 md:flex">
           <span className="hud-status-dot" />
           <span className="text-success">ONLINE</span>
@@ -85,6 +78,25 @@ export function HudFrame() {
           <p className="text-accent">{sectionLabel(pathname)}</p>
           <p>SCROLL {String(scrollPercent).padStart(3, "0")}%</p>
         </div>
+      </div>
+
+      {/* Top-left path readout. It sits outside the aria-hidden frame because
+          "MUNE" is a button: clicking it reopens the intro desktop at its
+          Start menu. Level with the top bracket arms, clear of the logo. */}
+      <div className="hud-readout fixed left-7 top-5 z-60 hidden md:block">
+        <p>
+          <span className="text-accent">DIR: //</span>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(INTRO_OPEN_EVENT))}
+            className="hud-link text-accent"
+            title="Back to the start menu"
+          >
+            MUNE
+          </button>
+          <span className="text-accent">// </span>
+          <span className="text-foreground">{sitePath(pathname)}</span>
+        </p>
       </div>
 
       {/* Sits under the ONLINE tag in the top-right corner. The frame above

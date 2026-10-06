@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { IntroNotepad } from "@/components/IntroNotepad";
+import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useTheme } from "@/lib/useTheme";
@@ -93,6 +94,19 @@ export function IntroGate() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [phase, menuOpen, notepadOpen]);
+
+  // The top-left readout reopens the desktop with its Start menu open, so the
+  // visitor can get back to Notepad or the theme switch without a refresh.
+  useEffect(() => {
+    function reopen() {
+      setShutdown(false);
+      setNotepadOpen(false);
+      setMenuOpen(true);
+      setPhase("desktop");
+    }
+    window.addEventListener(INTRO_OPEN_EVENT, reopen);
+    return () => window.removeEventListener(INTRO_OPEN_EVENT, reopen);
+  }, []);
 
   // Same theme switch as the header toggle, including the glitch overlay.
   function handleToggleTheme() {

@@ -1145,6 +1145,28 @@ html[data-intro="pending"] body > :not(#intro-root) {
   box-shadow: inset 0 0 0 1px var(--primary);
 }
 
+/* A readout word that acts as a button: looks like the text around it, and
+   underlines on hover so it reads as clickable. */
+.hud-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline transparent;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+  transition: text-decoration-color 140ms ease-out;
+}
+
+.hud-link:hover,
+.hud-link:focus-visible {
+  text-decoration-color: currentColor;
+  outline: none;
+}
+
 .intro-menu {
   background: var(--card);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent);
