@@ -750,35 +750,45 @@ html[data-ui="hud"] .rounded-full:hover {
 
 /* Themed scrollbars for the HUD: a thin accent thumb with chamfered ends on a
    hairline track, instead of the browser default. */
-/* Applies to the page and to any scrolling element inside it (the thumbnail
-   strip, for example). The step arrows at each end are hidden. */
+/* Thin green HUD scrollbars for the page and any scrolling element inside it
+   (the thumbnail strip, for example). The root is matched by the bare
+   attribute selector, because a descendant selector would skip the page's
+   own scrollbar. The step arrows at each end are hidden. */
+[data-ui="hud"],
 [data-ui="hud"] * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--primary) 55%, transparent) transparent;
+  scrollbar-color: var(--primary) transparent;
 }
 
-[data-ui="hud"] ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+[data-ui="hud"]::-webkit-scrollbar,
+[data-ui="hud"] *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-[data-ui="hud"] ::-webkit-scrollbar-track {
+[data-ui="hud"]::-webkit-scrollbar-track,
+[data-ui="hud"] *::-webkit-scrollbar-track {
   background: transparent;
-  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
-[data-ui="hud"] ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 55%, transparent);
-  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
-}
-
-[data-ui="hud"] ::-webkit-scrollbar-thumb:hover {
+[data-ui="hud"]::-webkit-scrollbar-thumb,
+[data-ui="hud"] *::-webkit-scrollbar-thumb {
   background: var(--primary);
+  opacity: 0.7;
 }
 
-[data-ui="hud"] ::-webkit-scrollbar-button,
-[data-ui="hud"] ::-webkit-scrollbar-corner {
+[data-ui="hud"]::-webkit-scrollbar-thumb:hover,
+[data-ui="hud"] *::-webkit-scrollbar-thumb:hover {
+  opacity: 1;
+}
+
+[data-ui="hud"]::-webkit-scrollbar-button,
+[data-ui="hud"] *::-webkit-scrollbar-button,
+[data-ui="hud"]::-webkit-scrollbar-corner,
+[data-ui="hud"] *::-webkit-scrollbar-corner {
   display: none;
+  width: 0;
+  height: 0;
   background: transparent;
 }
 
