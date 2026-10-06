@@ -600,6 +600,24 @@ html[data-ui="hud"] .text-overline {
   color: var(--muted-foreground);
 }
 
+.hud-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--success);
+  animation: hud-blink 1.6s steps(2, jump-none) infinite;
+}
+
+@keyframes hud-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
 .hud-bracket {
   position: absolute;
   width: 22px;

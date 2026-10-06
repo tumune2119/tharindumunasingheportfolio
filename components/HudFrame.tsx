@@ -53,6 +53,11 @@ export function HudFrame() {
       <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
       <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
+      <div className="hud-readout absolute right-7 top-5 flex items-center gap-2">
+        <span className="hud-status-dot" />
+        <span className="text-success">ONLINE</span>
+      </div>
+
       <div className="hud-readout absolute bottom-5 left-7">
         <p>LAT 06.9271° N / LON 79.8612° E</p>
         <p className="text-accent">COLOMBO {clock}</p>
