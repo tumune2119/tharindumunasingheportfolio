@@ -534,6 +534,23 @@ html[data-ui="hud"] .rounded-2xl {
 }
 
 /*
+  Smaller cards (project previews, article list items, form fields) get a
+  plain chamfer on the same two corners, with no brackets, so the cover image
+  is cut to the same shape as the card.
+*/
+html[data-ui="hud"] .rounded-xl {
+  border-radius: 0;
+  clip-path: polygon(
+    var(--hud-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut)),
+    calc(100% - var(--hud-cut)) 100%,
+    0 100%,
+    0 var(--hud-cut)
+  );
+}
+
+/*
   Pills, buttons and tags become chamfered mono labels. Dots, avatars and
   icon-sized circles keep their round shape, so they're excluded by size class.
 */

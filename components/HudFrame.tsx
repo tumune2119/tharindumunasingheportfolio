@@ -47,7 +47,7 @@ export function HudFrame() {
   if (!isHud) return null;
 
   return (
-    <div aria-hidden="true" className="hud-frame pointer-events-none fixed inset-0 z-30 hidden md:block">
+    <div aria-hidden="true" className="hud-frame pointer-events-none fixed inset-0 z-[60] hidden md:block">
       <span className="hud-bracket left-3 top-3 border-l-2 border-t-2" />
       <span className="hud-bracket right-3 top-3 border-r-2 border-t-2" />
       <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
