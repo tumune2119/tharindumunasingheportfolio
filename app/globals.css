@@ -822,6 +822,12 @@ html[data-ui="hud"] .rounded-full:hover {
 
 [data-ui="hud"] :is(a, button):hover {
   scale: 1;
+}
+
+/* Cards are links that lift on hover. Only links drop the lift: buttons
+   such as the carousel arrows use translate to centre themselves, so
+   clearing it on them would make them jump on hover. */
+[data-ui="hud"] a:hover {
   translate: none;
 }
 
