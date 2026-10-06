@@ -1005,6 +1005,52 @@ html[data-ui="hud"] .rounded-full:hover {
   color: var(--background);
 }
 
+/*
+  Site footer (components/Footer.tsx). Set in the HUD mono readout style so it
+  finishes the frame's bottom edge. Bottom padding clears the fixed corner
+  readouts, which sit on top of the page at md and up.
+*/
+.hud-footer {
+  padding-bottom: 1.5rem;
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@media (min-width: 768px) {
+  .hud-footer {
+    padding-bottom: 6rem;
+  }
+}
+
+.hud-footer-link {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 45%, transparent);
+  transition-duration: 140ms;
+}
+
+.hud-footer-link:hover,
+.hud-footer-link:focus-visible {
+  background: var(--primary);
+  color: var(--background);
+}
+
 .hud-tip {
   max-width: 16rem;
   padding: 0.5rem 0.75rem;
