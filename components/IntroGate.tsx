@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { IntroNotepad } from "@/components/IntroNotepad";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
@@ -53,6 +53,8 @@ export function IntroGate() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notepadOpen, setNotepadOpen] = useState(false);
   const [shutdown, setShutdown] = useState(false);
+  const [readmeOpen, setReadmeOpen] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
@@ -164,16 +166,27 @@ export function IntroGate() {
     >
       <div className="relative flex-1">
         {phase === "desktop" && (
-          <DesktopFolder onOpen={() => setPhase("folder")} />
-        )}
-
-        {phase === "folder" && (
-          <FolderWindow
-            onClose={() => setPhase("desktop")}
-            onRun={() => setPhase("terminal")}
-            onOpenPage={openPage}
+          <DesktopFolder
+            onOpen={() => setPhase("folder")}
+            onOpenReadme={() => setReadmeOpen(true)}
           />
         )}
+
+        {phase === "folder" &&
+          (unlocked ? (
+            <FolderWindow
+              onClose={() => setPhase("desktop")}
+              onRun={() => setPhase("terminal")}
+              onOpenPage={openPage}
+            />
+          ) : (
+            <LoginWindow
+              onClose={() => setPhase("desktop")}
+              onUnlock={() => setUnlocked(true)}
+            />
+          ))}
+
+        {readmeOpen && <ReadmeWindow onClose={() => setReadmeOpen(false)} />}
 
         {phase === "terminal" && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
@@ -323,19 +336,157 @@ function DesktopIcon({
   );
 }
 
-function DesktopFolder({ onOpen }: { onOpen: () => void }) {
-  const [selected, setSelected] = useState(false);
+function DesktopFolder({
+  onOpen,
+  onOpenReadme,
+}: {
+  onOpen: () => void;
+  onOpenReadme: () => void;
+}) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   return (
     <div className="absolute left-6 top-6 md:left-10 md:top-10">
-      <DesktopIcon
-        label="MUNE"
-        selected={selected}
-        onSelect={() => setSelected(true)}
-        onOpen={onOpen}
-      >
-        <FolderIcon className="h-14 w-14 text-primary" />
-      </DesktopIcon>
+      <div className="flex gap-4">
+        <DesktopIcon
+          label="MUNE"
+          selected={selectedId === "folder"}
+          onSelect={() => setSelectedId("folder")}
+          onOpen={onOpen}
+        >
+          <FolderIcon className="h-14 w-14 text-primary" />
+        </DesktopIcon>
+        <DesktopIcon
+          label="README.TXT"
+          selected={selectedId === "readme"}
+          onSelect={() => setSelectedId("readme")}
+          onOpen={onOpenReadme}
+        >
+          <ReadmeIcon className="h-14 w-14 text-primary" />
+        </DesktopIcon>
+      </div>
+      <p className="hud-label mt-6 max-w-xs">Double-click MUNE to open</p>
+    </div>
+  );
+}
+
+function ReadmeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinejoin="round"
+      strokeLinecap="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 4h18l8 8v32H12z" />
+      <path d="M30 4v8h8M18 22h12M18 28h12M18 34h8" />
+    </svg>
+  );
+}
+
+// Credentials for the MUNE folder. The README on the desktop gives them out,
+// so this gate is for fun, not real security.
+const FOLDER_LOGIN = { username: "Det.MuNe", password: "password123" };
+
+function LoginWindow({
+  onClose,
+  onUnlock,
+}: {
+  onClose: () => void;
+  onUnlock: () => void;
+}) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const nameMatches =
+      username.trim().toLowerCase() === FOLDER_LOGIN.username.toLowerCase();
+    if (nameMatches && password === FOLDER_LOGIN.password) {
+      setError("");
+      onUnlock();
+      return;
+    }
+    setError("ACCESS DENIED. The README on the desktop has the details.");
+    setPassword("");
+  }
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window">
+        <div className="hud-window-bar">
+          <span>MUNE · LOGIN</span>
+          <div className="hud-window-controls">
+            <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
+              ×
+            </button>
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 p-6">
+          <p className="hud-label">// Restricted folder</p>
+          <label className="block">
+            <span className="text-caption uppercase tracking-wider">Username</span>
+            <input
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              autoFocus
+              className="intro-input mt-1 w-full px-3 py-2"
+            />
+          </label>
+          <label className="block">
+            <span className="text-caption uppercase tracking-wider">Password</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="off"
+              className="intro-input mt-1 w-full px-3 py-2"
+            />
+          </label>
+          {error && (
+            <p role="alert" className="intro-error text-caption">
+              {error}
+            </p>
+          )}
+          <button type="submit" className="hud-cta">
+            Log in
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function ReadmeWindow({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window">
+        <div className="hud-window-bar">
+          <span>README.TXT</span>
+          <div className="hud-window-controls">
+            <button type="button" onClick={onClose} aria-label="Close README" className="hud-window-btn">
+              ×
+            </button>
+          </div>
+        </div>
+        <div className="space-y-3 p-6 text-caption leading-relaxed">
+          <p>MUNE is locked. Here is how to get in.</p>
+          <p>
+            Username: <span className="text-primary">Det.MuNe</span>
+          </p>
+          <p>
+            Password: <span className="text-primary">password123</span>
+          </p>
+          <p className="text-muted-foreground">Yes, really. It is a portfolio, not a bank.</p>
+        </div>
+      </div>
     </div>
   );
 }
