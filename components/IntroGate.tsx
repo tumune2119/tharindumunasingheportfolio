@@ -381,29 +381,68 @@ function Taskbar({
   );
 }
 
-const SHORTCUTS = [
-  { label: "EXPERIENCE", href: "/experience" },
-  { label: "PROJECTS", href: "/projects" },
-  { label: "ARTICLES", href: "/articles" },
-  { label: "CONTACT", href: "/contact" },
+type ShortcutKind = "experience" | "projects" | "articles" | "contact";
+
+const SHORTCUTS: { label: string; href: string; kind: ShortcutKind }[] = [
+  { label: "EXPERIENCE", href: "/experience", kind: "experience" },
+  { label: "PROJECTS", href: "/projects", kind: "projects" },
+  { label: "ARTICLES", href: "/articles", kind: "articles" },
+  { label: "CONTACT", href: "/contact", kind: "contact" },
 ];
 
-// Plain square with an arrow, so the shortcuts read as links, not files.
-function ShortcutIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <rect x="6" y="6" width="36" height="36" />
-      <path d="M18 30l12-12M20 18h10v10" />
-    </svg>
-  );
+// One glyph per destination, so each shortcut is recognisable at a glance:
+// a briefcase for experience, a grid for projects, a page with lines for
+// articles and an envelope for contact.
+function ShortcutIcon({
+  kind,
+  className,
+}: {
+  kind: ShortcutKind;
+  className?: string;
+}) {
+  const common = {
+    viewBox: "0 0 48 48",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinejoin: "round" as const,
+    strokeLinecap: "round" as const,
+    className,
+    "aria-hidden": true,
+  };
+
+  switch (kind) {
+    case "experience":
+      return (
+        <svg {...common}>
+          <rect x="6" y="14" width="36" height="26" />
+          <path d="M18 14V9h12v5M6 25h36" />
+        </svg>
+      );
+    case "projects":
+      return (
+        <svg {...common}>
+          <rect x="6" y="6" width="15" height="15" />
+          <rect x="27" y="6" width="15" height="15" />
+          <rect x="6" y="27" width="15" height="15" />
+          <rect x="27" y="27" width="15" height="15" />
+        </svg>
+      );
+    case "articles":
+      return (
+        <svg {...common}>
+          <path d="M24 12c-5-3-12-4-18-2v28c6-2 13-1 18 2 5-3 12-4 18-2V10c-6-2-13-1-18 2z" />
+          <path d="M24 12v28" />
+        </svg>
+      );
+    case "contact":
+      return (
+        <svg {...common}>
+          <rect x="6" y="11" width="36" height="26" />
+          <path d="M6 13l18 14 18-14" />
+        </svg>
+      );
+  }
 }
 
 function FolderWindow({
@@ -445,7 +484,7 @@ function FolderWindow({
               onSelect={() => setSelectedId(shortcut.href)}
               onOpen={() => onOpenPage(shortcut.href)}
             >
-              <ShortcutIcon className="h-12 w-12 text-primary" />
+              <ShortcutIcon kind={shortcut.kind} className="h-12 w-12 text-primary" />
             </DesktopIcon>
           ))}
         </div>
