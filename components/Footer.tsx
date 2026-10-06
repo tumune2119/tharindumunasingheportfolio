@@ -19,11 +19,13 @@ const socialLinks = [
   },
 ];
 
-// Build identity for the footer readout. The version is the branch's commit
-// count, set in next.config.ts at build time. The UI number is which interface
-// this is: 2 is the HUD.
-const buildNumber = process.env.SITE_BUILD_NUMBER ?? "dev";
+// Version format is vPORTFOLIO.UI.BUILD. PORTFOLIO is the portfolio generation
+// (3), UI is the interface generation (2 = the HUD), and BUILD is the branch's
+// commit count, set in next.config.ts at build time.
+const PORTFOLIO_VERSION = 3;
 const UI_VERSION = 2;
+const buildNumber = process.env.SITE_BUILD_NUMBER ?? "dev";
+const siteVersion = `v${PORTFOLIO_VERSION}.${UI_VERSION}.${buildNumber}`;
 
 // Rendered once in the root layout (outside PageTransition), so it stays
 // put across navigations instead of re-animating on every route change.
@@ -38,8 +40,8 @@ export function Footer() {
           <span className="text-accent">SYS // </span>
           © {year} Tharindu Munasinghe. All rights reserved.
         </p>
-        <p className="text-foreground/70">
-          PORTFOLIO 3 · UI {UI_VERSION} · v{buildNumber}
+        <p className="text-foreground/70" title="Portfolio · UI · build">
+          {siteVersion}
         </p>
         <nav className="flex items-center gap-2">
           {socialLinks.map((link) => (
