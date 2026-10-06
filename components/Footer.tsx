@@ -1,5 +1,4 @@
 import Link from "next/link";
-import packageJson from "@/package.json";
 import { MailIcon, LinkedinIcon, PhoneIcon } from "./icons";
 
 const socialLinks = [
@@ -20,11 +19,11 @@ const socialLinks = [
   },
 ];
 
-// Build identity for the footer readout. Vercel sets these on every
-// deployment, so a live build shows the exact branch and commit it was made
-// from. Local runs have no Git env, so they show "local".
-const buildRef = process.env.VERCEL_GIT_COMMIT_REF ?? "local";
-const buildCommit = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "dev";
+// Build identity for the footer readout. The version is the branch's commit
+// count, set in next.config.ts at build time. The UI number is which interface
+// this is: 2 is the HUD.
+const buildNumber = process.env.SITE_BUILD_NUMBER ?? "dev";
+const UI_VERSION = 2;
 
 // Rendered once in the root layout (outside PageTransition), so it stays
 // put across navigations instead of re-animating on every route change.
@@ -40,7 +39,7 @@ export function Footer() {
           © {year} Tharindu Munasinghe. All rights reserved.
         </p>
         <p className="text-foreground/70">
-          BUILD v{packageJson.version} · {buildRef}@{buildCommit}
+          PORTFOLIO 3 · UI {UI_VERSION} · v{buildNumber}
         </p>
         <nav className="flex items-center gap-2">
           {socialLinks.map((link) => (
