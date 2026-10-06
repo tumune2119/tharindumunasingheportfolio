@@ -748,6 +748,36 @@ html[data-ui="hud"] .rounded-full:hover {
   color: var(--muted-foreground);
 }
 
+/* Themed scrollbars for the HUD: a thin accent thumb with chamfered ends on a
+   hairline track, instead of the browser default. */
+html[data-ui="hud"] {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--primary) 55%, transparent) transparent;
+}
+
+html[data-ui="hud"]::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-ui="hud"]::-webkit-scrollbar-track {
+  background: transparent;
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+html[data-ui="hud"]::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 55%, transparent);
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+}
+
+html[data-ui="hud"]::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+html[data-ui="hud"]::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .hud-status-dot {
   width: 6px;
   height: 6px;
