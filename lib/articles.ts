@@ -23,6 +23,9 @@ export type ArticleImage = {
   src: string;
   alt: string;
   caption?: string;
+  // Pixel size of the source file, so the figure reserves its space before it loads.
+  width: number;
+  height: number;
 };
 
 export type Article = {
@@ -52,6 +55,8 @@ export const articles: Article[] = [
         images: [
           {
             src: "/work/qr-generator-article/img-55.png",
+            width: 8415,
+            height: 7769,
             alt: "Grid of the redesigned QR generator screens, from the homepage through the PDF creation states",
             caption: "The full set of redesigned screens, from the homepage through the PDF creation states.",
           },
@@ -72,16 +77,22 @@ export const articles: Article[] = [
         images: [
           {
             src: "/work/qr-generator-article/img-53.png",
+            width: 1810,
+            height: 7411,
             alt: "Annotated homepage audit with numbered callouts on the hero, how-it-works, features, QR types, FAQ and footer",
             caption: "Homepage audit: each numbered annotation maps to one of the ten issues found on the live page.",
           },
           {
             src: "/work/qr-generator-article/img-54.png",
+            width: 1810,
+            height: 8436,
             alt: "Annotated PDF creation audit across the Step 2 screens, with issue numbers beside each captured state",
             caption: "PDF creation audit: thirteen issues across Step 2, annotated on each captured screen.",
           },
           {
             src: "/work/qr-generator-article/img-35.png",
+            width: 11033,
+            height: 10400,
             alt: "Reference scan of QR code tools and SaaS sites, showing hero, trust and pricing patterns side by side",
             caption: "Reference scan: free QR tools, QR platforms and SaaS sites, compared for hero, trust and pricing patterns.",
           },
@@ -102,11 +113,15 @@ export const articles: Article[] = [
         images: [
           {
             src: "/work/qr-generator-article/img-56.png",
+            width: 1120,
+            height: 1816,
             alt: "Task 1 design rationale board listing eight homepage decisions, each with its problem, change and reason",
             caption: "Task 1 design rationale: eight decisions, each with the problem, the change and the reason.",
           },
           {
             src: "/work/qr-generator-article/img-57.png",
+            width: 1440,
+            height: 4226,
             alt: "Homepage content and CTA board with the primary label, the ten-section sequence and observed facts kept apart from proposals",
             caption: "Content decision board: one primary label, the homepage sequence, and observed facts kept apart from proposed copy.",
           },
@@ -127,61 +142,85 @@ export const articles: Article[] = [
         images: [
           {
             src: "/work/qr-generator-article/img-41.png",
+            width: 1440,
+            height: 1205,
             alt: "Low-fi wireframe of Step 2 with one required upload, three collapsed optional groups and a preview",
             caption: "Low-fi wireframe: one required upload, collapsed optional groups, and a preview that stays visible.",
           },
           {
             src: "/work/qr-generator-article/img-43.png",
+            width: 1440,
+            height: 1193,
             alt: "Empty upload state with a dashed drop zone, a Browse files button and a preview waiting for a file",
             caption: "Empty state: the upload zone states the accepted type and size, and the preview waits for a file.",
           },
           {
             src: "/work/qr-generator-article/img-42.png",
+            width: 1440,
+            height: 1625,
             alt: "Uploaded state showing the file name, size and page count, with Replace and Remove and the Advanced group open",
             caption: "Uploaded state: the file name, size and page count are visible, with Replace and Remove beside them.",
           },
           {
             src: "/work/qr-generator-article/img-50.png",
+            width: 1440,
+            height: 1178,
             alt: "Upload in progress with a progress bar, a Cancel button and Next disabled until the upload completes",
             caption: "Uploading state: a progress bar and Cancel, with Next disabled until the upload completes.",
           },
           {
             src: "/work/qr-generator-article/img-44.png",
+            width: 1440,
+            height: 1178,
             alt: "Error for a file over the size limit, with a red border, the file name and size, and a Browse again button",
             caption: "Too large: a red-bordered error names the file, its size and the 100 MB limit.",
           },
           {
             src: "/work/qr-generator-article/img-52.png",
+            width: 1440,
+            height: 1193,
             alt: "Error for a PNG uploaded where a PDF is required, with a red border and a Browse again button",
             caption: "Wrong file type: the error names the file and offers Browse again, while Next stays disabled.",
           },
           {
             src: "/work/qr-generator-article/img-51.png",
+            width: 1440,
+            height: 1761,
             alt: "Invalid website URL with a red error on the field, while the uploaded PDF and other inputs stay in place",
             caption: "Invalid website: the error sits on the field, and the uploaded PDF and other inputs are kept.",
           },
           {
             src: "/work/qr-generator-article/img-46.png",
+            width: 1440,
+            height: 1681,
             alt: "Page details filled in with a company name, page title, description and website on the landing page preview",
             caption: "Page details filled in: the public preview updates, and internal settings stay out of it.",
           },
           {
             src: "/work/qr-generator-article/img-47.png",
+            width: 1440,
+            height: 1703,
             alt: "Password protection switched on with an empty password field showing a red error and Next disabled",
             caption: "Password on, nothing entered: the message says what to fix, and Next stays disabled.",
           },
           {
             src: "/work/qr-generator-article/img-48.png",
+            width: 1440,
+            height: 1178,
             alt: "Direct PDF mode with Page details and Page design hidden and the PDF shown in the preview",
             caption: "Direct PDF mode: page-only settings are hidden, and the preview shows the PDF itself.",
           },
           {
             src: "/work/qr-generator-article/img-49.png",
+            width: 1440,
+            height: 1178,
             alt: "Landing page preview with smart defaults, using an example portfolio destination and a placeholder QR code",
             caption: "Smart defaults: the landing page preview fills in from example content until details are added.",
           },
           {
             src: "/work/qr-generator-article/img-58.png",
+            width: 1120,
+            height: 1864,
             alt: "Task 2 design rationale board listing eight PDF creation decisions, each traced to its audit issues",
             caption: "Task 2 design rationale: eight decisions, each traced to the audit issues it resolves.",
           },
@@ -202,31 +241,43 @@ export const articles: Article[] = [
         images: [
           {
             src: "/work/qr-generator-article/img-38.png",
+            width: 1440,
+            height: 3222,
             alt: "Colour foundations board with the 22 named colour roles and measured contrast for each text and background pairing",
             caption: "Colour foundations: the 22 named roles, with contrast measured for every text and background pairing.",
           },
           {
             src: "/work/qr-generator-article/img-45.png",
+            width: 1440,
+            height: 1945,
             alt: "PDF page design step with the Blue and sage, Forest and Slate palette presets and custom colour fields",
             caption: "Palette presets and custom colours on the page design step.",
           },
           {
             src: "/work/qr-generator-article/img-40.png",
+            width: 1440,
+            height: 3158,
             alt: "Typography board with Inter in six roles, from H1 down to caption, with sizes and line heights",
             caption: "Typography: Inter in six roles, from H1 down to caption, with sizes and line heights.",
           },
           {
             src: "/work/qr-generator-article/img-39.png",
+            width: 1440,
+            height: 4107,
             alt: "Grid and spacing board with a 12-column desktop grid and 8px base spacing tokens",
             caption: "Grid and spacing: a 12-column desktop grid with 8px base spacing tokens.",
           },
           {
             src: "/work/qr-generator-article/img-37.png",
+            width: 1640,
+            height: 2729,
             alt: "Reusable component masters for buttons, inputs, dropdowns, swatches, cards, tabs and sections",
             caption: "Reusable component masters: buttons, inputs, dropdowns, cards, tabs and sections, with their states.",
           },
           {
             src: "/work/qr-generator-article/img-36.png",
+            width: 1440,
+            height: 4189,
             alt: "Core components board showing the Light stained glass states for buttons, inputs, dropdowns and sections",
             caption: "Core components: the Light stained glass states for buttons, inputs, dropdowns and sections.",
           },

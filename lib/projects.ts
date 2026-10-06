@@ -15,6 +15,15 @@ export function sectionSlug(title: string): string {
 // Pre-filled mailto for the "Request source access" button on a project
 // page — the project's own title flows into the subject/body so this is one
 // generic builder rather than a hardcoded link per project.
+// A cover thumbnail is always one of the project's screenshots, so its alt
+// text comes from that screenshot's entry rather than being repeated.
+export function projectCoverAlt(project: Project): string {
+  return (
+    project.images.find((image) => image.src === project.coverImage)?.alt ??
+    project.title
+  );
+}
+
 export function sourceRequestMailto(projectTitle: string): string {
   const subject = `Source access request: ${projectTitle}`;
   const body = `Hi Tharindu,\n\nI'd like to request access to the source for ${projectTitle}.\n\n`;
@@ -42,7 +51,7 @@ export type Project = {
   // Card thumbnail. Undefined shows a placeholder until a real image exists.
   coverImage?: string;
   // Carousel screenshots shown on the project's page. Empty shows a placeholder.
-  images: string[];
+  images: ProjectImage[];
   role: string;
   status: string;
   platform: string;
@@ -58,6 +67,11 @@ export type Project = {
   sourceNote?: string;
 };
 
+export type ProjectImage = {
+  src: string;
+  alt: string;
+};
+
 export const projects: Project[] = [
   {
     slug: "sri-charge",
@@ -69,23 +83,23 @@ export const projects: Project[] = [
     // mobile app.
     coverImage: "/work/sri-charge/10-station-info-step.png",
     images: [
-      "/work/sri-charge/01-admin-login.png",
-      "/work/sri-charge/02-add-station-form.png",
-      "/work/sri-charge/03-stations-list.png",
-      "/work/sri-charge/04-stations-list-expanded.png",
-      "/work/sri-charge/05-update-station-modal.png",
-      "/work/sri-charge/06-stations-list-collapsed.png",
-      "/work/sri-charge/07-review-modal.png",
-      "/work/sri-charge/08-amenities-modal-in-house.png",
-      "/work/sri-charge/09-amenities-modal-nearby.png",
-      "/work/sri-charge/10-station-info-step.png",
-      "/work/sri-charge/11-plug-info-step.png",
-      "/work/sri-charge/12-operator-info-step.png",
-      "/work/sri-charge/13-mobile-map.png",
-      "/work/sri-charge/14-mobile-filters.png",
-      "/work/sri-charge/15-mobile-review.png",
-      "/work/sri-charge/16-mobile-amenities.png",
-      "/work/sri-charge/17-mobile-plugs.png",
+      { src: "/work/sri-charge/01-admin-login.png", alt: "Sri Charge admin login screen" },
+      { src: "/work/sri-charge/02-add-station-form.png", alt: "Add-station form in the admin web app, with station detail fields" },
+      { src: "/work/sri-charge/03-stations-list.png", alt: "Stations list in the admin dashboard" },
+      { src: "/work/sri-charge/04-stations-list-expanded.png", alt: "Stations list with one station row expanded to show its details" },
+      { src: "/work/sri-charge/05-update-station-modal.png", alt: "Update-station modal for editing an existing charging station" },
+      { src: "/work/sri-charge/06-stations-list-collapsed.png", alt: "Stations list with rows collapsed for a compact overview" },
+      { src: "/work/sri-charge/07-review-modal.png", alt: "Review modal for a charging station" },
+      { src: "/work/sri-charge/08-amenities-modal-in-house.png", alt: "Amenities modal listing in-house amenities at a station" },
+      { src: "/work/sri-charge/09-amenities-modal-nearby.png", alt: "Amenities modal listing nearby amenities around a station" },
+      { src: "/work/sri-charge/10-station-info-step.png", alt: "Station information step of the add-station flow" },
+      { src: "/work/sri-charge/11-plug-info-step.png", alt: "Plug information step of the add-station flow" },
+      { src: "/work/sri-charge/12-operator-info-step.png", alt: "Operator information step of the add-station flow" },
+      { src: "/work/sri-charge/13-mobile-map.png", alt: "Mobile app map showing nearby charging stations" },
+      { src: "/work/sri-charge/14-mobile-filters.png", alt: "Mobile app filters for narrowing the station list" },
+      { src: "/work/sri-charge/15-mobile-review.png", alt: "Mobile app review screen for a charging station" },
+      { src: "/work/sri-charge/16-mobile-amenities.png", alt: "Mobile app amenities view for a charging station" },
+      { src: "/work/sri-charge/17-mobile-plugs.png", alt: "Mobile app plug list for a charging station" },
     ],
     role: "Lead Designer (product design & UI) — build supported by collaborating developers",
     status:
@@ -135,26 +149,26 @@ export const projects: Project[] = [
     // 9-15 are the customer account/booking flow; 16-20 are the admin portal.
     coverImage: "/work/kandy-1st-court/01-home-hero.png",
     images: [
-      "/work/kandy-1st-court/01-home-hero.png",
-      "/work/kandy-1st-court/02-home-gallery-amenities.png",
-      "/work/kandy-1st-court/03-pricing-preview-find-us.png",
-      "/work/kandy-1st-court/04-find-us-cta-footer.png",
-      "/work/kandy-1st-court/05-contact-page.png",
-      "/work/kandy-1st-court/06-pricing-hourly-membership.png",
-      "/work/kandy-1st-court/07-membership-special-offers.png",
-      "/work/kandy-1st-court/08-about-page.png",
-      "/work/kandy-1st-court/09-account-dashboard.png",
-      "/work/kandy-1st-court/10-booking-step1-date.png",
-      "/work/kandy-1st-court/11-booking-step2-time.png",
-      "/work/kandy-1st-court/12-booking-step3-payment.png",
-      "/work/kandy-1st-court/13-booking-confirmed.png",
-      "/work/kandy-1st-court/14-my-bookings-upcoming.png",
-      "/work/kandy-1st-court/15-my-bookings-past.png",
-      "/work/kandy-1st-court/16-admin-dashboard.png",
-      "/work/kandy-1st-court/17-admin-manage-bookings.png",
-      "/work/kandy-1st-court/18-admin-manage-customers.png",
-      "/work/kandy-1st-court/19-admin-settings.png",
-      "/work/kandy-1st-court/20-admin-reports.png",
+      { src: "/work/kandy-1st-court/01-home-hero.png", alt: "Kandy 1st Court homepage hero" },
+      { src: "/work/kandy-1st-court/02-home-gallery-amenities.png", alt: "Homepage gallery showing the court's amenities" },
+      { src: "/work/kandy-1st-court/03-pricing-preview-find-us.png", alt: "Pricing preview and find-us section on the homepage" },
+      { src: "/work/kandy-1st-court/04-find-us-cta-footer.png", alt: "Find-us section with a call to action and the site footer" },
+      { src: "/work/kandy-1st-court/05-contact-page.png", alt: "Contact page with the court's details" },
+      { src: "/work/kandy-1st-court/06-pricing-hourly-membership.png", alt: "Pricing page with hourly and membership options" },
+      { src: "/work/kandy-1st-court/07-membership-special-offers.png", alt: "Membership special offers page" },
+      { src: "/work/kandy-1st-court/08-about-page.png", alt: "About page for the pickleball court" },
+      { src: "/work/kandy-1st-court/09-account-dashboard.png", alt: "Customer account dashboard" },
+      { src: "/work/kandy-1st-court/10-booking-step1-date.png", alt: "Booking flow, step 1: choosing a date" },
+      { src: "/work/kandy-1st-court/11-booking-step2-time.png", alt: "Booking flow, step 2: choosing a time slot" },
+      { src: "/work/kandy-1st-court/12-booking-step3-payment.png", alt: "Booking flow, step 3: payment" },
+      { src: "/work/kandy-1st-court/13-booking-confirmed.png", alt: "Booking confirmation screen" },
+      { src: "/work/kandy-1st-court/14-my-bookings-upcoming.png", alt: "My bookings page showing upcoming bookings" },
+      { src: "/work/kandy-1st-court/15-my-bookings-past.png", alt: "My bookings page showing past bookings" },
+      { src: "/work/kandy-1st-court/16-admin-dashboard.png", alt: "Admin dashboard with a booking overview" },
+      { src: "/work/kandy-1st-court/17-admin-manage-bookings.png", alt: "Admin view for managing bookings" },
+      { src: "/work/kandy-1st-court/18-admin-manage-customers.png", alt: "Admin view for managing customers" },
+      { src: "/work/kandy-1st-court/19-admin-settings.png", alt: "Admin settings page" },
+      { src: "/work/kandy-1st-court/20-admin-reports.png", alt: "Admin reports page" },
     ],
     role: "Full-stack owner: architecture, database, API, and UI decisions, implemented end-to-end via Claude Code",
     status: "Built; core flows functional; not yet deployed publicly",
@@ -222,11 +236,11 @@ export const projects: Project[] = [
       "This very site: a personal portfolio designed and built end-to-end with Claude Code assisting, one real feature at a time.",
     coverImage: "/work/portfolio/01-home.png",
     images: [
-      "/work/portfolio/01-home.png",
-      "/work/portfolio/02-experience.png",
-      "/work/portfolio/03-work.png",
-      "/work/portfolio/04-contact.png",
-      "/work/portfolio/05-project-modal.png",
+      { src: "/work/portfolio/01-home.png", alt: "This portfolio's homepage with the hero and role tags" },
+      { src: "/work/portfolio/02-experience.png", alt: "Experience page with the work timeline and skills" },
+      { src: "/work/portfolio/03-work.png", alt: "Projects page listing the case studies" },
+      { src: "/work/portfolio/04-contact.png", alt: "Contact page with the contact card and form" },
+      { src: "/work/portfolio/05-project-modal.png", alt: "Case study page with the screenshot carousel and project sections" },
     ],
     role: "Sole designer and developer, built end-to-end with Claude Code assisting",
     status: "Live and actively maintained",
@@ -281,17 +295,17 @@ export const projects: Project[] = [
       "A local-first AI project planner that turns a description into a phased, trackable to-do list in about 20 seconds.",
     coverImage: "/work/mune-tasks/04-new-project-draft-ready.png",
     images: [
-      "/work/mune-tasks/01-dashboard.png",
-      "/work/mune-tasks/02-new-project-empty.png",
-      "/work/mune-tasks/03-new-project-streaming.png",
-      "/work/mune-tasks/04-new-project-draft-ready.png",
-      "/work/mune-tasks/05-project-page-top.png",
-      "/work/mune-tasks/06-project-page-subtasks.png",
-      "/work/mune-tasks/07-expand-into-steps-modal.png",
-      "/work/mune-tasks/08-claude-usage-dashboard.png",
-      "/work/mune-tasks/09-settings.png",
-      "/work/mune-tasks/10-project-complete-confetti.png",
-      "/work/mune-tasks/11-dashboard-archived.png",
+      { src: "/work/mune-tasks/01-dashboard.png", alt: "MUNE TASKS dashboard listing active projects" },
+      { src: "/work/mune-tasks/02-new-project-empty.png", alt: "New project form before a description is entered" },
+      { src: "/work/mune-tasks/03-new-project-streaming.png", alt: "New project screen while the plan streams in" },
+      { src: "/work/mune-tasks/04-new-project-draft-ready.png", alt: "Generated project plan, ready to review and save" },
+      { src: "/work/mune-tasks/05-project-page-top.png", alt: "Project page with overall progress and the first sections" },
+      { src: "/work/mune-tasks/06-project-page-subtasks.png", alt: "Project page with subtasks ticked off" },
+      { src: "/work/mune-tasks/07-expand-into-steps-modal.png", alt: "Dialog for expanding a task into smaller steps" },
+      { src: "/work/mune-tasks/08-claude-usage-dashboard.png", alt: "Usage dashboard of Claude requests, with cost and tokens" },
+      { src: "/work/mune-tasks/09-settings.png", alt: "MUNE TASKS settings page" },
+      { src: "/work/mune-tasks/10-project-complete-confetti.png", alt: "Completed project with a confetti celebration" },
+      { src: "/work/mune-tasks/11-dashboard-archived.png", alt: "Dashboard with the archived projects tab open" },
     ],
     role: "Product owner, designer, and developer, built with Claude Code as an AI pair programmer",
     status: "Live, personal daily-use tool (local-first desktop web app)",
@@ -339,6 +353,77 @@ export const projects: Project[] = [
       {
         title: "Testing & Outcome",
         body: "A detailed plan arrives in about 20 seconds for roughly 3 cents of API-equivalent usage. An end-to-end Playwright script drives a real Chrome browser through the full flow: creating a project from a prompt plus an attached file, editing the plan before saving, ticking tasks and subtasks, using the keyboard shortcuts, renaming and adding tasks, restarting the server to confirm persistence, then completing and archiving the project. TypeScript, ESLint, and the production build all pass cleanly.",
+      },
+    ],
+    sourceNote: "Personal local-first tool; source available on request.",
+  },
+  {
+    slug: "mune-splits",
+    title: "MUNE Splits",
+    tagline:
+      "A local-first expense splitter that works out who owes whom in the fewest possible payments.",
+    coverImage: "/work/mune-splits/02-event-overview.png",
+    images: [
+      { src: "/work/mune-splits/01-events-home.png", alt: "MUNE Splits events list with the Goa Trip summary" },
+      { src: "/work/mune-splits/02-event-overview.png", alt: "Event overview with total spent, balance and spend charts" },
+      { src: "/work/mune-splits/03-expenses.png", alt: "Expense list for the Goa Trip event" },
+      { src: "/work/mune-splits/04-balances.png", alt: "Balances per person and who owes whom" },
+      { src: "/work/mune-splits/05-settle-up.png", alt: "Suggested payments to settle up, with payment history" },
+      { src: "/work/mune-splits/06-add-expense.png", alt: "Add-expense dialog with the equal split selected" },
+      { src: "/work/mune-splits/07-add-expense-shares.png", alt: "Add-expense dialog with weighted shares per person" },
+      { src: "/work/mune-splits/08-people.png", alt: "People list of reusable participants" },
+      { src: "/work/mune-splits/09-settings.png", alt: "Settings page with theme, currency and backup options" },
+      { src: "/work/mune-splits/10-print-report.png", alt: "Printable expense report with summaries and every expense" },
+      { src: "/work/mune-splits/11-event-mobile.png", alt: "Event overview on a phone-width screen" },
+      { src: "/work/mune-splits/12-events-home-light.png", alt: "Events list in light mode" },
+    ],
+    role: "Product owner, designer, and developer, with the app built from a written brief using an AI coding assistant",
+    status: "Working local app with a demo trip, PDF and CSV export, and backup and restore",
+    platform:
+      "Local web app on Windows, installable as a PWA; runs without an internet connection",
+    tools: "Claude Code",
+    techStack:
+      "Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Radix UI · SQLite (better-sqlite3) · Recharts · jsPDF · Vitest",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Splitting trip costs is slow and easy to get wrong. One person paid for dinner, another covered the villa, and by the end nobody remembers who owes whom. Most splitting apps want an account, a cloud sync and your data on their servers. The goal was a personal tool that keeps everything on the computer and still works out the fewest payments needed to settle up.",
+      },
+      {
+        title: "Approach",
+        body: "Built as a local-first web app with no accounts, no cloud sync and no tracking. The server only listens on 127.0.0.1, and all data lives in a local SQLite file.",
+        points: [
+          "Create an event or trip, add the people, and log each expense with one payer or several, and a split mode: equal, weighted shares, exact amounts or percentages.",
+          "Weights are set per expense, so a partner can count as two people and a half portion as 0.5.",
+          "Simplified balances show the fewest payments that settle everyone, while the raw view lists each direct debt.",
+          "Record full or partial settlements, undo any payment, and lock an event as settled once everyone is at zero.",
+          "Export a PDF report, a CSV or a plain-text summary, and back up or restore everything as JSON, including receipt images.",
+        ],
+      },
+      {
+        title: "Key Decisions & Challenges",
+        points: [
+          "Money is stored as integer minor units (paise or cents), so there are no floating-point errors.",
+          "Shares are rounded with the largest-remainder method, so they always add up exactly to the total.",
+          "Debts are simplified greedily by matching the largest creditor with the largest debtor, which takes at most people minus one payments.",
+          "The split and settle maths lives in a pure module with its own unit tests. The UI, PDF and CSV export all share the same balance code.",
+          "Every event edit is one typed action validated on the server. A proxy rejects foreign Host headers and cross-site writes, so other websites can't drive the local server.",
+        ],
+      },
+      {
+        title: "Known Risks",
+        points: [
+          "better-sqlite3 is pinned to 12.9.0 because it ships prebuilt Windows binaries for Node 20, which avoids a local compile step.",
+          "The data folder sits inside OneDrive, and syncing a live SQLite database can conflict. The app's own notes recommend pausing sync while it runs, or moving the data folder and relying on JSON backups.",
+        ],
+      },
+      {
+        title: "Design",
+        body: "A dark-first interface with a light mode, an orange accent and rounded cards. Each event has its own emoji and colour, and a floating Add expense button keeps the main action in reach. Press N to add an expense or event. On phones the navigation moves to a bottom bar.",
+      },
+      {
+        title: "Testing & Outcome",
+        body: "A demo trip, Goa Trip, loads with four people, weighted shares, a multi-payer villa, every split mode and a partial settlement. The engine's unit tests cover equal, weighted with decimals, exact, percent, multi-payer, rounding remainders and partial settlements. The production build was run and the demo trip was walked through in Chrome, from the events list to the print report.",
       },
     ],
     sourceNote: "Personal local-first tool; source available on request.",

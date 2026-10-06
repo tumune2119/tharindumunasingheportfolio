@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import { CountUp } from "@/components/CountUp";
 import { ExperienceTabs } from "@/components/ExperienceTabs";
 import { Reveal } from "@/components/Reveal";
 import { education, experience, skills } from "@/lib/experience";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Experience",
+  description:
+    "Work history, skills and education of Tharindu Munasinghe: 5+ years across UI/UX design and front-end engineering at Xyicon in Colombo, Sri Lanka.",
+  path: "/experience",
+});
 
 // CV content laid out as three tabbed panels — an experience timeline, skill
 // pills grouped by category, and an education timeline — reusing the same

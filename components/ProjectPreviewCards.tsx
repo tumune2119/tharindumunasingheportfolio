@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import type { Project } from "@/lib/projects";
+import { projectCoverAlt, type Project } from "@/lib/projects";
 
 // Compact project card grid — shared by MoreProjects (end of a case study,
 // "more from this developer") and ProjectsPreview (Home page's scroll-down
@@ -17,11 +18,12 @@ export function ProjectPreviewCards({ projects }: { projects: Project[] }) {
         >
           <div className="relative h-28 overflow-hidden bg-card">
             {project.coverImage ? (
-              // eslint-disable-next-line @next/next/no-img-element -- small compact thumbnail, no need for next/image optimization
-              <img
+              <Image
                 src={project.coverImage}
-                alt=""
-                className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                alt={projectCoverAlt(project)}
+                fill
+                sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
               />
             ) : (
               <div className="flex h-full items-center justify-center">

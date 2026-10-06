@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import type { ProjectImage } from "@/lib/projects";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const AUTOPLAY_MS = 4500;
@@ -15,7 +17,7 @@ export function ImageCarousel({
   images,
   alt,
 }: {
-  images: string[];
+  images: ProjectImage[];
   alt: string;
 }) {
   const [index, setIndex] = useState(0);
@@ -80,12 +82,14 @@ export function ImageCarousel({
             retriggers animate-scale-fade-in (a CSS animation plays on
             mount; a transition wouldn't, since src changing on the same
             element isn't itself an animatable state change). */}
-        {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary case-study screenshots added later, no need for next/image optimization */}
-        <img
+        <Image
           key={index}
-          src={images[index]}
-          alt={`${alt} screenshot ${index + 1} of ${images.length}`}
-          className="h-full w-full object-contain animate-scale-fade-in"
+          src={images[index].src}
+          alt={images[index].alt}
+          fill
+          sizes="(min-width: 768px) 60vw, 100vw"
+          priority={index === 0}
+          className="object-contain animate-scale-fade-in"
         />
 
         {images.length > 1 && (
@@ -128,23 +132,28 @@ export function ImageCarousel({
           aria-label={`${alt} image thumbnails`}
           className="flex gap-2 overflow-x-auto p-3"
         >
-          {images.map((src, i) => (
+          {images.map((image, i) => (
             <button
-              key={src}
+              key={image.src}
               type="button"
               role="tab"
               aria-selected={i === index}
               aria-label={`Go to image ${i + 1} of ${images.length}`}
               title={`Go to image ${i + 1} of ${images.length}`}
               onClick={() => handleManualNav(i)}
-              className={`h-12 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 ease-in-out ${
+              className={`relative h-12 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 ease-in-out ${
                 i === index
                   ? "border-primary opacity-100"
                   : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- small thumbnail reusing an existing screenshot, no need for next/image optimization */}
-              <img src={src} alt="" className="h-full w-full object-cover" />
+              <Image
+                src={image.src}
+                alt=""
+                fill
+                sizes="64px"
+                className="object-cover"
+              />
             </button>
           ))}
         </div>

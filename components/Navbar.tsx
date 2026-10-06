@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { DownloadCVButton } from "./DownloadCVButton";
 import { MobileMenu } from "./MobileMenu";
@@ -21,8 +22,14 @@ export function Navbar() {
     <header className="sticky top-4 z-50 px-4 md:px-6">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
         <Link href="/" aria-label="Tharindu Munasinghe - Home" title="Home">
-          {/* eslint-disable-next-line @next/next/no-img-element -- brand mark, no need for next/image optimization */}
-          <img src="/logo.svg" alt="" className="h-7 w-auto md:h-8" />
+          <Image
+            src="/logo.svg"
+            alt="Tharindu Munasinghe"
+            width={172}
+            height={90}
+            priority
+            className="h-7 w-auto md:h-8"
+          />
         </Link>
 
         {/* Desktop: full pill nav + toggle + CV button, hidden below md. */}
