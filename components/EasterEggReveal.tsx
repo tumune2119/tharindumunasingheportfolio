@@ -18,6 +18,45 @@ const MATRIX_LINE_SWAP_MS = MATRIX_MS * 0.55;
 const MATRIX_CHARS =
   "アイウエオカキクケコサシスセソ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+// Fake intrusion log shown in the terminal window while the rain plays. Each
+// line fades in on its own delay (see the animation-delay below). Purely
+// decorative and aria-hidden: nothing here touches a real system.
+const HACK_LOG = [
+  "HANDSHAKE .............. OK",
+  "FIREWALL BYPASS ........ OK",
+  "DECRYPT ATBASH ......... OK",
+  "PAYLOAD ................ STAGED",
+];
+const HACK_LOG_STEP_MS = 420;
+
+// Title bar with Windows-style window controls. Only the close button does
+// anything; minimise and maximise are decoration.
+function WindowBar({
+  title,
+  onClose,
+}: {
+  title: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="hud-window-bar">
+      <span>{title}</span>
+      <div className="hud-window-controls">
+        <span aria-hidden="true" className="hud-window-btn">_</span>
+        <span aria-hidden="true" className="hud-window-btn">□</span>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="hud-window-btn"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // Full-screen overlay for the easter egg's payoff: a brief glitch, an eased
 // (not flashed) red transition, a short matrix-rain beat with a
 // deliberately silly "hacking" line, then the actual joke message. Purely
@@ -207,29 +246,53 @@ export function EasterEggReveal({
       {showMatrixRain && (
         <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0" />
       )}
+      {(phase === "matrix" || phase === "message") && (
+        <div aria-hidden="true" className="hud-scanlines absolute inset-0 z-5" />
+      )}
+
       {phase === "matrix" && (
-        <p className="relative z-10 font-mono text-body-sm tracking-wide text-[#52b788]">
-          {matrixLine}
-        </p>
+        <div className="hud-window relative z-10 mx-4">
+          <WindowBar title="BREACH.EXE" onClose={onClose} />
+          <div className="space-y-4 p-5 text-body-sm">
+            <p className="text-primary">
+              &gt; {matrixLine}
+              <span aria-hidden="true" className="hud-cursor">_</span>
+            </p>
+            <ul aria-hidden="true" className="space-y-1 text-caption text-muted-foreground">
+              {HACK_LOG.map((line, i) => (
+                <li
+                  key={line}
+                  className="animate-fade-in both"
+                  style={{ animationDelay: `${i * HACK_LOG_STEP_MS}ms` }}
+                >
+                  &gt; {line}
+                </li>
+              ))}
+            </ul>
+            <div className="hud-progress">
+              <div className="hud-progress-fill" />
+            </div>
+          </div>
+        </div>
       )}
 
       {phase === "message" && (
-        <div className="animate-fade-in-up relative z-10 mx-4 max-w-md rounded-2xl border border-foreground/10 bg-card p-8 text-center shadow-xl">
-          <h2 className="text-h3">You found it. 🎉</h2>
-          <p className="text-body mt-3 font-medium text-primary">
-            Relax — your computer is not hacked. (Wink.)
-          </p>
-          <p className="text-body-sm mt-4 text-muted-foreground">
-            Honestly, the easter egg hunt was the fun part. It leads to...
-            nothing. But hey, I hope this at least means I get hired.
-          </p>
-          <button
-            type="button"
-            onClick={onClose}
-            className="mt-6 inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-body font-medium text-primary-foreground shadow-sm transition-all duration-500 ease-in-out hover:scale-[1.03] hover:bg-primary-variant active:scale-[0.97]"
-          >
-            Back to home
-          </button>
+        <div className="animate-fade-in-up hud-window relative z-10 mx-4">
+          <WindowBar title="ACCESS.LOG" onClose={onClose} />
+          <div className="p-6 text-center md:p-8">
+            <p className="hud-label">// Access result</p>
+            <h2 className="text-h3 mt-2">You found it. 🎉</h2>
+            <p className="text-body mt-3 font-medium text-primary">
+              Relax — your computer is not hacked. (Wink.)
+            </p>
+            <p className="text-body-sm mt-4 text-muted-foreground">
+              Honestly, the easter egg hunt was the fun part. It leads to...
+              nothing. But hey, I hope this at least means I get hired.
+            </p>
+            <button type="button" onClick={onClose} className="hud-cta mt-6">
+              Back to home
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -844,6 +844,187 @@ html[data-ui="hud"] .rounded-full:hover {
   box-shadow: inset 0 0 0 2px var(--primary);
 }
 
+/*
+  Easter egg HUD (components/EasterEggReveal.tsx, components/HeroCipherClue.tsx).
+  A breach-terminal look: a chamfered window with a title bar and window
+  controls, scanlines over the rain, a progress bar and a blinking cursor.
+  Every colour is a token, so it follows the theme.
+*/
+.hud-window {
+  position: relative;
+  width: min(100%, 36rem);
+  font-family: var(--hud-mono);
+  background: color-mix(in srgb, var(--background) 92%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent),
+    0 0 32px color-mix(in srgb, var(--primary) 18%, transparent);
+  clip-path: polygon(
+    var(--hud-cut-lg) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut-lg)),
+    calc(100% - var(--hud-cut-lg)) 100%,
+    0 100%,
+    0 var(--hud-cut-lg)
+  );
+}
+
+.hud-window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+.hud-window-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.hud-window-btn {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-family: var(--hud-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 45%, transparent);
+  transition-duration: 140ms;
+}
+
+.hud-window-btn:hover,
+.hud-window-btn:focus-visible {
+  background: var(--primary);
+  color: var(--background);
+}
+
+.hud-scanlines {
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    color-mix(in srgb, var(--primary) 7%, transparent) 2px,
+    color-mix(in srgb, var(--primary) 7%, transparent) 3px
+  );
+}
+
+.hud-progress {
+  height: 6px;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+.hud-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  animation: hud-progress 3s linear both;
+}
+
+@keyframes hud-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.hud-cursor {
+  animation: hud-blink 1s steps(2, jump-none) infinite;
+}
+
+.hud-label {
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hud-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--hud-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  clip-path: polygon(
+    var(--hud-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut)),
+    calc(100% - var(--hud-cut)) 100%,
+    0 100%,
+    0 var(--hud-cut)
+  );
+  transition-duration: 140ms;
+}
+
+.hud-cta:hover {
+  background: var(--primary-variant);
+}
+
+/* Small "?" marker and its typed-out clue, both chamfered like the rest. */
+.hud-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-family: var(--hud-mono);
+  font-size: 0.75rem;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent);
+  transition-duration: 140ms;
+}
+
+.hud-marker:hover,
+.hud-marker:focus-visible {
+  background: var(--primary);
+  color: var(--background);
+}
+
+.hud-tip {
+  max-width: 16rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 92%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent);
+  clip-path: polygon(
+    var(--hud-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut)),
+    calc(100% - var(--hud-cut)) 100%,
+    0 100%,
+    0 var(--hud-cut)
+  );
+}
+
 .hud-status-dot {
   width: 6px;
   height: 6px;

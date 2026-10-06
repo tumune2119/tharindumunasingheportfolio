@@ -114,14 +114,17 @@ export function HeroCipherClue() {
           onClick={handleClick}
           title={songPlaying ? "Click to stop" : "Decode me"}
           aria-pressed={songPlaying}
-          className="mr-2 max-w-64 rounded-xl border border-foreground/10 bg-card/90 px-3 py-2 text-left font-mono text-caption text-muted-foreground shadow-lg backdrop-blur-sm transition-colors duration-500 ease-in-out hover:text-foreground"
+          className="hud-tip mr-2 transition-colors duration-500 ease-in-out hover:text-primary"
         >
-          {HERO_CIPHER_MESSAGE.slice(0, typedLength)}
-          {typedLength < HERO_CIPHER_MESSAGE.length && !reducedMotion && (
-            <span aria-hidden="true" className="animate-pulse">
-              |
-            </span>
-          )}
+          <span className="hud-label block">&gt; DECODE.TXT</span>
+          <span className="mt-1 block">
+            {HERO_CIPHER_MESSAGE.slice(0, typedLength)}
+            {typedLength < HERO_CIPHER_MESSAGE.length && !reducedMotion && (
+              <span aria-hidden="true" className="hud-cursor">
+                _
+              </span>
+            )}
+          </span>
         </button>
       )}
       <span
@@ -129,7 +132,7 @@ export function HeroCipherClue() {
         role="button"
         aria-label="A small secret"
         title="?"
-        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-foreground/20 bg-card/80 text-caption text-muted-foreground shadow-sm backdrop-blur-sm transition-colors duration-500 ease-in-out hover:text-foreground"
+        className="hud-marker shrink-0"
       >
         ?
       </span>
