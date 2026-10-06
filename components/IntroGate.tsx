@@ -8,7 +8,7 @@ import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useTheme } from "@/lib/useTheme";
 
-// First-visit intro: a desktop with a MUNE folder, a window with one
+// First-visit intro: a desktop with a THARINDU_MUNASINGHE folder, a window with one
 // RUN_PORTFOLIO.EXE file, and a terminal that prints a burst of fake boot
 // output before the site appears. Purely aesthetic. Nothing here runs a
 // real process or touches a real system.
@@ -34,7 +34,7 @@ function hex(length: number) {
 // Fresh random output each time the terminal opens, so no two sessions match.
 function buildTerminalLines(): string[] {
   return [
-    "C:\\MUNE> RUN_PORTFOLIO.EXE",
+    "C:\\THARINDU_MUNASINGHE> RUN_PORTFOLIO.EXE",
     `[ OK ] Routing through node ${hex(4)}:${hex(4)}`,
     "[ OK ] Initialising kernel modules",
     `[ OK ] Mapping memory 0x${hex(8)} - 0x${hex(8)}`,
@@ -349,7 +349,7 @@ function DesktopFolder({
     <div className="absolute left-6 top-6 md:left-10 md:top-10">
       <div className="flex gap-4">
         <DesktopIcon
-          label="MUNE"
+          label="THARINDU_MUNASINGHE"
           selected={selectedId === "folder"}
           onSelect={() => setSelectedId("folder")}
           onOpen={onOpen}
@@ -365,7 +365,6 @@ function DesktopFolder({
           <ReadmeIcon className="h-14 w-14 text-primary" />
         </DesktopIcon>
       </div>
-      <p className="hud-label mt-6 max-w-xs">Double-click MUNE to open</p>
     </div>
   );
 }
@@ -388,7 +387,7 @@ function ReadmeIcon({ className }: { className?: string }) {
   );
 }
 
-// Credentials for the MUNE folder. The README on the desktop gives them out,
+// Credentials for the THARINDU_MUNASINGHE folder. The README on the desktop gives them out,
 // so this gate is for fun, not real security.
 const FOLDER_LOGIN = { username: "Det.MuNe", password: "password123" };
 
@@ -420,7 +419,7 @@ function LoginWindow({
     <div className="absolute inset-0 flex items-center justify-center p-4">
       <div className="hud-window">
         <div className="hud-window-bar">
-          <span>MUNE · LOGIN</span>
+          <span>THARINDU_MUNASINGHE · LOGIN</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
@@ -477,7 +476,7 @@ function ReadmeWindow({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <div className="space-y-3 p-6 text-caption leading-relaxed">
-          <p>MUNE is locked. Here is how to get in.</p>
+          <p>THARINDU_MUNASINGHE is locked. Here is how to get in.</p>
           <p>
             Username: <span className="text-primary">Det.MuNe</span>
           </p>
@@ -526,7 +525,6 @@ function Taskbar({
       >
         Start
       </button>
-      <span className="text-muted-foreground">Esc closes menus</span>
       <span className="text-accent">{time}</span>
     </div>
   );
@@ -611,7 +609,7 @@ function FolderWindow({
     <div className="absolute inset-0 flex items-center justify-center p-4">
       <div className="hud-window">
         <div className="hud-window-bar">
-          <span>MUNE</span>
+          <span>THARINDU_MUNASINGHE</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
@@ -670,7 +668,7 @@ function TerminalWindow({
     <div className="absolute inset-0 flex items-center justify-center p-4">
       <div className="hud-window">
         <div className="hud-window-bar">
-          <span>C:\MUNE\RUN_PORTFOLIO.EXE</span>
+          <span>C:\THARINDU_MUNASINGHE\RUN_PORTFOLIO.EXE</span>
         </div>
         <div className="space-y-1 p-5 text-caption leading-relaxed" aria-live="polite">
           {lines.slice(0, shown).map((line, i) => (

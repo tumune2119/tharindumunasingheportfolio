@@ -160,7 +160,7 @@ export function IntroNotepad({
       onClick={() => inputRef.current?.focus()}
     >
       <div className="hud-window-bar">
-        <span>CLI · MUNE</span>
+        <span>CLI · THARINDU_MUNASINGHE</span>
         <div className="hud-window-controls">
           <button
             type="button"
@@ -179,13 +179,13 @@ export function IntroNotepad({
               key={i}
               className={line.kind === "in" ? "text-primary" : "text-foreground"}
             >
-              {line.kind === "in" ? `C:\\MUNE> ${line.text}` : line.text}
+              {line.kind === "in" ? `C:\\THARINDU_MUNASINGHE> ${line.text}` : line.text}
             </p>
           ))}
         </div>
         <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-primary/30 px-4 py-3">
           <label htmlFor="intro-command" className="shrink-0 text-primary">
-            C:\MUNE&gt;
+            C:\THARINDU_MUNASINGHE&gt;
           </label>
           <input
             id="intro-command"
