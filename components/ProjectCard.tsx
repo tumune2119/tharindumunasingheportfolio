@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties, type MouseEvent } from "react";
 import { useInView } from "@/lib/useInView";
-import type { Project } from "@/lib/projects";
+import { projectCoverAlt, type Project } from "@/lib/projects";
 import { Tag } from "./Tag";
 
 const MAX_TILT_DEG = 4;
@@ -78,12 +79,13 @@ export function ProjectCard({
         className="relative h-56 shrink-0 overflow-hidden bg-surface sm:h-72 md:h-auto md:w-2/5"
       >
         {project.coverImage ? (
-          // eslint-disable-next-line @next/next/no-img-element -- plain img keeps the clip-path reveal simple; no need for next/image's wrapper markup
-          <img
+          <Image
             src={project.coverImage}
-            alt=""
+            alt={projectCoverAlt(project)}
+            fill
+            sizes="(min-width: 768px) 40vw, 100vw"
             style={{ clipPath: imageInView ? "inset(0 0 0 0%)" : "inset(0 0 0 100%)" }}
-            className="h-full w-full object-cover transition-[clip-path,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+            className="object-cover transition-[clip-path,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
