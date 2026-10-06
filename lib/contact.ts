@@ -2,8 +2,7 @@ import { LinkedinIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icon
 
 // Shared by the full Contact page (app/contact/page.tsx) and the Home
 // page's ContactPreview — one source of truth instead of the same details
-// typed out twice. Entries without an href (Location) render as plain text
-// wherever the caller chooses to include them.
+// typed out twice. Every entry has an href, so each one is a tap target.
 export type ContactDetail = {
   label: string;
   value: string;
@@ -16,6 +15,8 @@ export const contactDetails: ContactDetail[] = [
   {
     label: "Location",
     value: "Colombo, Western Province, Sri Lanka",
+    href: "https://www.google.com/maps/search/?api=1&query=Colombo%2C+Western+Province%2C+Sri+Lanka",
+    title: "Find Colombo on Google Maps",
     icon: MapPinIcon,
   },
   {

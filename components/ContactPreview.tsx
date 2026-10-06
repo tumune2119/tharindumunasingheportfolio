@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { contactDetails } from "@/lib/contact";
 
-// Only the actionable entries (Location has no href) — a quick set of
-// tap/click targets, not the full contact card; the actual form lives on
+// A quick set of tap/click targets (phone, email, LinkedIn, and the map
+// link for Location), not the full contact card; the actual form lives on
 // the dedicated Contact page this links out to.
 const quickLinks = contactDetails.filter((detail) => detail.href);
 
