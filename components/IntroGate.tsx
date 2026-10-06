@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { IntroNotepad } from "@/components/IntroNotepad";
+import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { useTheme } from "@/lib/useTheme";
 
 // First-visit intro: a desktop with a PORTFOLIO folder, a window with one
 // RUN_PORTFOLIO.EXE file, and a terminal that prints a burst of fake boot
@@ -45,7 +48,12 @@ function buildTerminalLines(): string[] {
 
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [notepadOpen, setNotepadOpen] = useState(false);
+  const [shutdown, setShutdown] = useState(false);
   const reducedMotion = useReducedMotion();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     if (document.documentElement.dataset.intro === "pending") {
@@ -53,7 +61,7 @@ export function IntroGate() {
     }
   }, []);
 
-  // Locks page scroll while the intro is up, and lets Escape skip it.
+  // Locks page scroll while the intro is up.
   useEffect(() => {
     if (!phase) return;
     const previousOverflow = document.body.style.overflow;
@@ -73,16 +81,47 @@ export function IntroGate() {
     setPhase(null);
   }, []);
 
+  // Escape closes the innermost thing open (the Start menu, then Notepad).
+  // It does not skip the intro, so it can't end a session by accident.
   useEffect(() => {
     if (!phase) return;
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") finish();
+      if (event.key !== "Escape") return;
+      if (menuOpen) setMenuOpen(false);
+      else if (notepadOpen) setNotepadOpen(false);
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [phase, finish]);
+  }, [phase, menuOpen, notepadOpen]);
+
+  // Same theme switch as the header toggle, including the glitch overlay.
+  function handleToggleTheme() {
+    toggleTheme();
+    window.dispatchEvent(new Event(THEME_SWITCH_EVENT));
+  }
+
+  // Browsers only let a script close a tab it opened, so the close is tried
+  // first and the screen below is the fallback when it's refused.
+  function handleShutdown() {
+    setMenuOpen(false);
+    setShutdown(true);
+    window.close();
+  }
 
   if (!phase) return null;
+
+  if (shutdown) {
+    return (
+      <div
+        id="intro-root"
+        role="status"
+        className="fixed inset-0 z-200 flex flex-col items-center justify-center bg-background p-6 text-center font-mono text-caption uppercase tracking-wider text-muted-foreground"
+      >
+        <p className="text-primary">Shutdown complete</p>
+        <p className="mt-2">It is now safe to close this tab.</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -104,9 +143,78 @@ export function IntroGate() {
         {phase === "terminal" && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
         )}
+
+        {notepadOpen && (
+          <IntroNotepad
+            onClose={() => setNotepadOpen(false)}
+            onToggleTheme={handleToggleTheme}
+            isDark={isDark}
+          />
+        )}
       </div>
 
-      <Taskbar onSkip={finish} />
+      {menuOpen && (
+        <StartMenu
+          isDark={isDark}
+          onNotepad={() => {
+            setMenuOpen(false);
+            setNotepadOpen(true);
+          }}
+          onTheme={() => {
+            setMenuOpen(false);
+            handleToggleTheme();
+          }}
+          onOpenSite={finish}
+          onShutdown={handleShutdown}
+        />
+      )}
+
+      <Taskbar menuOpen={menuOpen} onStart={() => setMenuOpen((open) => !open)} />
+    </div>
+  );
+}
+
+// The Start menu: Notepad, theme switch, open the site, and shut down. It
+// sits above the taskbar, opposite the Start button.
+function StartMenu({
+  isDark,
+  onNotepad,
+  onTheme,
+  onOpenSite,
+  onShutdown,
+}: {
+  isDark: boolean;
+  onNotepad: () => void;
+  onTheme: () => void;
+  onOpenSite: () => void;
+  onShutdown: () => void;
+}) {
+  const itemClass =
+    "flex w-full items-center justify-between px-4 py-2.5 text-left text-caption uppercase tracking-wider text-foreground hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:bg-primary/15 focus-visible:text-primary";
+
+  return (
+    <div
+      role="menu"
+      aria-label="Start menu"
+      className="intro-menu absolute bottom-10 left-0 z-10 flex w-64 flex-col py-2"
+    >
+      <button type="button" role="menuitem" onClick={onNotepad} className={itemClass}>
+        <span>Notepad</span>
+        <span aria-hidden="true" className="text-accent">&gt;_</span>
+      </button>
+      <button type="button" role="menuitem" onClick={onTheme} className={itemClass}>
+        <span>{isDark ? "Light mode" : "Dark mode"}</span>
+        <span aria-hidden="true" className="text-accent">◐</span>
+      </button>
+      <button type="button" role="menuitem" onClick={onOpenSite} className={itemClass}>
+        <span>Open portfolio</span>
+        <span aria-hidden="true" className="text-accent">↵</span>
+      </button>
+      <div className="my-1 h-px bg-primary/30" aria-hidden="true" />
+      <button type="button" role="menuitem" onClick={onShutdown} className={itemClass}>
+        <span>Shut down</span>
+        <span aria-hidden="true" className="text-accent">⏻</span>
+      </button>
     </div>
   );
 }
@@ -199,7 +307,13 @@ function DesktopFolder({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-function Taskbar({ onSkip }: { onSkip: () => void }) {
+function Taskbar({
+  menuOpen,
+  onStart,
+}: {
+  menuOpen: boolean;
+  onStart: () => void;
+}) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -217,15 +331,17 @@ function Taskbar({ onSkip }: { onSkip: () => void }) {
   }, []);
 
   return (
-    <div className="intro-taskbar flex h-10 items-center justify-between px-3 text-caption uppercase tracking-wider">
-      <span className="hud-cta px-3 py-1 text-caption">Start</span>
+    <div className="intro-taskbar relative flex h-10 items-center justify-between px-3 text-caption uppercase tracking-wider">
       <button
         type="button"
-        onClick={onSkip}
-        className="text-muted-foreground hover:text-primary"
+        onClick={onStart}
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+        className={`hud-cta px-3 py-1 text-caption ${menuOpen ? "bg-primary-variant" : ""}`}
       >
-        Skip intro · Esc
+        Start
       </button>
+      <span className="text-muted-foreground">Esc closes menus</span>
       <span className="text-accent">{time}</span>
     </div>
   );
