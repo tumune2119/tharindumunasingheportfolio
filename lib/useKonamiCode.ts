@@ -35,6 +35,9 @@ export function useKonamiCode(onUnlock: () => void) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.repeat) return;
+      // Some keydown events carry no `key` (autofill and some password
+      // managers dispatch them), so guard before reading it.
+      if (!event.key) return;
 
       const key = event.key.toLowerCase();
       const next = [...bufferRef.current, key].slice(-KONAMI_CODE.length);
