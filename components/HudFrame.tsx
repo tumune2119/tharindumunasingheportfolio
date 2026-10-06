@@ -64,9 +64,9 @@ export function HudFrame() {
         <span className="hud-bracket bottom-3 right-3 border-b-2 border-r-2" />
 
         {/* Level with the top bracket arms, and clear of the logo below it. */}
-        <div className="hud-readout absolute left-10 top-1 hidden md:block">
+        <div className="hud-readout absolute left-7 top-5 hidden md:block">
           <p>
-            <span className="text-accent">DIR: // </span>
+            <span className="text-accent">DIR: //MUNE// </span>
             <span className="text-foreground">{sitePath(pathname)}</span>
           </p>
         </div>
