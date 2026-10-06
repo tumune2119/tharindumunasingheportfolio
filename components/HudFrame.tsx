@@ -18,9 +18,10 @@ function sectionLabel(pathname: string) {
   return pathname.split("/")[1]?.toUpperCase() || "HOME";
 }
 
-// Viewport chrome for the HUD: a drifting grid behind the page, a scan line
-// sweeping down, corner brackets and live readouts. All decorative, and the
-// readouts are hidden below md so they never cover content on phones.
+// Viewport chrome for the HUD: a drifting grid behind the page with a scan line
+// sweeping down through it, then corner brackets and live readouts on top of
+// everything (including the sticky header). All decorative, and the readouts
+// are hidden below md so they never cover content on phones.
 export function HudFrame() {
   const pathname = usePathname();
   const [clock, setClock] = useState("");
@@ -42,14 +43,14 @@ export function HudFrame() {
 
   return (
     <>
-      <div aria-hidden="true" className="hud-grid pointer-events-none fixed inset-0 -z-10" />
+      <div aria-hidden="true" className="hud-grid pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="hud-scanline absolute inset-x-0" />
+      </div>
 
       <div
         aria-hidden="true"
         className="hud-frame pointer-events-none fixed inset-0 z-60 overflow-hidden"
       >
-        <div className="hud-scanline absolute inset-x-0" />
-
         <span className="hud-bracket left-3 top-3 border-l-2 border-t-2" />
         <span className="hud-bracket right-3 top-3 border-r-2 border-t-2" />
         <span className="hud-bracket bottom-3 left-3 border-b-2 border-l-2" />
