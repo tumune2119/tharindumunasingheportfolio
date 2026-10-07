@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ProjectImage } from "@/lib/projects";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { HudScrollArea } from "./HudScrollArea";
 
 const AUTOPLAY_MS = 4500;
 // How long after a manual click before autoplay resumes — long enough that
@@ -128,10 +129,11 @@ export function ImageCarousel({
           just step through sequentially. Scrolls horizontally on mobile
           instead of wrapping or shrinking illegibly small. */}
       {images.length > 1 && (
-        <div
+        <HudScrollArea
+          axis="x"
           role="tablist"
           aria-label={`${alt} image thumbnails`}
-          className="flex gap-2 overflow-x-auto p-3"
+          className="flex gap-2 p-3"
         >
           {images.map((image, i) => (
             <button
@@ -155,7 +157,7 @@ export function ImageCarousel({
               />
             </button>
           ))}
-        </div>
+        </HudScrollArea>
       )}
     </div>
   );

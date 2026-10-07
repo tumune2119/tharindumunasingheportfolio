@@ -748,46 +748,86 @@ html[data-ui="hud"] .rounded-full:hover {
 
 /* Themed scrollbars for the HUD: a thin accent thumb with chamfered ends on a
    hairline track, instead of the browser default. */
-/* Thin green HUD scrollbars for the page and any scrolling element inside it
-   (the thumbnail strip, for example). The root is matched by the bare
-   attribute selector, because a descendant selector would skip the page's
-   own scrollbar. The step arrows at each end are hidden. */
-[data-ui="hud"],
-[data-ui="hud"] * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary) transparent;
+/*
+  Native scrollbars are hidden on every browser. The page draws its own
+  (components/HudScrollbars.tsx), so the look is the same everywhere. Scrolling
+  still works through the browser: wheel, trackpad, touch and keyboard.
+*/
+html[data-ui="hud"],
+html[data-ui="hud"] * {
+  scrollbar-width: none;
 }
 
-[data-ui="hud"]::-webkit-scrollbar,
-[data-ui="hud"] *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-[data-ui="hud"]::-webkit-scrollbar-track,
-[data-ui="hud"] *::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-[data-ui="hud"]::-webkit-scrollbar-thumb,
-[data-ui="hud"] *::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  opacity: 0.7;
-}
-
-[data-ui="hud"]::-webkit-scrollbar-thumb:hover,
-[data-ui="hud"] *::-webkit-scrollbar-thumb:hover {
-  opacity: 1;
-}
-
-[data-ui="hud"]::-webkit-scrollbar-button,
-[data-ui="hud"] *::-webkit-scrollbar-button,
-[data-ui="hud"]::-webkit-scrollbar-corner,
-[data-ui="hud"] *::-webkit-scrollbar-corner {
+html[data-ui="hud"]::-webkit-scrollbar,
+html[data-ui="hud"] *::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
-  background: transparent;
+}
+
+.hud-sb-rail {
+  position: fixed;
+  z-index: 70;
+  cursor: pointer;
+}
+
+.hud-sb-rail--y {
+  top: 0;
+  right: 0;
+  bottom: 9px;
+  width: 9px;
+}
+
+.hud-sb-rail--x {
+  left: 0;
+  right: 9px;
+  bottom: 0;
+  height: 9px;
+}
+
+.hud-sb-thumb {
+  position: absolute;
+  background: color-mix(in srgb, var(--primary) 22%, var(--background));
+  border: 1px solid var(--primary);
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+  touch-action: none;
+  transition-duration: 140ms;
+}
+
+.hud-sb-thumb--y {
+  right: 0;
+  width: 100%;
+}
+
+.hud-sb-thumb--x {
+  bottom: 0;
+  height: 100%;
+}
+
+/* Rails for inner scroll areas (components/HudScrollArea.tsx). They sit inside
+   the area's wrapper, not across the whole viewport. */
+.hud-inner-rail {
+  position: absolute;
+  z-index: 2;
+}
+
+.hud-inner-rail--x {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9px;
+}
+
+.hud-inner-rail--y {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 9px;
+}
+
+/* Hover only lifts the fill slightly. */
+.hud-sb-thumb:hover {
+  background: color-mix(in srgb, var(--primary) 36%, var(--background));
 }
 
 /* Chamfered HUD controls for the project carousel: square arrows and

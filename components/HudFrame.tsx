@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { AccessibilityBootstrap } from "./AccessibilityControls";
 import { SiteControls } from "./SiteControls";
+import { HudScrollbars } from "./HudScrollbars";
 import { ThemeToggle } from "./ThemeToggle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
@@ -54,6 +55,7 @@ export function HudFrame() {
   return (
     <>
       <AccessibilityBootstrap />
+      <HudScrollbars />
 
       <div aria-hidden="true" className="hud-grid pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="hud-scanline absolute inset-x-0" />

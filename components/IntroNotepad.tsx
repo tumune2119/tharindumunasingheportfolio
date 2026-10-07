@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useWindowDrag } from "@/lib/useWindowDrag";
+import { HudScrollArea } from "./HudScrollArea";
 
 // A notepad window that behaves like a command prompt, opened from the intro
 // desktop's Start menu. Every command is scripted and purely cosmetic: "run"
@@ -177,7 +178,7 @@ export function IntroNotepad({
         </div>
       </div>
       <div className="flex h-80 w-[min(90vw,36rem)] flex-col text-caption">
-        <div ref={logRef} className="flex-1 space-y-1 overflow-y-auto p-4" aria-live="polite">
+        <HudScrollArea ref={logRef} axis="y" wrapperClassName="flex-1 min-h-0" className="h-full space-y-1 p-4" aria-live="polite">
           {history.map((line, i) => (
             <p
               key={i}
@@ -186,7 +187,7 @@ export function IntroNotepad({
               {line.kind === "in" ? `C:\\THARINDU_MUNASINGHE> ${line.text}` : line.text}
             </p>
           ))}
-        </div>
+        </HudScrollArea>
         <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-primary/30 px-4 py-3">
           <label htmlFor="intro-command" className="shrink-0 text-primary">
             C:\THARINDU_MUNASINGHE&gt;
