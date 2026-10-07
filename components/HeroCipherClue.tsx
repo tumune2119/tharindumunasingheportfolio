@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { HERO_CIPHER_MESSAGE } from "@/lib/heroCipherMessage";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import {
+  isEasterEggPlaying,
+  playEasterEgg,
+  stopEasterEgg,
+  subscribeEasterEgg,
+} from "@/lib/siteMusic";
 
 const TYPE_SPEED_MS = 26;
-// Not shipped with the repo — see the comment on toggleThemeSong below.
-const THEME_SONG_SRC = "/audio/gravity-falls-theme.mp3";
 
 // The second clue only reaches the console once someone actually clicks
 // the revealed cipher text below — not automatically on every page load,
@@ -32,35 +36,17 @@ export function HeroCipherClue() {
   const [songPlaying, setSongPlaying] = useState(false);
   const reducedMotion = useReducedMotion();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // One Audio instance per component, reused across clicks — first click
-  // plays it from the start, the next click stops it (pause + rewind, not
-  // just pause, so a later click always starts fresh), and so on.
-  // A copyrighted song can't be bundled into this repo — there's no file
-  // at THEME_SONG_SRC by default. Drop your own legally-obtained clip at
-  // public/audio/gravity-falls-theme.mp3 to enable it; until then this
-  // just fails silently (a missing/blocked audio file doesn't break the
-  // console clue below, which still fires either way).
+  // The track itself lives in lib/siteMusic, so it keeps playing across
+  // components and ignores the site's mute setting. Click once to start, click
+  // again to stop. It also stops if the card unmounts. The song file isn't
+  // shipped with the repo; drop your own legally-obtained clip at
+  // public/audio/gravity-falls-theme.mp3. Without it, playback fails silently.
   function toggleThemeSong() {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(THEME_SONG_SRC);
-      audioRef.current.volume = 0.6;
-      audioRef.current.addEventListener("ended", () => setSongPlaying(false));
-    }
-    const audio = audioRef.current;
-    try {
-      if (songPlaying) {
-        audio.pause();
-        audio.currentTime = 0;
-        setSongPlaying(false);
-      } else {
-        audio.currentTime = 0;
-        void audio.play().catch(() => {});
-        setSongPlaying(true);
-      }
-    } catch {
-      // Audio API unavailable — nothing to do.
+    if (isEasterEggPlaying()) {
+      stopEasterEgg();
+    } else {
+      playEasterEgg();
     }
   }
 
@@ -69,11 +55,14 @@ export function HeroCipherClue() {
     toggleThemeSong();
   }
 
-  // Stop the song if this card unmounts (e.g. navigating away) while it's
-  // still playing — it shouldn't keep going on a page that's no longer here.
+  // Keeps the button's pressed state in step with the shared track, including
+  // when it ends by itself. Stops it if this card unmounts, so it doesn't keep
+  // playing on a page that's gone.
   useEffect(() => {
+    const unsubscribe = subscribeEasterEgg(() => setSongPlaying(isEasterEggPlaying()));
     return () => {
-      audioRef.current?.pause();
+      unsubscribe();
+      if (isEasterEggPlaying()) stopEasterEgg();
     };
   }, []);
 

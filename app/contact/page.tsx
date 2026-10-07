@@ -31,10 +31,7 @@ export default function ContactPage() {
           <dl className="mt-6 flex flex-col gap-4">
             {contactDetails.map((item) => (
               <div key={item.label}>
-                <dt className="flex items-center gap-1.5 text-overline text-muted-foreground">
-                  <item.icon className="h-3.5 w-3.5" />
-                  {item.label}
-                </dt>
+                <dt className="text-overline text-muted-foreground">{item.label}</dt>
                 <dd className="mt-1">
                   {item.href ? (
                     <a

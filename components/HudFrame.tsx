@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
+import { AccessibilityBootstrap } from "./AccessibilityControls";
+import { SettingsWindow } from "./SettingsWindow";
 import { ThemeToggle } from "./ThemeToggle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
@@ -34,6 +36,7 @@ export function HudFrame() {
   const pathname = usePathname();
   const [clock, setClock] = useState("");
   const [scrollPercent, setScrollPercent] = useState(0);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => setClock(clockFormat.format(new Date())), 1000);
@@ -51,6 +54,8 @@ export function HudFrame() {
 
   return (
     <>
+      <AccessibilityBootstrap />
+
       <div aria-hidden="true" className="hud-grid pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="hud-scanline absolute inset-x-0" />
       </div>
@@ -98,6 +103,18 @@ export function HudFrame() {
           <span className="text-foreground">{sitePath(pathname)}</span>
         </p>
       </div>
+
+      {/* Site options, under the DIR readout. */}
+      <button
+        type="button"
+        onClick={() => setSettingsOpen(true)}
+        aria-haspopup="dialog"
+        className="hud-chip fixed left-7 top-12 z-60 hidden md:inline-flex"
+      >
+        Settings
+      </button>
+
+      {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
 
       {/* Sits under the ONLINE tag in the top-right corner. The frame above
           ignores the pointer, so this wrapper turns it back on for the

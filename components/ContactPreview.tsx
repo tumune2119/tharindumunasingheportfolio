@@ -29,7 +29,7 @@ export function ContactPreview() {
       </div>
 
       <p className="text-body mt-6 text-muted-foreground">
-        Got a project, a question, or just want to say hi? I read every
+        Got a project, a question, saw bug in the portfolio or just want to say hi? I read every
         message and reply from tumune2119@gmail.com.
       </p>
 

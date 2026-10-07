@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useWindowDrag } from "@/lib/useWindowDrag";
 
 // A notepad window that behaves like a command prompt, opened from the intro
 // desktop's Start menu. Every command is scripted and purely cosmetic: "run"
@@ -152,14 +153,17 @@ export function IntroNotepad({
     runCommand(raw);
   }
 
+  const drag = useWindowDrag();
+
   return (
     <div
       role="dialog"
       aria-label="CLI"
       className="hud-window fixed left-1/2 top-1/2 z-210 -translate-x-1/2 -translate-y-1/2"
+      style={drag.style}
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="hud-window-bar">
+      <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
         <span>CLI · THARINDU_MUNASINGHE</span>
         <div className="hud-window-controls">
           <button

@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { IntroNotepad } from "@/components/IntroNotepad";
+import { SettingsWindow } from "@/components/SettingsWindow";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useTheme } from "@/lib/useTheme";
+import { useWindowDrag } from "@/lib/useWindowDrag";
 
 // First-visit intro: a desktop with a THARINDU_MUNASINGHE folder, a window with one
 // RUN_PORTFOLIO.EXE file, and a terminal that prints a burst of fake boot
@@ -54,6 +56,7 @@ export function IntroGate() {
   const [notepadOpen, setNotepadOpen] = useState(false);
   const [shutdown, setShutdown] = useState(false);
   const [readmeOpen, setReadmeOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
@@ -164,7 +167,10 @@ export function IntroGate() {
       id="intro-root"
       className="intro-desktop fixed inset-0 z-200 flex flex-col overflow-hidden bg-background font-mono text-foreground"
     >
+      {/* Same scan wipe as the site grid, drawn behind the desktop content. */}
+      <div aria-hidden="true" className="hud-scanline pointer-events-none absolute inset-x-0" />
       <div className="relative flex-1">
+        <IntroHero />
         {phase === "desktop" && (
           <DesktopFolder
             onOpen={() => setPhase("folder")}
@@ -187,6 +193,8 @@ export function IntroGate() {
           ))}
 
         {readmeOpen && <ReadmeWindow onClose={() => setReadmeOpen(false)} />}
+
+        {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
 
         {phase === "terminal" && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
@@ -214,6 +222,10 @@ export function IntroGate() {
           }}
           onOpenSite={finish}
           onShutdown={handleShutdown}
+          onSettings={() => {
+            setMenuOpen(false);
+            setSettingsOpen(true);
+          }}
         />
       )}
 
@@ -230,8 +242,10 @@ function StartMenu({
   onTheme,
   onOpenSite,
   onShutdown,
+  onSettings,
 }: {
   isDark: boolean;
+  onSettings: () => void;
   onNotepad: () => void;
   onTheme: () => void;
   onOpenSite: () => void;
@@ -258,6 +272,10 @@ function StartMenu({
       <button type="button" role="menuitem" onClick={onOpenSite} className={itemClass}>
         <span>Open portfolio</span>
         <span aria-hidden="true" className="text-accent">↵</span>
+      </button>
+      <button type="button" role="menuitem" onClick={onSettings} className={itemClass}>
+        <span>Settings</span>
+        <span aria-hidden="true" className="text-accent">⚙</span>
       </button>
       <div className="my-1 h-px bg-primary/30" aria-hidden="true" />
       <button type="button" role="menuitem" onClick={onShutdown} className={itemClass}>
@@ -336,6 +354,28 @@ function DesktopIcon({
   );
 }
 
+// Centred hero on the intro desktop: the mint badge flips like a coin once per
+// scan wipe, with the title and name bar under it. Decorative, except the name,
+// which is plain text for screen readers.
+function IntroHero() {
+  return (
+    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
+      <div className="intro-coin-wrap">
+        <div className="intro-coin">
+          <div className="intro-coin-face">
+            <img src="/hud/mint-badge.svg" alt="" aria-hidden="true" className="h-full w-full" />
+          </div>
+          <div className="intro-coin-face intro-coin-face--back">
+            <img src="/hud/mint-badge.svg" alt="" aria-hidden="true" className="h-full w-full" />
+          </div>
+        </div>
+      </div>
+      <p className="intro-hero-title" aria-hidden="true">U.I. / U.X.</p>
+      <p className="intro-hero-bar">Tharindu Munasinghe</p>
+    </div>
+  );
+}
+
 function DesktopFolder({
   onOpen,
   onOpenReadme,
@@ -347,7 +387,7 @@ function DesktopFolder({
 
   return (
     <div className="absolute left-6 top-6 md:left-10 md:top-10">
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4">
         <DesktopIcon
           label="THARINDU_MUNASINGHE"
           selected={selectedId === "folder"}
@@ -419,10 +459,12 @@ function LoginWindow({
     setPassword("");
   }
 
+  const drag = useWindowDrag();
+
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window">
-        <div className="hud-window-bar">
+      <div className="hud-window" style={drag.style}>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE · LOGIN</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
@@ -477,10 +519,12 @@ function LoginWindow({
 }
 
 function ReadmeWindow({ onClose }: { onClose: () => void }) {
+  const drag = useWindowDrag();
+
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window">
-        <div className="hud-window-bar">
+      <div className="hud-window" style={drag.style}>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>README.TXT</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close README" className="hud-window-btn">
@@ -618,10 +662,12 @@ function FolderWindow({
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const drag = useWindowDrag();
+
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window">
-        <div className="hud-window-bar">
+      <div className="hud-window" style={drag.style}>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
@@ -677,10 +723,12 @@ function TerminalWindow({
     return () => clearTimeout(id);
   }, [shown, lines.length, onDone, reducedMotion]);
 
+  const drag = useWindowDrag();
+
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window">
-        <div className="hud-window-bar">
+      <div className="hud-window" style={drag.style}>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>C:\THARINDU_MUNASINGHE\RUN_PORTFOLIO.EXE</span>
         </div>
         <div className="space-y-1 p-5 text-caption leading-relaxed" aria-live="polite">
