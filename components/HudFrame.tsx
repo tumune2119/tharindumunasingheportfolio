@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
 import { AccessibilityBootstrap } from "./AccessibilityControls";
-import { SettingsWindow } from "./SettingsWindow";
+import { SiteControls } from "./SiteControls";
 import { ThemeToggle } from "./ThemeToggle";
 
 const clockFormat = new Intl.DateTimeFormat("en-GB", {
@@ -36,7 +36,6 @@ export function HudFrame() {
   const pathname = usePathname();
   const [clock, setClock] = useState("");
   const [scrollPercent, setScrollPercent] = useState(0);
-  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => setClock(clockFormat.format(new Date())), 1000);
@@ -104,17 +103,8 @@ export function HudFrame() {
         </p>
       </div>
 
-      {/* Site options, under the DIR readout. */}
-      <button
-        type="button"
-        onClick={() => setSettingsOpen(true)}
-        aria-haspopup="dialog"
-        className="hud-chip fixed left-7 top-12 z-60 hidden md:inline-flex"
-      >
-        Settings
-      </button>
-
-      {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
+      {/* Site options: always visible, under the DIR readout on desktop. */}
+      <SiteControls />
 
       {/* Sits under the ONLINE tag in the top-right corner. The frame above
           ignores the pointer, so this wrapper turns it back on for the

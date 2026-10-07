@@ -107,7 +107,7 @@ function SettingRow({
 }
 
 // Icons are drawn with currentColor so they follow the button's colour.
-function PauseIcon() {
+export function PauseIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
       <rect x="6" y="5" width="4" height="14" />
@@ -116,7 +116,7 @@ function PauseIcon() {
   );
 }
 
-function PlayIcon() {
+export function PlayIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
       <path d="M7 5l12 7-12 7z" />
@@ -125,7 +125,7 @@ function PlayIcon() {
 }
 
 // Speaker with sound waves: shown while music is playing, so the button mutes.
-function MutedIcon() {
+export function MutedIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -144,7 +144,7 @@ function MutedIcon() {
 }
 
 // Speaker with a cross: shown while music is muted, so the button unmutes.
-function UnmutedIcon() {
+export function UnmutedIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
