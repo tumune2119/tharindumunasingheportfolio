@@ -162,7 +162,10 @@ export function IntroGate() {
       {/* Same scan wipe as the site grid, drawn behind the desktop content. */}
       <div aria-hidden="true" className="hud-scanline pointer-events-none absolute inset-x-0" />
       <div className="relative flex-1">
-        <IntroHero />
+        {/* Hidden behind any open window so the badge and name bar don't
+            clash with the folder login, the terminal, the README or
+            Settings — all of which are centred too. */}
+        {phase === "desktop" && !readmeOpen && !settingsOpen && <IntroHero />}
         {phase === "desktop" && (
           <DesktopFolder
             onOpen={() => setPhase("folder")}
