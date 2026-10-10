@@ -6,8 +6,14 @@ import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 // events) so touch works too. Presses on the window's buttons are ignored, so
 // the close control still just closes. The offset is applied as a transform,
 // so the window's own layout and Tailwind classes stay as they are.
-export function useWindowDrag() {
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+//
+// `initialOffset` nudges a window off dead-centre as soon as it opens — every
+// window centres on the same spot by default, so a window meant to open
+// *alongside* another (e.g. a file's window opened from its still-open
+// parent folder) would otherwise land exactly on top of it, out of reach
+// until dragged. The visitor can still drag it anywhere afterwards.
+export function useWindowDrag(initialOffset: { x: number; y: number } = { x: 0, y: 0 }) {
+  const [offset, setOffset] = useState(initialOffset);
   const start = useRef<{ pointerX: number; pointerY: number; x: number; y: number } | null>(null);
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {

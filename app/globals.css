@@ -646,6 +646,7 @@ html[data-ui="hud"] a[aria-current="page"] {
     color-mix(in srgb, var(--primary) 18%, transparent)
   );
   animation: hud-scan 7s linear infinite;
+  transition: opacity 200ms ease-in-out;
 }
 
 @keyframes hud-scan {
@@ -904,6 +905,69 @@ html[data-ui="hud"] *::-webkit-scrollbar {
     0 100%,
     0 var(--hud-cut-lg)
   );
+}
+
+/* Redaction bar (components/IntroGate.tsx, CvWindow). No real text sits behind
+   it — the point is the value never reaches the page, not that CSS hides it. */
+.hud-redact {
+  display: inline-block;
+  height: 0.75em;
+  vertical-align: -0.1em;
+  background: color-mix(in srgb, var(--foreground) 85%, transparent);
+}
+
+/* "Classified" corner stamp on the redacted CV. */
+.hud-stamp {
+  position: absolute;
+  top: 2.75rem;
+  right: 1.25rem;
+  z-index: 1;
+  padding: 0.2rem 0.75rem;
+  font-family: var(--hud-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--error);
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  border: 1px solid var(--error);
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+
+/* ID photo on the redacted dossier (components/IntroGate.tsx, CvWindow). A
+   green surveillance-style duotone, with a redaction bar over the eyes. The
+   bar's position is tuned to the one photo this ships with. */
+.hud-photo-frame {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent);
+  clip-path: polygon(
+    var(--hud-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut)),
+    calc(100% - var(--hud-cut)) 100%,
+    0 100%,
+    0 var(--hud-cut)
+  );
+}
+
+.hud-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) sepia(1) hue-rotate(68deg) saturate(2.4) brightness(0.85) contrast(1.1);
+}
+
+.hud-eye-redact {
+  position: absolute;
+  top: 37%;
+  left: 12%;
+  width: 76%;
+  height: 11%;
+  background: #0a0a0a;
 }
 
 .hud-window-bar {
@@ -1355,13 +1419,20 @@ html[data-intro="pending"] body > :not(#intro-root) {
 */
 html[data-motion="paused"] :is(
     .hud-grid,
-    .hud-scanline,
     .hud-status-dot,
     .hud-cursor,
     .intro-coin,
     .animate-aura-drift
   ),
 html[data-motion="paused"] .text-overline::after {
+  animation-play-state: paused !important;
+}
+
+/* The scan wipe hides instead of freezing mid-sweep — a frozen band looks
+   like a UI glitch, not a paused effect. It fades out on pause and fades
+   back in, resuming its sweep, when unpaused. */
+html[data-motion="paused"] .hud-scanline {
+  opacity: 0;
   animation-play-state: paused !important;
 }
 

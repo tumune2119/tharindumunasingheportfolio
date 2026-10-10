@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { HudScrollArea } from "@/components/HudScrollArea";
 import { IntroNotepad } from "@/components/IntroNotepad";
 import { SettingsWindow } from "@/components/SettingsWindow";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
@@ -57,6 +58,8 @@ export function IntroGate() {
   const [readmeOpen, setReadmeOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [cvOpen, setCvOpen] = useState(false);
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
@@ -175,10 +178,18 @@ export function IntroGate() {
 
         {phase === "folder" &&
           (unlocked ? (
-            <FolderWindow
-              onClose={() => setPhase("desktop")}
-              onRun={() => setPhase("terminal")}
-            />
+            // Hidden (not just covered) while DOSSIER or EVIDENCE is open: both
+            // of those also centre themselves, so leaving this one up too would
+            // place one on top of the other instead of a window you can reach.
+            !cvOpen &&
+            !evidenceOpen && (
+              <FolderWindow
+                onClose={() => setPhase("desktop")}
+                onRun={() => setPhase("terminal")}
+                onOpenCv={() => setCvOpen(true)}
+                onOpenEvidence={() => setEvidenceOpen(true)}
+              />
+            )
           ) : (
             <LoginWindow
               onClose={() => setPhase("desktop")}
@@ -189,6 +200,10 @@ export function IntroGate() {
         {readmeOpen && <ReadmeWindow onClose={() => setReadmeOpen(false)} />}
 
         {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
+
+        {evidenceOpen && <EvidenceWindow onClose={() => setEvidenceOpen(false)} />}
+
+        {cvOpen && <CvWindow onClose={() => setCvOpen(false)} />}
 
         {phase === "terminal" && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
@@ -343,7 +358,10 @@ function DesktopIcon({
       }}
     >
       {children}
-      <span>{label}</span>
+      {/* break-words: long identifiers like DOSSIER.CLASSIFIED have no spaces
+          to wrap at, so without it they'd overflow the fixed-width column
+          and run into the next icon's label instead of wrapping. */}
+      <span className="w-full text-center wrap-break-word">{label}</span>
     </button>
   );
 }
@@ -456,8 +474,8 @@ function LoginWindow({
   const drag = useWindowDrag();
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window" style={drag.style}>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto" style={drag.style}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE · LOGIN</span>
           <div className="hud-window-controls">
@@ -503,9 +521,14 @@ function LoginWindow({
               {error}
             </p>
           )}
-          <button type="submit" className="hud-cta">
-            Log in
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="submit" className="hud-cta">
+              Log in
+            </button>
+            <span className="text-caption text-muted-foreground">
+              See README.TXT for mission data.
+            </span>
+          </div>
         </form>
       </div>
     </div>
@@ -516,8 +539,8 @@ function ReadmeWindow({ onClose }: { onClose: () => void }) {
   const drag = useWindowDrag();
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window" style={drag.style}>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto" style={drag.style}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>README.TXT</span>
           <div className="hud-window-controls">
@@ -584,17 +607,21 @@ function Taskbar({
 function FolderWindow({
   onClose,
   onRun,
+  onOpenCv,
+  onOpenEvidence,
 }: {
   onClose: () => void;
   onRun: () => void;
+  onOpenCv: () => void;
+  onOpenEvidence: () => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const drag = useWindowDrag();
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window" style={drag.style}>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto" style={drag.style}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE</span>
           <div className="hud-window-controls">
@@ -612,9 +639,238 @@ function FolderWindow({
           >
             <ExeIcon className="h-12 w-12 text-primary" />
           </DesktopIcon>
+          <DesktopIcon
+            label="DOSSIER.CLASSIFIED"
+            selected={selectedId === "cv"}
+            onSelect={() => setSelectedId("cv")}
+            onOpen={onOpenCv}
+          >
+            <ClassifiedIcon className="h-12 w-12 text-primary" />
+          </DesktopIcon>
+          <DesktopIcon
+            label="EVIDENCE"
+            selected={selectedId === "evidence"}
+            onSelect={() => setSelectedId("evidence")}
+            onOpen={onOpenEvidence}
+          >
+            <FolderIcon className="h-12 w-12 text-primary" />
+          </DesktopIcon>
         </div>
       </div>
     </div>
+  );
+}
+
+// A locked-looking file icon for the classified CV, reusing README's document
+// shape with a small padlock in place of text lines.
+function ClassifiedIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinejoin="round"
+      strokeLinecap="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 4h18l8 8v32H12z" />
+      <path d="M30 4v8h8" />
+      <rect x="18" y="26" width="12" height="9" rx="1" />
+      <path d="M20 26v-3a4 4 0 018 0v3" />
+    </svg>
+  );
+}
+
+// Reserved for photos and video clips to be added later — an empty
+// evidence box for now, in the same window style as the others.
+function EvidenceWindow({ onClose }: { onClose: () => void }) {
+  const drag = useWindowDrag();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto" style={drag.style}>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
+          <span>EVIDENCE</span>
+          <div className="hud-window-controls">
+            <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
+              ×
+            </button>
+          </div>
+        </div>
+        <div className="space-y-2 p-6 text-center text-caption">
+          <p className="hud-label">// Box empty</p>
+          <p className="text-muted-foreground">No items logged yet. Check back later.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// A redacted "dossier" built from the real CV (public/Tharindu-Munasinghe-CV.pdf),
+// with personal contact details and references' contact details replaced by
+// redaction bars — not just hidden with CSS, the real values never reach the
+// page at all. Purely in-fiction: the actual CV stays downloadable from the
+// Contact page as normal.
+function CvWindow({ onClose }: { onClose: () => void }) {
+  const drag = useWindowDrag();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto relative w-[min(92vw,34rem)]" style={drag.style}>
+        <span className="hud-stamp" aria-hidden="true">
+          Classified
+        </span>
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
+          <span>DOSSIER.CLASSIFIED — EYES ONLY</span>
+          <div className="hud-window-controls">
+            <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
+              ×
+            </button>
+          </div>
+        </div>
+        {/* A definite height (not max-height): the scroller inside fills it via
+            absolute + inset-0, which only works against a wrapper whose own
+            height doesn't depend on that same child's content. */}
+        <HudScrollArea axis="y" wrapperClassName="h-[min(70vh,32rem)]" className="h-full space-y-5 p-6 text-caption leading-relaxed">
+          <div className="flex gap-4">
+            <div className="hud-photo-frame shrink-0">
+              <img src="/hud/dossier-photo.png" alt="" aria-hidden="true" className="hud-photo" />
+              <span className="hud-eye-redact" aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="text-h4">Tharindu Munasinghe</h2>
+              <p className="text-primary">AKA: MuNe</p>
+              <p className="text-muted-foreground">
+                Senior UI/UX Engineer · Product Designer · Design Systems &amp; Front-End Specialist
+              </p>
+              <p className="mt-2">
+                <Redacted width="7ch" /> <Redacted width="9ch" /> <Redacted width="6ch" />
+                <br />
+                <Redacted width="7ch" /> · <Redacted width="9ch" />
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="hud-label">// Subject file</p>
+            <ul className="mt-1 space-y-1">
+              <li>
+                CASE #: <Redacted width="6ch" />
+                -2026
+              </li>
+              <li>
+                CLEARANCE: <Redacted width="5ch" />
+              </li>
+              <li>
+                HANDLER: <Redacted width="8ch" />
+              </li>
+              <li>
+                LAST SIGNAL: <Redacted width="6ch" />
+              </li>
+              <li>STATUS: ACTIVE</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="hud-label">// Profile</p>
+            <p className="mt-1">
+              <Redacted width="3ch" />+ years operating under long-term cover across the full{" "}
+              <Redacted width="7ch" /> lifecycle — <Redacted width="8ch" />, information architecture
+              and <Redacted width="9ch" /> through to <Redacted width="11ch" /> execution in the
+              field. Known for directing <Redacted width="7ch" /> strategy and{" "}
+              <Redacted width="8ch" /> tradecraft, and for <Redacted width="8ch" /> junior assets
+              drawn into the operation along the way.
+            </p>
+          </div>
+
+          <div>
+            <p className="hud-label">// Mission log</p>
+            <div className="mt-1 space-y-3">
+              <p>
+                <span className="text-foreground">MISSION — Mar 2025 – Aug 2026.</span> Embedded at{" "}
+                <Redacted width="6ch" /> under deep cover as &ldquo;Senior <Redacted width="6ch" />
+                .&rdquo; Directed a full <Redacted width="8ch" /> overhaul from the ground up,
+                running a cell of <Redacted width="4ch" /> operatives through <Redacted width="6ch" />{" "}
+                and <Redacted width="5ch" /> protocols. Kept <Redacted width="7ch" /> leadership
+                briefed to hold the operation&apos;s cover story in line with{" "}
+                <Redacted width="6ch" /> interests. Outcome: <Redacted width="6ch" />.
+              </p>
+              <p>
+                <span className="text-foreground">MISSION — Mar 2023 – Mar 2025.</span> Built and
+                field-tested <Redacted width="6ch" /> interfaces under the <Redacted width="4ch" />,{" "}
+                <Redacted width="5ch" /> and <Redacted width="6ch" /> toolchain, every pass verified
+                for <Redacted width="7ch" /> compliance before release. Ran repeated{" "}
+                <Redacted width="8ch" /> on unwitting test subjects, adjusting the cover identity
+                on <Redacted width="6ch" /> intel gathered in the field. Extraction from this
+                posting was <Redacted width="5ch" />.
+              </p>
+              <p>
+                <span className="text-foreground">MISSION — Dec 2021 – Mar 2023.</span> Assigned to
+                support operations on core <Redacted width="6ch" /> infrastructure, applying{" "}
+                <Redacted width="7ch" /> tradecraft to blend design decisions into the daily cover
+                work. Assisted in gathering <Redacted width="6ch" /> intelligence to validate calls
+                made earlier in the <Redacted width="5ch" /> cycle.
+              </p>
+              <p>
+                <span className="text-foreground">MISSION — Jun 2021 – Dec 2021.</span> Entry-level
+                placement, shadowing senior <Redacted width="6ch" /> through <Redacted width="7ch" />{" "}
+                and prototyping drills. Clearance at the time: <Redacted width="5ch" />. Field
+                performance review: <Redacted width="6ch" />.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="hud-label">// Known locations</p>
+            <ul className="mt-1 space-y-1.5">
+              <li>
+                <Redacted width="6ch" /> — Colombo, Sri Lanka · last visited: <Redacted width="5ch" />
+              </li>
+              <li>
+                SLIIT, Malabe — Sri Lanka · last visited: <Redacted width="5ch" />
+              </li>
+              <li>
+                Trinity College — Kandy, Sri Lanka · last visited: <Redacted width="5ch" />
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="hud-label">// Known associates</p>
+            <ul className="mt-1 space-y-2">
+              <li>
+                Sumala Mannage — <Redacted width="6ch" />, Cybersecurity Operations
+                <br />
+                <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
+              </li>
+              <li>
+                Charitha Nanayakkara — <Redacted width="8ch" /> Manager
+                <br />
+                <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
+              </li>
+            </ul>
+          </div>
+
+          <div className="border-t border-primary/20 pt-4">
+            <p className="text-muted-foreground">
+              This copy is redacted for the story. For the full file, run RUN_PORTFOLIO.EXE.
+            </p>
+          </div>
+        </HudScrollArea>
+      </div>
+    </div>
+  );
+}
+
+// A black redaction bar. No real value is ever passed in — the point is that
+// what's underneath never reaches the page, not that it's merely hidden by CSS.
+function Redacted({ width }: { width: string }) {
+  return (
+    <span className="hud-redact" style={{ width }}>
+      <span className="sr-only">redacted</span>
+    </span>
   );
 }
 
@@ -643,8 +899,8 @@ function TerminalWindow({
   const drag = useWindowDrag();
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window" style={drag.style}>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div className="hud-window pointer-events-auto" style={drag.style}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>C:\THARINDU_MUNASINGHE\RUN_PORTFOLIO.EXE</span>
         </div>

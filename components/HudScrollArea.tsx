@@ -106,10 +106,19 @@ export const HudScrollArea = forwardRef<HTMLDivElement, Props>(function HudScrol
     }
   }
 
-  const scrollerOverflow = axis === "x" ? "overflow-x-auto overflow-y-hidden" : "overflow-y-auto overflow-x-hidden";
+  // The y-axis scroller is pinned to fill its (position: relative) wrapper via
+  // absolute + inset-0, rather than height: 100% — a percentage height needs
+  // its parent's height to be "specified", and a flex item sized only by
+  // max-height/flex-basis doesn't reliably count as that in every browser.
+  // Inset-filling sidesteps the question entirely. The x-axis scroller stays
+  // in normal flow, since its wrapper is meant to size to its content.
+  const scrollerOverflow =
+    axis === "x"
+      ? "overflow-x-auto overflow-y-hidden"
+      : "absolute inset-0 overflow-y-auto overflow-x-hidden";
 
   return (
-    <div className={`relative ${wrapperClassName}`}>
+    <div className={`relative overflow-hidden ${wrapperClassName}`}>
       <div ref={setRefs} onScroll={measure} className={`${scrollerOverflow} ${className}`} {...rest}>
         {children}
       </div>
