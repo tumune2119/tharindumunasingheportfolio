@@ -2,19 +2,35 @@
 
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 
-// Lets a window be dragged by its title bar. Pointer events (rather than mouse
-// events) so touch works too. Presses on the window's buttons are ignored, so
-// the close control still just closes. The offset is applied as a transform,
-// so the window's own layout and Tailwind classes stay as they are.
+// Shared across every window on the page: whichever one was interacted with
+// most recently claims the next number, so it paints above the rest — the
+// same "click to bring forward" rule a real window manager uses. Starts well
+// clear of the fixed overlay z-indexes used elsewhere (the intro root, the
+// Settings backdrop, and so on), which all stay in the hundreds.
+let frontCounter = 1;
+
+// Lets a window be dragged by its title bar, and brought to the front by a
+// press anywhere on it. Pointer events (rather than mouse events) so touch
+// works too. Presses on the window's buttons don't start a drag, so the
+// close control still just closes — they still bring the window forward.
+// The offset is applied as a transform, so the window's own layout and
+// Tailwind classes stay as they are.
 //
 // `initialOffset` nudges a window off dead-centre as soon as it opens — every
 // window centres on the same spot by default, so a window meant to open
 // *alongside* another (e.g. a file's window opened from its still-open
-// parent folder) would otherwise land exactly on top of it, out of reach
-// until dragged. The visitor can still drag it anywhere afterwards.
+// parent folder) would otherwise land exactly on top of it. Between this and
+// bringing a window forward on click, anything can still be reached even
+// when several windows end up overlapping — the same as dragging one aside
+// on a real desktop.
 export function useWindowDrag(initialOffset: { x: number; y: number } = { x: 0, y: 0 }) {
   const [offset, setOffset] = useState(initialOffset);
+  const [front, setFront] = useState(() => frontCounter++);
   const start = useRef<{ pointerX: number; pointerY: number; x: number; y: number } | null>(null);
+
+  function bringToFront() {
+    setFront(frontCounter++);
+  }
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0) return;
@@ -47,12 +63,20 @@ export function useWindowDrag(initialOffset: { x: number; y: number } = { x: 0, 
   return {
     style: {
       transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
+      zIndex: front,
     } as CSSProperties,
     handleProps: {
       onPointerDown: handlePointerDown,
       onPointerMove: handlePointerMove,
       onPointerUp: handlePointerEnd,
       onPointerCancel: handlePointerEnd,
+    },
+    // Spread onto the window's own root element (not just its title bar), so
+    // a press anywhere on it — including where another window currently
+    // covers part of it — brings it forward without otherwise interfering
+    // with clicks on whatever's inside.
+    rootProps: {
+      onPointerDownCapture: bringToFront,
     },
   };
 }

@@ -914,6 +914,20 @@ html[data-ui="hud"] *::-webkit-scrollbar {
   height: 0.75em;
   vertical-align: -0.1em;
   background: color-mix(in srgb, var(--foreground) 85%, transparent);
+  transform-origin: left center;
+  animation: hud-redact-in 260ms ease-out both;
+}
+
+/* Stamped on, like a censor bar swept across the line — plays every time the
+   bar mounts, so it replays whenever the dossier is reopened. An entrance
+   animation, not an ambient one, so it isn't touched by Pause animations. */
+@keyframes hud-redact-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* "Classified" corner stamp on the redacted CV. */
@@ -959,6 +973,13 @@ html[data-ui="hud"] *::-webkit-scrollbar {
   height: 100%;
   object-fit: cover;
   filter: grayscale(1) sepia(1) hue-rotate(68deg) saturate(2.4) brightness(0.85) contrast(1.1);
+}
+
+/* Same green duotone family as the dossier photo, but lighter — these are
+   viewed larger, so a softer tint keeps the evidence readable instead of
+   crushing it. */
+.hud-evidence-photo {
+  filter: grayscale(1) sepia(0.6) hue-rotate(70deg) saturate(1.8) brightness(0.95) contrast(1.05);
 }
 
 .hud-eye-redact {

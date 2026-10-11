@@ -20,8 +20,6 @@ import { useWindowDrag } from "@/lib/useWindowDrag";
 // yet and this isn't a reload, so the site stays hidden until this component
 // takes over. A reload skips the intro and lands on the home page.
 
-type Phase = "desktop" | "folder" | "terminal" | null;
-
 const LINE_MS = 240;
 const HOLD_MS = 900;
 
@@ -51,34 +49,54 @@ function buildTerminalLines(): string[] {
 }
 
 export function IntroGate() {
-  const [phase, setPhase] = useState<Phase>(null);
+  // Every window is its own independent boolean (or, for evidence photos, a
+  // set of ids) instead of one exclusive "phase" — that was the earlier
+  // design, and it meant opening one window could only replace another, never
+  // sit alongside it. Now opening any window leaves everything else, desktop
+  // icons included, exactly as it was.
+  const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notepadOpen, setNotepadOpen] = useState(false);
   const [shutdown, setShutdown] = useState(false);
   const [readmeOpen, setReadmeOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [folderOpen, setFolderOpen] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [cvOpen, setCvOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [openPhotos, setOpenPhotos] = useState<ReadonlySet<string>>(new Set());
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
+  function openPhoto(id: string) {
+    setOpenPhotos((current) => new Set(current).add(id));
+  }
+
+  function closePhoto(id: string) {
+    setOpenPhotos((current) => {
+      const next = new Set(current);
+      next.delete(id);
+      return next;
+    });
+  }
+
   useEffect(() => {
     if (document.documentElement.dataset.intro === "pending") {
-      setPhase("desktop");
+      setOpen(true);
     }
   }, []);
 
   // Locks page scroll while the intro is up.
   useEffect(() => {
-    if (!phase) return;
+    if (!open) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [phase]);
+  }, [open]);
 
   const finish = useCallback(() => {
     document.documentElement.removeAttribute("data-intro");
@@ -87,13 +105,13 @@ export function IntroGate() {
     } catch {
       // Storage blocked: the intro may replay next time, which is harmless.
     }
-    setPhase(null);
+    setOpen(false);
   }, []);
 
   // Escape closes the innermost thing open (the Start menu, then Notepad).
   // It does not skip the intro, so it can't end a session by accident.
   useEffect(() => {
-    if (!phase) return;
+    if (!open) return;
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       if (menuOpen) setMenuOpen(false);
@@ -101,7 +119,7 @@ export function IntroGate() {
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [phase, menuOpen, notepadOpen]);
+  }, [open, menuOpen, notepadOpen]);
 
   // Clicking anywhere outside the Start menu or its button closes the menu.
   useEffect(() => {
@@ -115,14 +133,23 @@ export function IntroGate() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [menuOpen]);
 
-  // The top-left readout reopens the desktop with its Start menu open, so the
-  // visitor can get back to Notepad or the theme switch without a refresh.
+  // The top-left readout reopens the intro at a clean desktop — every window
+  // closed, Start menu closed — so the visitor can get back to Notepad or the
+  // theme switch without a refresh. unlocked is left as it was, so the folder
+  // doesn't demand the password again this session.
   useEffect(() => {
     function reopen() {
       setShutdown(false);
       setNotepadOpen(false);
       setMenuOpen(false);
-      setPhase("desktop");
+      setReadmeOpen(false);
+      setSettingsOpen(false);
+      setFolderOpen(false);
+      setEvidenceOpen(false);
+      setCvOpen(false);
+      setTerminalOpen(false);
+      setOpenPhotos(new Set());
+      setOpen(true);
     }
     window.addEventListener(INTRO_OPEN_EVENT, reopen);
     return () => window.removeEventListener(INTRO_OPEN_EVENT, reopen);
@@ -142,7 +169,7 @@ export function IntroGate() {
     window.close();
   }
 
-  if (!phase) return null;
+  if (!open) return null;
 
   if (shutdown) {
     return (
@@ -165,34 +192,26 @@ export function IntroGate() {
       {/* Same scan wipe as the site grid, drawn behind the desktop content. */}
       <div aria-hidden="true" className="hud-scanline pointer-events-none absolute inset-x-0" />
       <div className="relative flex-1">
-        {/* Hidden behind any open window so the badge and name bar don't
-            clash with the folder login, the terminal, the README or
-            Settings — all of which are centred too. */}
-        {phase === "desktop" && !readmeOpen && !settingsOpen && <IntroHero />}
-        {phase === "desktop" && (
-          <DesktopFolder
-            onOpen={() => setPhase("folder")}
-            onOpenReadme={() => setReadmeOpen(true)}
-          />
-        )}
+        {/* The desktop itself: the hero badge and the icons. Always on,
+            regardless of what else is open, the same as a real desktop
+            staying put under its windows. */}
+        <IntroHero />
+        <DesktopFolder
+          onOpen={() => setFolderOpen(true)}
+          onOpenReadme={() => setReadmeOpen(true)}
+        />
 
-        {phase === "folder" &&
+        {folderOpen &&
           (unlocked ? (
-            // Hidden (not just covered) while DOSSIER or EVIDENCE is open: both
-            // of those also centre themselves, so leaving this one up too would
-            // place one on top of the other instead of a window you can reach.
-            !cvOpen &&
-            !evidenceOpen && (
-              <FolderWindow
-                onClose={() => setPhase("desktop")}
-                onRun={() => setPhase("terminal")}
-                onOpenCv={() => setCvOpen(true)}
-                onOpenEvidence={() => setEvidenceOpen(true)}
-              />
-            )
+            <FolderWindow
+              onClose={() => setFolderOpen(false)}
+              onRun={() => setTerminalOpen(true)}
+              onOpenCv={() => setCvOpen(true)}
+              onOpenEvidence={() => setEvidenceOpen(true)}
+            />
           ) : (
             <LoginWindow
-              onClose={() => setPhase("desktop")}
+              onClose={() => setFolderOpen(false)}
               onUnlock={() => setUnlocked(true)}
             />
           ))}
@@ -201,11 +220,21 @@ export function IntroGate() {
 
         {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
 
-        {evidenceOpen && <EvidenceWindow onClose={() => setEvidenceOpen(false)} />}
+        {evidenceOpen && (
+          <EvidenceWindow
+            onClose={() => setEvidenceOpen(false)}
+            openPhotos={openPhotos}
+            onOpenPhoto={openPhoto}
+          />
+        )}
+
+        {EVIDENCE_ITEMS.filter((item) => openPhotos.has(item.id)).map((item, i) => (
+          <PhotoWindow key={item.id} item={item} index={i} onClose={() => closePhoto(item.id)} />
+        ))}
 
         {cvOpen && <CvWindow onClose={() => setCvOpen(false)} />}
 
-        {phase === "terminal" && (
+        {terminalOpen && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
         )}
 
@@ -475,7 +504,7 @@ function LoginWindow({
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style}>
+      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE · LOGIN</span>
           <div className="hud-window-controls">
@@ -536,11 +565,19 @@ function LoginWindow({
 }
 
 function ReadmeWindow({ onClose }: { onClose: () => void }) {
-  const drag = useWindowDrag();
+  // Offset from dead-centre: every window starts centred by default, and
+  // with none of them hiding each other anymore, a visitor opening several
+  // at once needs to actually see more than one. Each window type gets its
+  // own starting corner; dragging moves it from there same as any other.
+  // README and the folder/login window are both reachable straight from the
+  // bare desktop and are the same size (no width class, short content), so
+  // this is offset vertically by more than that shared height — the two
+  // boxes then can't overlap no matter how their widths land.
+  const drag = useWindowDrag({ x: -40, y: -280 });
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style}>
+      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>README.TXT</span>
           <div className="hud-window-controls">
@@ -621,7 +658,7 @@ function FolderWindow({
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style}>
+      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE</span>
           <div className="hud-window-controls">
@@ -683,14 +720,76 @@ function ClassifiedIcon({ className }: { className?: string }) {
   );
 }
 
-// Reserved for photos and video clips to be added later — an empty
-// evidence box for now, in the same window style as the others.
-function EvidenceWindow({ onClose }: { onClose: () => void }) {
-  const drag = useWindowDrag();
+// Four field photos, each its own file in the EVIDENCE folder. The caption is
+// flavour text for the window, not a factual description — the alt text below
+// is the real description, for screen readers.
+const EVIDENCE_ITEMS = [
+  {
+    id: "a",
+    file: "/hud/evidence/exhibit-a.jpg",
+    label: "EXHIBIT_A.JPG",
+    caption: "Subject entering an unmarked service corridor.",
+    alt: "Black-and-white photo of a man walking through a lit doorway into a dim corridor at night.",
+  },
+  {
+    id: "b",
+    file: "/hud/evidence/exhibit-b.jpg",
+    label: "EXHIBIT_B.JPG",
+    caption: "Subject at the operations terminal, monitoring feeds.",
+    alt: "Black-and-white photo of a man at a desk with a camera and laptop, multiple monitors behind him.",
+  },
+  {
+    id: "c",
+    file: "/hud/evidence/exhibit-c.jpg",
+    label: "EXHIBIT_C.JPG",
+    caption: "Subject en route, package in hand.",
+    alt: "Black-and-white photo, shot through a window, of a man walking down a wet street carrying a briefcase.",
+  },
+  {
+    id: "d",
+    file: "/hud/evidence/exhibit-d.jpg",
+    label: "EXHIBIT_D.JPG",
+    caption: "Subject at a dead drop, routine check.",
+    alt: "Black-and-white photo of a man sitting on a park bench at night, reading a newspaper under a streetlight.",
+  },
+] as const;
+
+type EvidenceItem = (typeof EVIDENCE_ITEMS)[number];
+
+// A plain photo icon: frame, a "sun" and a mountain silhouette.
+function PhotoIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="5" y="8" width="38" height="32" />
+      <circle cx="17" cy="19" r="4" />
+      <path d="M5 33l11-10 9 8 7-7 11 10" />
+    </svg>
+  );
+}
+
+function EvidenceWindow({
+  onClose,
+  openPhotos,
+  onOpenPhoto,
+}: {
+  onClose: () => void;
+  openPhotos: ReadonlySet<string>;
+  onOpenPhoto: (id: string) => void;
+}) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const drag = useWindowDrag({ x: 210, y: 90 });
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style}>
+      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>EVIDENCE</span>
           <div className="hud-window-controls">
@@ -699,10 +798,66 @@ function EvidenceWindow({ onClose }: { onClose: () => void }) {
             </button>
           </div>
         </div>
-        <div className="space-y-2 p-6 text-center text-caption">
-          <p className="hud-label">// Box empty</p>
-          <p className="text-muted-foreground">No items logged yet. Check back later.</p>
+        <div className="flex flex-wrap gap-2 p-4">
+          {EVIDENCE_ITEMS.map((item) => (
+            <DesktopIcon
+              key={item.id}
+              label={item.label}
+              selected={selectedId === item.id}
+              onSelect={() => setSelectedId(item.id)}
+              onOpen={() => onOpenPhoto(item.id)}
+            >
+              <PhotoIcon className="h-12 w-12 text-primary" />
+            </DesktopIcon>
+          ))}
         </div>
+        {openPhotos.size > 0 && (
+          <p className="hud-label px-4 pb-4">// {openPhotos.size} file(s) open</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// One exhibit photo in its own window. index spaces each further out, so
+// opening more than one at a time cascades them instead of stacking exactly.
+function PhotoWindow({
+  item,
+  index,
+  onClose,
+}: {
+  item: EvidenceItem;
+  index: number;
+  onClose: () => void;
+}) {
+  const drag = useWindowDrag({ x: 110 + index * 55, y: 260 + index * 40 });
+
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+      <div
+        className="hud-window pointer-events-auto w-[min(85vw,20rem)]"
+        style={drag.style}
+        {...drag.rootProps}
+      >
+        <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
+          <span>{item.label}</span>
+          <div className="hud-window-controls">
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={`Close ${item.label}`}
+              className="hud-window-btn"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+        <img
+          src={item.file}
+          alt={item.alt}
+          className="hud-evidence-photo block max-h-[65vh] w-full bg-black object-contain"
+        />
+        <p className="hud-label p-3 text-center">// {item.caption}</p>
       </div>
     </div>
   );
@@ -714,11 +869,15 @@ function EvidenceWindow({ onClose }: { onClose: () => void }) {
 // page at all. Purely in-fiction: the actual CV stays downloadable from the
 // Contact page as normal.
 function CvWindow({ onClose }: { onClose: () => void }) {
-  const drag = useWindowDrag();
+  const drag = useWindowDrag({ x: -110, y: 160 });
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto relative w-[min(92vw,34rem)]" style={drag.style}>
+      <div
+        className="hud-window pointer-events-auto relative w-[min(92vw,34rem)]"
+        style={drag.style}
+        {...drag.rootProps}
+      >
         <span className="hud-stamp" aria-hidden="true">
           Classified
         </span>
@@ -789,35 +948,36 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Mission log</p>
             <div className="mt-1 space-y-3">
               <p>
-                <span className="text-foreground">MISSION — Mar 2025 – Aug 2026.</span> Embedded at{" "}
-                <Redacted width="6ch" /> under deep cover as &ldquo;Senior <Redacted width="6ch" />
-                .&rdquo; Directed a full <Redacted width="8ch" /> overhaul from the ground up,
-                running a cell of <Redacted width="4ch" /> operatives through <Redacted width="6ch" />{" "}
-                and <Redacted width="5ch" /> protocols. Kept <Redacted width="7ch" /> leadership
-                briefed to hold the operation&apos;s cover story in line with{" "}
-                <Redacted width="6ch" /> interests. Outcome: <Redacted width="6ch" />.
+                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                Embedded at <Redacted width="6ch" /> under deep cover as &ldquo;
+                <Redacted width="8ch" />.&rdquo; Directed a full <Redacted width="8ch" /> overhaul
+                from the ground up, running a cell of <Redacted width="4ch" /> operatives through{" "}
+                <Redacted width="6ch" /> and <Redacted width="5ch" /> protocols. Kept{" "}
+                <Redacted width="7ch" /> leadership briefed to hold the operation&apos;s cover
+                story in line with <Redacted width="6ch" /> interests. Outcome:{" "}
+                <Redacted width="6ch" />.
               </p>
               <p>
-                <span className="text-foreground">MISSION — Mar 2023 – Mar 2025.</span> Built and
-                field-tested <Redacted width="6ch" /> interfaces under the <Redacted width="4ch" />,{" "}
-                <Redacted width="5ch" /> and <Redacted width="6ch" /> toolchain, every pass verified
-                for <Redacted width="7ch" /> compliance before release. Ran repeated{" "}
-                <Redacted width="8ch" /> on unwitting test subjects, adjusting the cover identity
-                on <Redacted width="6ch" /> intel gathered in the field. Extraction from this
-                posting was <Redacted width="5ch" />.
+                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span> Built
+                and field-tested <Redacted width="6ch" /> interfaces under the{" "}
+                <Redacted width="4ch" />, <Redacted width="5ch" /> and <Redacted width="6ch" />{" "}
+                toolchain, every pass verified for <Redacted width="7ch" /> compliance before
+                release. Ran repeated <Redacted width="8ch" /> on unwitting test subjects,
+                adjusting the cover identity on <Redacted width="6ch" /> intel gathered in the
+                field. Extraction from this posting was <Redacted width="5ch" />.
               </p>
               <p>
-                <span className="text-foreground">MISSION — Dec 2021 – Mar 2023.</span> Assigned to
-                support operations on core <Redacted width="6ch" /> infrastructure, applying{" "}
-                <Redacted width="7ch" /> tradecraft to blend design decisions into the daily cover
-                work. Assisted in gathering <Redacted width="6ch" /> intelligence to validate calls
-                made earlier in the <Redacted width="5ch" /> cycle.
+                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                Assigned to support operations on core <Redacted width="6ch" /> infrastructure,
+                applying <Redacted width="7ch" /> tradecraft to blend design decisions into the
+                daily cover work. Assisted in gathering <Redacted width="6ch" /> intelligence to
+                validate calls made earlier in the <Redacted width="5ch" /> cycle.
               </p>
               <p>
-                <span className="text-foreground">MISSION — Jun 2021 – Dec 2021.</span> Entry-level
-                placement, shadowing senior <Redacted width="6ch" /> through <Redacted width="7ch" />{" "}
-                and prototyping drills. Clearance at the time: <Redacted width="5ch" />. Field
-                performance review: <Redacted width="6ch" />.
+                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                Entry-level placement, shadowing <Redacted width="6ch" /> through{" "}
+                <Redacted width="7ch" /> and prototyping drills. Clearance at the time:{" "}
+                <Redacted width="5ch" />. Field performance review: <Redacted width="6ch" />.
               </p>
             </div>
           </div>
@@ -826,13 +986,16 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Known locations</p>
             <ul className="mt-1 space-y-1.5">
               <li>
-                <Redacted width="6ch" /> — Colombo, Sri Lanka · last visited: <Redacted width="5ch" />
+                <Redacted width="6ch" /> — <Redacted width="7ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="5ch" />
               </li>
               <li>
-                SLIIT, Malabe — Sri Lanka · last visited: <Redacted width="5ch" />
+                <Redacted width="8ch" /> — <Redacted width="6ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="5ch" />
               </li>
               <li>
-                Trinity College — Kandy, Sri Lanka · last visited: <Redacted width="5ch" />
+                <Redacted width="9ch" /> — <Redacted width="5ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="5ch" />
               </li>
             </ul>
           </div>
@@ -841,12 +1004,12 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Known associates</p>
             <ul className="mt-1 space-y-2">
               <li>
-                Sumala Mannage — <Redacted width="6ch" />, Cybersecurity Operations
+                Sumala — AKA: <Redacted width="6ch" />
                 <br />
                 <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
               </li>
               <li>
-                Charitha Nanayakkara — <Redacted width="8ch" /> Manager
+                Charitha — AKA: <Redacted width="6ch" />
                 <br />
                 <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
               </li>
@@ -900,7 +1063,7 @@ function TerminalWindow({
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style}>
+      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>C:\THARINDU_MUNASINGHE\RUN_PORTFOLIO.EXE</span>
         </div>
