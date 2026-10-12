@@ -404,10 +404,10 @@ function IntroHero() {
       <div className="intro-coin-wrap">
         <div className="intro-coin">
           <div className="intro-coin-face">
-            <img src="/hud/mint-badge.svg" alt="" aria-hidden="true" className="h-full w-full" />
+            <img src="/hud/tm-badge.png" alt="" aria-hidden="true" className="h-full w-full object-contain" />
           </div>
           <div className="intro-coin-face intro-coin-face--back">
-            <img src="/hud/mint-badge.svg" alt="" aria-hidden="true" className="h-full w-full" />
+            <img src="/hud/tm-badge.png" alt="" aria-hidden="true" className="h-full w-full object-contain" />
           </div>
         </div>
       </div>

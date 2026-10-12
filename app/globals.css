@@ -1310,14 +1310,14 @@ html[data-intro="pending"] body > :not(#intro-root) {
 */
 .intro-coin-wrap {
   perspective: 900px;
-  width: 15rem;
-  height: 15rem;
+  width: 21rem;
+  height: 21rem;
 }
 
 @media (min-width: 768px) {
   .intro-coin-wrap {
-    width: 20rem;
-    height: 20rem;
+    width: 28rem;
+    height: 28rem;
   }
 }
 
