@@ -15,7 +15,7 @@ import { Tag } from "@/components/Tag";
 import { HERO_CIPHER_MESSAGE } from "@/lib/heroCipherMessage";
 import { SITE, SITE_URL } from "@/lib/site";
 
-const HOME_TITLE = "Tharindu Munasinghe — UI/UX Engineer & Product Designer";
+const HOME_TITLE = "Tharindu Munasinghe · UI/UX Engineer & Product Designer";
 
 export const metadata: Metadata = {
   title: { absolute: HOME_TITLE },

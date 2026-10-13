@@ -4,7 +4,7 @@ import { projects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Projects — UI/UX & Front-end Case Studies",
+  title: "Projects · UI/UX & Front-end Case Studies",
   description:
     "Case studies by Tharindu Munasinghe covering UI/UX design, product design and front-end engineering: an EV charging platform, a booking system, and more.",
   path: "/projects",

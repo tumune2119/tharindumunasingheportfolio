@@ -882,7 +882,7 @@ function CvWindow({ onClose }: { onClose: () => void }) {
           Classified
         </span>
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
-          <span>DOSSIER.CLASSIFIED — EYES ONLY</span>
+          <span>DOSSIER.CLASSIFIED · EYES ONLY</span>
           <div className="hud-window-controls">
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
@@ -936,7 +936,7 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Profile</p>
             <p className="mt-1">
               <Redacted width="3ch" />+ years operating under long-term cover across the full{" "}
-              <Redacted width="7ch" /> lifecycle — <Redacted width="8ch" />, information architecture
+              <Redacted width="7ch" /> lifecycle, <Redacted width="8ch" />, information architecture
               and <Redacted width="9ch" /> through to <Redacted width="11ch" /> execution in the
               field. Known for directing <Redacted width="7ch" /> strategy and{" "}
               <Redacted width="8ch" /> tradecraft, and for <Redacted width="8ch" /> junior assets
@@ -948,7 +948,7 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Mission log</p>
             <div className="mt-1 space-y-3">
               <p>
-                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                <span className="text-foreground">MISSION: <Redacted width="8ch" />.</span>{" "}
                 Embedded at <Redacted width="6ch" /> under deep cover as &ldquo;
                 <Redacted width="8ch" />.&rdquo; Directed a full <Redacted width="8ch" /> overhaul
                 from the ground up, running a cell of <Redacted width="4ch" /> operatives through{" "}
@@ -958,7 +958,7 @@ function CvWindow({ onClose }: { onClose: () => void }) {
                 <Redacted width="6ch" />.
               </p>
               <p>
-                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span> Built
+                <span className="text-foreground">MISSION: <Redacted width="8ch" />.</span> Built
                 and field-tested <Redacted width="6ch" /> interfaces under the{" "}
                 <Redacted width="4ch" />, <Redacted width="5ch" /> and <Redacted width="6ch" />{" "}
                 toolchain, every pass verified for <Redacted width="7ch" /> compliance before
@@ -967,14 +967,14 @@ function CvWindow({ onClose }: { onClose: () => void }) {
                 field. Extraction from this posting was <Redacted width="5ch" />.
               </p>
               <p>
-                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                <span className="text-foreground">MISSION: <Redacted width="8ch" />.</span>{" "}
                 Assigned to support operations on core <Redacted width="6ch" /> infrastructure,
                 applying <Redacted width="7ch" /> tradecraft to blend design decisions into the
                 daily cover work. Assisted in gathering <Redacted width="6ch" /> intelligence to
                 validate calls made earlier in the <Redacted width="5ch" /> cycle.
               </p>
               <p>
-                <span className="text-foreground">MISSION — <Redacted width="8ch" />.</span>{" "}
+                <span className="text-foreground">MISSION: <Redacted width="8ch" />.</span>{" "}
                 Entry-level placement, shadowing <Redacted width="6ch" /> through{" "}
                 <Redacted width="7ch" /> and prototyping drills. Clearance at the time:{" "}
                 <Redacted width="5ch" />. Field performance review: <Redacted width="6ch" />.
@@ -986,15 +986,15 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Known locations</p>
             <ul className="mt-1 space-y-1.5">
               <li>
-                <Redacted width="6ch" /> — <Redacted width="7ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="6ch" /> · <Redacted width="7ch" />, Sri Lanka · last visited:{" "}
                 <Redacted width="5ch" />
               </li>
               <li>
-                <Redacted width="8ch" /> — <Redacted width="6ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="8ch" /> · <Redacted width="6ch" />, Sri Lanka · last visited:{" "}
                 <Redacted width="5ch" />
               </li>
               <li>
-                <Redacted width="9ch" /> — <Redacted width="5ch" />, Sri Lanka · last visited:{" "}
+                <Redacted width="9ch" /> · <Redacted width="5ch" />, Sri Lanka · last visited:{" "}
                 <Redacted width="5ch" />
               </li>
             </ul>
@@ -1004,12 +1004,12 @@ function CvWindow({ onClose }: { onClose: () => void }) {
             <p className="hud-label">// Known associates</p>
             <ul className="mt-1 space-y-2">
               <li>
-                Sumala — AKA: <Redacted width="6ch" />
+                Sumala, AKA: <Redacted width="6ch" />
                 <br />
                 <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
               </li>
               <li>
-                Charitha — AKA: <Redacted width="6ch" />
+                Charitha, AKA: <Redacted width="6ch" />
                 <br />
                 <Redacted width="8ch" /> · <Redacted width="10ch" /> · relationship: <Redacted width="6ch" />
               </li>

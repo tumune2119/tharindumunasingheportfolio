@@ -69,7 +69,10 @@ export const experience: ExperienceRole[] = [
   },
 ];
 
-// Grouped by the same categories the CV uses; rendered as pills.
+// Grouped by the same categories the CV uses, with Engineering, Data &
+// Backend, AI-Assisted Development, Tools and Platforms also reflecting
+// what the shipped projects on the Projects page actually used, not just
+// the CV text. Design and Leadership are left as the CV states them.
 export const skills: SkillGroup[] = [
   {
     label: "Design",
@@ -90,15 +93,51 @@ export const skills: SkillGroup[] = [
     label: "Engineering",
     items: [
       "React",
+      "React Native",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
       "Tailwind CSS",
       "HTML/CSS",
-      "JavaScript",
+      "Radix UI",
+      "Framer Motion",
+      "Zustand",
+      "Full-Stack Application Development",
       "Responsive & Accessible Front-End Development",
     ],
   },
   {
+    label: "Data & Backend",
+    items: [
+      "PostgreSQL",
+      "SQLite",
+      "Drizzle ORM",
+      "IndexedDB (Dexie)",
+      "Supabase (Auth & Database)",
+      "Payment Gateway Integration",
+    ],
+  },
+  {
+    label: "AI-Assisted Development",
+    items: [
+      "Claude Code (AI Pair Programming)",
+      "Anthropic Claude API Integration",
+      "Spec-Driven AI-Assisted Development",
+    ],
+  },
+  {
     label: "Tools",
-    items: ["Figma", "Adobe XD", "Photoshop", "Illustrator"],
+    items: [
+      "Figma",
+      "Adobe XD",
+      "Photoshop",
+      "Illustrator",
+      "VS Code",
+      "Git",
+      "GitHub",
+      "Playwright",
+      "Vitest",
+    ],
   },
   {
     label: "Leadership",
@@ -113,7 +152,7 @@ export const skills: SkillGroup[] = [
   },
   {
     label: "Platforms",
-    items: ["Microsoft Azure"],
+    items: ["Microsoft Azure", "Vercel", "Supabase"],
   },
 ];
 

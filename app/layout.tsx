@@ -42,7 +42,7 @@ const isProduction = process.env.VERCEL_ENV === "production";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    default: "Tharindu Munasinghe · UI/UX Engineer & Product Designer",
     template: "%s · Tharindu Munasinghe",
   },
   description: SITE.shortDescription,
@@ -56,12 +56,12 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     locale: "en_US",
     url: SITE_URL,
-    title: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    title: "Tharindu Munasinghe · UI/UX Engineer & Product Designer",
     description: SITE.shortDescription,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tharindu Munasinghe — UI/UX Engineer & Product Designer",
+    title: "Tharindu Munasinghe · UI/UX Engineer & Product Designer",
     description: SITE.shortDescription,
   },
 };

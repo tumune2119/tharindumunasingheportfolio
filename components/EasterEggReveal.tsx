@@ -283,7 +283,7 @@ export function EasterEggReveal({
             <p className="hud-label">// Access result</p>
             <h2 className="text-h3 mt-2">You found it. 🎉</h2>
             <p className="text-body mt-3 font-medium text-primary">
-              Relax — your computer is not hacked. (Wink.)
+              Relax. Your computer is not hacked. (Wink.)
             </p>
             <p className="text-body-sm mt-4 text-muted-foreground">
               Honestly, the easter egg hunt was the fun part. It leads to...
