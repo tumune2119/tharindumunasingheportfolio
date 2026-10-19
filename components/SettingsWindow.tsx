@@ -57,10 +57,10 @@ export function SettingsWindow({ onClose }: { onClose: () => void }) {
             onToggle={() => setA11ySettings({ motionPaused: !motionPaused })}
           />
           <SettingRow
-            label="Music"
-            detail="Muting silences the site music. The easter egg track still plays."
-            status={musicMuted ? "Muted" : "Playing"}
-            actionLabel={musicMuted ? "Unmute music" : "Mute music"}
+            label="Sound"
+            detail="Muting silences the site music and click sounds. The easter egg track still plays."
+            status={musicMuted ? "Muted" : "On"}
+            actionLabel={musicMuted ? "Unmute sound" : "Mute sound"}
             icon={musicMuted ? <UnmutedIcon /> : <MutedIcon />}
             onToggle={() => setA11ySettings({ musicMuted: !musicMuted })}
           />

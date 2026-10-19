@@ -75,6 +75,46 @@
   --warning: #e9c46a;
   --error: #e76f51;
   --info: #457b9d;
+
+  /* A classic solid-arrow cursor in place of the system one — the same
+     shape old desktop OS (and old case-management software) cursors used,
+     tinted toward the theme's greens instead of flat black/white. The light
+     outline is what makes one fixed pair of colours work on every
+     background, light or dark, so unlike every other token above this one
+     isn't redefined per theme. Drawn on the same 24x24 canvas as the other
+     three cursors below (pointer, grab, grabbing) so none of them look
+     bigger or smaller than another when the pointer switches between them. */
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M5.42%2C1.16%20L5.42%2C20.28%20L10.22%2C16.1%20L13.24%2C22.68%20L16.18%2C21.45%20L12.93%2C14.94%20L18.58%2C14.94%20Z%22%20fill%3D%22%2310241a%22%20stroke%3D%22%23b7e4c7%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E")
+    5.42 1.16, auto;
+}
+
+/*
+  Site-wide, intro gate included: ordinary buttons and links, where hovering
+  was falling back to the plain system pointer. Browsers give every link
+  (and this file gives several other controls) their own direct `cursor`
+  value — a[href]'s is built in, same as every native form control's — and
+  a direct value on the element always wins over one inherited from an
+  ancestor regardless of specificity, which is exactly why the arrow above
+  wasn't reaching them. !important is what actually fixes that: it's the
+  one case here where chasing every place that sets `cursor` some other way
+  would be worse than just always winning on these elements specifically.
+  Same glyph as the plain arrow, not a separate hand shape — hovering
+  something clickable doesn't need its own cursor design, just the one the
+  rest of the page already has to keep showing up, intro included.
+*/
+a[href],
+button:not(:disabled),
+label,
+select,
+summary,
+[role="button"],
+[role="menuitem"],
+[role="tab"],
+[role="switch"],
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M5.42%2C1.16%20L5.42%2C20.28%20L10.22%2C16.1%20L13.24%2C22.68%20L16.18%2C21.45%20L12.93%2C14.94%20L18.58%2C14.94%20Z%22%20fill%3D%22%2310241a%22%20stroke%3D%22%23b7e4c7%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E")
+    5.42 1.16, auto !important;
 }
 
 /*
@@ -1005,6 +1045,24 @@ html[data-ui="hud"] *::-webkit-scrollbar {
   box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
+/*
+  The other cursor state actually used on the site besides the default
+  arrow: dragging a window by its title bar. Same classic-cursor treatment
+  — a small flat-colour glyph with a light outline — as a 4-way "move"
+  cross instead of a hand, matching how old desktop OSes drew this one.
+  :active swaps to a brighter, inverted version while the drag is held down,
+  the same way a real OS cursor changes from open-hand to closed-fist.
+*/
+.cursor-grab {
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%20fill%3D%22%2310241a%22%20stroke%3D%22%23b7e4c7%22%20stroke-width%3D%221.1%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3Cg%20transform%3D%22rotate(90%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate(180%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate(270%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+    12 12, grab;
+}
+
+.cursor-grab:active {
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%20fill%3D%22%2352b788%22%20stroke%3D%22%2310241a%22%20stroke-width%3D%221.1%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3Cg%20transform%3D%22rotate(90%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate(180%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate(270%2012%2012)%22%3E%3Cpath%20d%3D%22M12%2C1.09%20L8.07%2C6.76%20L10.15%2C6.76%20L10.15%2C12%20L13.85%2C12%20L13.85%2C6.76%20L15.93%2C6.76%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+    12 12, grabbing;
+}
+
 .hud-window-controls {
   display: flex;
   gap: 0.25rem;
@@ -1258,6 +1316,12 @@ html[data-intro="pending"] body > :not(#intro-root) {
   color: var(--foreground);
 }
 
+/* The filled icon glyphs glow a little, like the rest of the HUD's active
+   elements, scaled by the same --hud-glow the nav's active-link glow uses. */
+.intro-icon svg {
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) var(--hud-glow), transparent));
+}
+
 .intro-icon:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -1414,6 +1478,31 @@ html[data-intro="pending"] body > :not(#intro-root) {
 .intro-taskbar {
   background: var(--card);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* One button per open window, same family as .hud-window-btn/.hud-cta:
+   an outline by default, filled solid for whichever window is frontmost,
+   dimmed for one that's minimized (still clickable — that's how it restores). */
+.intro-taskbar-item {
+  color: var(--foreground);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent);
+  transition-duration: 140ms;
+}
+
+.intro-taskbar-item:hover,
+.intro-taskbar-item:focus-visible {
+  color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.intro-taskbar-item--active {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.intro-taskbar-item--minimized {
+  opacity: 0.55;
 }
 
 /*

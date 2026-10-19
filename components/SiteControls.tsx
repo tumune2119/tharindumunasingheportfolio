@@ -3,8 +3,9 @@
 import { setA11ySettings, useA11ySettings } from "@/lib/a11ySettings";
 import { MutedIcon, PauseIcon, PlayIcon, UnmutedIcon } from "./SettingsWindow";
 
-// Two always-visible controls on the site: pause animations and mute music.
-// They sit under the DIR readout on desktop and above the footer edge on phones,
+// Two always-visible controls on the site: pause animations and mute sound
+// (music and click sounds together). They sit under the DIR readout on
+// desktop and above the footer edge on phones,
 // so a visitor can find them on any page without opening a menu. The icon shows
 // the current state, and aria-pressed says whether the control is on.
 export function SiteControls() {
@@ -26,11 +27,11 @@ export function SiteControls() {
         type="button"
         onClick={() => setA11ySettings({ musicMuted: !musicMuted })}
         aria-pressed={musicMuted}
-        title={musicMuted ? "Unmute music" : "Mute music"}
+        title={musicMuted ? "Unmute sound" : "Mute sound"}
         className="hud-chip pointer-events-auto inline-flex items-center gap-2"
       >
         {musicMuted ? <UnmutedIcon /> : <MutedIcon />}
-        Music
+        Sound
       </button>
     </div>
   );

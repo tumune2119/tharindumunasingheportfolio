@@ -64,10 +64,18 @@ export function IntroNotepad({
   onClose,
   onToggleTheme,
   isDark,
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
 }: {
   onClose: () => void;
   onToggleTheme: () => void;
   isDark: boolean;
+  minimized: boolean;
+  focusToken?: number;
+  onFocus: () => void;
+  onMinimize: () => void;
 }) {
   const [history, setHistory] = useState<Line[]>([
     { kind: "out", text: "CLI ready. Type 'help' for commands." },
@@ -154,19 +162,31 @@ export function IntroNotepad({
     runCommand(raw);
   }
 
-  const drag = useWindowDrag();
+  const drag = useWindowDrag(undefined, focusToken);
 
   return (
     <div
       role="dialog"
       aria-label="CLI"
       className="hud-window fixed left-1/2 top-1/2 z-210 -translate-x-1/2 -translate-y-1/2"
-      style={drag.style}
+      style={{ ...drag.style, display: minimized ? "none" : undefined }}
       onClick={() => inputRef.current?.focus()}
+      onPointerDownCapture={() => {
+        drag.rootProps.onPointerDownCapture();
+        onFocus();
+      }}
     >
       <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
         <span>CLI · THARINDU_MUNASINGHE</span>
         <div className="hud-window-controls">
+          <button
+            type="button"
+            onClick={onMinimize}
+            aria-label="Minimize CLI"
+            className="hud-window-btn"
+          >
+            −
+          </button>
           <button
             type="button"
             onClick={onClose}

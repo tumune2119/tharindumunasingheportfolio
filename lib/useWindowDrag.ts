@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 
 // Shared across every window on the page: whichever one was interacted with
 // most recently claims the next number, so it paints above the rest — the
@@ -23,7 +23,17 @@ let frontCounter = 1;
 // bringing a window forward on click, anything can still be reached even
 // when several windows end up overlapping — the same as dragging one aside
 // on a real desktop.
-export function useWindowDrag(initialOffset: { x: number; y: number } = { x: 0, y: 0 }) {
+//
+// `focusToken` is for bringing a window forward from outside it entirely —
+// the taskbar restoring a minimized window, for instance, which has no
+// press on the window itself to hook bringToFront onto. Any change to this
+// value (a parent bumping a per-window counter) raises it, same as a click
+// would; it's ignored while undefined, so a window that nobody's asked to
+// refocus doesn't jump to the front just because its caller re-rendered.
+export function useWindowDrag(
+  initialOffset: { x: number; y: number } = { x: 0, y: 0 },
+  focusToken?: number,
+) {
   const [offset, setOffset] = useState(initialOffset);
   const [front, setFront] = useState(() => frontCounter++);
   const start = useRef<{ pointerX: number; pointerY: number; x: number; y: number } | null>(null);
@@ -31,6 +41,14 @@ export function useWindowDrag(initialOffset: { x: number; y: number } = { x: 0, 
   function bringToFront() {
     setFront(frontCounter++);
   }
+
+  useEffect(() => {
+    if (focusToken !== undefined) bringToFront();
+    // Deliberately keyed only on the token itself — bringToFront is stable
+    // in spirit (it always does the same thing) and including it would mean
+    // the lint rule asking for the whole closure, not just the signal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusToken]);
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0) return;

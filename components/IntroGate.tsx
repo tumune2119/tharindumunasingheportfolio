@@ -5,6 +5,7 @@ import { HudScrollArea } from "@/components/HudScrollArea";
 import { IntroNotepad } from "@/components/IntroNotepad";
 import { SettingsWindow } from "@/components/SettingsWindow";
 import { INTRO_OPEN_EVENT } from "@/lib/introEvent";
+import { startSiteMusic } from "@/lib/siteMusic";
 import { THEME_SWITCH_EVENT } from "@/lib/themeSwitch";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useTheme } from "@/lib/useTheme";
@@ -22,6 +23,18 @@ import { useWindowDrag } from "@/lib/useWindowDrag";
 
 const LINE_MS = 240;
 const HOLD_MS = 900;
+
+// Shared by every minimizable/taskbar-listed window (everything except the
+// boot terminal, which can't be closed either, and Settings, a modal shared
+// with the real site where there's no taskbar for it to live in).
+// `focusToken` is passed straight through to that window's own
+// useWindowDrag — see its comment for what bumping it does.
+type WindowChrome = {
+  minimized: boolean;
+  focusToken?: number;
+  onFocus: () => void;
+  onMinimize: () => void;
+};
 
 function hex(length: number) {
   let out = "";
@@ -66,12 +79,22 @@ export function IntroGate() {
   const [cvOpen, setCvOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [openPhotos, setOpenPhotos] = useState<ReadonlySet<string>>(new Set());
+  // Taskbar/minimize state. minimizedWindows just hides a window (it stays
+  // mounted, so its own state — scroll position, form input, CLI history —
+  // survives); activeWindowId drives which taskbar button looks pressed;
+  // focusTokens is how the taskbar brings an already-open window forward
+  // without reaching into that window's own useWindowDrag instance — bumping
+  // a window's entry is what its drag hook treats as "bring to front".
+  const [minimizedWindows, setMinimizedWindows] = useState<ReadonlySet<string>>(new Set());
+  const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
+  const [focusTokens, setFocusTokens] = useState<Record<string, number>>({});
   const reducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
   function openPhoto(id: string) {
     setOpenPhotos((current) => new Set(current).add(id));
+    setActiveWindowId(`photo-${id}`);
   }
 
   function closePhoto(id: string) {
@@ -80,6 +103,34 @@ export function IntroGate() {
       next.delete(id);
       return next;
     });
+  }
+
+  function minimizeWindow(id: string) {
+    setMinimizedWindows((current) => new Set(current).add(id));
+  }
+
+  // Restores a minimized window (if it was) and always brings it forward —
+  // used both for a minimized window's taskbar button and for one that's
+  // already open but sitting behind another.
+  function restoreAndFocusWindow(id: string) {
+    setMinimizedWindows((current) => {
+      if (!current.has(id)) return current;
+      const next = new Set(current);
+      next.delete(id);
+      return next;
+    });
+    setFocusTokens((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
+    setActiveWindowId(id);
+  }
+
+  // Clicking the taskbar button for the window already frontmost minimizes
+  // it, same as a real taskbar; clicking any other entry restores/focuses it.
+  function handleTaskbarClick(id: string) {
+    if (!minimizedWindows.has(id) && activeWindowId === id) {
+      minimizeWindow(id);
+      return;
+    }
+    restoreAndFocusWindow(id);
   }
 
   useEffect(() => {
@@ -106,20 +157,28 @@ export function IntroGate() {
       // Storage blocked: the intro may replay next time, which is harmless.
     }
     setOpen(false);
+    // The moment of actually landing on the site, not any of the gestures
+    // spent getting through the intro — AccessibilityBootstrap's own
+    // first-gesture listener deliberately ignores clicks while the intro is
+    // still up, so this is what starts the music instead.
+    startSiteMusic();
   }, []);
 
-  // Escape closes the innermost thing open (the Start menu, then Notepad).
-  // It does not skip the intro, so it can't end a session by accident.
+  // Escape closes the innermost thing open first (the Start menu, then
+  // Notepad), same as a real OS; with neither open, it's the documented
+  // shortcut (see README.TXT and the Start menu's own "Open portfolio") for
+  // skipping straight to the site.
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       if (menuOpen) setMenuOpen(false);
       else if (notepadOpen) setNotepadOpen(false);
+      else finish();
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, menuOpen, notepadOpen]);
+  }, [open, menuOpen, notepadOpen, finish]);
 
   // Clicking anywhere outside the Start menu or its button closes the menu.
   useEffect(() => {
@@ -149,6 +208,8 @@ export function IntroGate() {
       setCvOpen(false);
       setTerminalOpen(false);
       setOpenPhotos(new Set());
+      setMinimizedWindows(new Set());
+      setActiveWindowId(null);
       setOpen(true);
     }
     window.addEventListener(INTRO_OPEN_EVENT, reopen);
@@ -184,6 +245,23 @@ export function IntroGate() {
     );
   }
 
+  // The taskbar's own entries: one per currently-open window (settings and
+  // the boot terminal excluded — see their components for why), computed
+  // fresh each render from the same booleans/set that already gate each
+  // window below, rather than tracked separately and risking the two
+  // drifting apart.
+  const openWindows: { id: string; label: string }[] = [
+    folderOpen && { id: "folder", label: "THARINDU_MUNASINGHE" },
+    readmeOpen && { id: "readme", label: "README.TXT" },
+    evidenceOpen && { id: "evidence", label: "EVIDENCE" },
+    cvOpen && { id: "cv", label: "DOSSIER.CLASSIFIED" },
+    notepadOpen && { id: "notepad", label: "CLI" },
+    ...EVIDENCE_ITEMS.filter((item) => openPhotos.has(item.id)).map((item) => ({
+      id: `photo-${item.id}`,
+      label: item.label,
+    })),
+  ].filter((entry): entry is { id: string; label: string } => Boolean(entry));
+
   return (
     <div
       id="intro-root"
@@ -197,31 +275,63 @@ export function IntroGate() {
             staying put under its windows. */}
         <IntroHero />
         <DesktopFolder
-          onOpen={() => setFolderOpen(true)}
-          onOpenReadme={() => setReadmeOpen(true)}
+          onOpen={() => {
+            setFolderOpen(true);
+            setActiveWindowId("folder");
+          }}
+          onOpenReadme={() => {
+            setReadmeOpen(true);
+            setActiveWindowId("readme");
+          }}
         />
 
         {folderOpen &&
           (unlocked ? (
             <FolderWindow
+              minimized={minimizedWindows.has("folder")}
+              focusToken={focusTokens.folder}
+              onFocus={() => setActiveWindowId("folder")}
+              onMinimize={() => minimizeWindow("folder")}
               onClose={() => setFolderOpen(false)}
               onRun={() => setTerminalOpen(true)}
-              onOpenCv={() => setCvOpen(true)}
-              onOpenEvidence={() => setEvidenceOpen(true)}
+              onOpenCv={() => {
+                setCvOpen(true);
+                setActiveWindowId("cv");
+              }}
+              onOpenEvidence={() => {
+                setEvidenceOpen(true);
+                setActiveWindowId("evidence");
+              }}
             />
           ) : (
             <LoginWindow
+              minimized={minimizedWindows.has("folder")}
+              focusToken={focusTokens.folder}
+              onFocus={() => setActiveWindowId("folder")}
+              onMinimize={() => minimizeWindow("folder")}
               onClose={() => setFolderOpen(false)}
               onUnlock={() => setUnlocked(true)}
             />
           ))}
 
-        {readmeOpen && <ReadmeWindow onClose={() => setReadmeOpen(false)} />}
+        {readmeOpen && (
+          <ReadmeWindow
+            minimized={minimizedWindows.has("readme")}
+            focusToken={focusTokens.readme}
+            onFocus={() => setActiveWindowId("readme")}
+            onMinimize={() => minimizeWindow("readme")}
+            onClose={() => setReadmeOpen(false)}
+          />
+        )}
 
         {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} />}
 
         {evidenceOpen && (
           <EvidenceWindow
+            minimized={minimizedWindows.has("evidence")}
+            focusToken={focusTokens.evidence}
+            onFocus={() => setActiveWindowId("evidence")}
+            onMinimize={() => minimizeWindow("evidence")}
             onClose={() => setEvidenceOpen(false)}
             openPhotos={openPhotos}
             onOpenPhoto={openPhoto}
@@ -229,10 +339,27 @@ export function IntroGate() {
         )}
 
         {EVIDENCE_ITEMS.filter((item) => openPhotos.has(item.id)).map((item, i) => (
-          <PhotoWindow key={item.id} item={item} index={i} onClose={() => closePhoto(item.id)} />
+          <PhotoWindow
+            key={item.id}
+            item={item}
+            index={i}
+            minimized={minimizedWindows.has(`photo-${item.id}`)}
+            focusToken={focusTokens[`photo-${item.id}`]}
+            onFocus={() => setActiveWindowId(`photo-${item.id}`)}
+            onMinimize={() => minimizeWindow(`photo-${item.id}`)}
+            onClose={() => closePhoto(item.id)}
+          />
         ))}
 
-        {cvOpen && <CvWindow onClose={() => setCvOpen(false)} />}
+        {cvOpen && (
+          <CvWindow
+            minimized={minimizedWindows.has("cv")}
+            focusToken={focusTokens.cv}
+            onFocus={() => setActiveWindowId("cv")}
+            onMinimize={() => minimizeWindow("cv")}
+            onClose={() => setCvOpen(false)}
+          />
+        )}
 
         {terminalOpen && (
           <TerminalWindow reducedMotion={reducedMotion} onDone={finish} />
@@ -240,6 +367,10 @@ export function IntroGate() {
 
         {notepadOpen && (
           <IntroNotepad
+            minimized={minimizedWindows.has("notepad")}
+            focusToken={focusTokens.notepad}
+            onFocus={() => setActiveWindowId("notepad")}
+            onMinimize={() => minimizeWindow("notepad")}
             onClose={() => setNotepadOpen(false)}
             onToggleTheme={handleToggleTheme}
             isDark={isDark}
@@ -253,6 +384,7 @@ export function IntroGate() {
           onNotepad={() => {
             setMenuOpen(false);
             setNotepadOpen(true);
+            setActiveWindowId("notepad");
           }}
           onTheme={() => {
             setMenuOpen(false);
@@ -267,7 +399,14 @@ export function IntroGate() {
         />
       )}
 
-      <Taskbar menuOpen={menuOpen} onStart={() => setMenuOpen((open) => !open)} />
+      <Taskbar
+        menuOpen={menuOpen}
+        onStart={() => setMenuOpen((open) => !open)}
+        openWindows={openWindows}
+        activeWindowId={activeWindowId}
+        minimizedWindows={minimizedWindows}
+        onSelectWindow={handleTaskbarClick}
+      />
     </div>
   );
 }
@@ -327,35 +466,27 @@ function StartMenu({
 // Folder and file icons, drawn with currentColor so they follow the theme.
 function FolderIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M4 12h14l4 4h22v24H4z" />
-      <path d="M4 20h40" />
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M4 12h14l4 4h22v24H4z" fill="currentColor" />
+      <path d="M4 24h40v12H4z" fill="#fff" fillOpacity="0.22" />
+      <path d="M4 20h40" stroke="#fff" strokeOpacity="0.35" strokeWidth={1.5} />
     </svg>
   );
 }
 
 function ExeIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 4h18l8 8v32H12z" />
-      <path d="M30 4v8h8" />
-      <path d="M18 28l4 4-4 4M26 36h6" />
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M12 4h18l8 8v32H12z" fill="currentColor" />
+      <path d="M30 4v8h8z" fill="#fff" fillOpacity="0.3" />
+      <path
+        d="M18 28l4 4-4 4M26 36h6"
+        fill="none"
+        stroke="var(--background)"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -452,18 +583,16 @@ function DesktopFolder({
 
 function ReadmeIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      strokeLinecap="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 4h18l8 8v32H12z" />
-      <path d="M30 4v8h8M18 22h12M18 28h12M18 34h8" />
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M12 4h18l8 8v32H12z" fill="currentColor" />
+      <path d="M30 4v8h8z" fill="#fff" fillOpacity="0.3" />
+      <path
+        d="M18 22h12M18 28h12M18 34h8"
+        fill="none"
+        stroke="var(--background)"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -475,7 +604,11 @@ const FOLDER_LOGIN = { username: "Det.MuNe", password: "password123" };
 function LoginWindow({
   onClose,
   onUnlock,
-}: {
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & {
   onClose: () => void;
   onUnlock: () => void;
 }) {
@@ -500,14 +633,24 @@ function LoginWindow({
     setPassword("");
   }
 
-  const drag = useWindowDrag();
+  const drag = useWindowDrag(undefined, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
+      <div
+        className="hud-window pointer-events-auto"
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
+      >
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE · LOGIN</span>
           <div className="hud-window-controls">
+            <button type="button" onClick={onMinimize} aria-label="Minimize" className="hud-window-btn">
+              −
+            </button>
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
             </button>
@@ -564,7 +707,13 @@ function LoginWindow({
   );
 }
 
-function ReadmeWindow({ onClose }: { onClose: () => void }) {
+function ReadmeWindow({
+  onClose,
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & { onClose: () => void }) {
   // Offset from dead-centre: every window starts centred by default, and
   // with none of them hiding each other anymore, a visitor opening several
   // at once needs to actually see more than one. Each window type gets its
@@ -573,14 +722,24 @@ function ReadmeWindow({ onClose }: { onClose: () => void }) {
   // bare desktop and are the same size (no width class, short content), so
   // this is offset vertically by more than that shared height — the two
   // boxes then can't overlap no matter how their widths land.
-  const drag = useWindowDrag({ x: -40, y: -280 });
+  const drag = useWindowDrag({ x: -40, y: -280 }, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
+      <div
+        className="hud-window pointer-events-auto"
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
+      >
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>README.TXT</span>
           <div className="hud-window-controls">
+            <button type="button" onClick={onMinimize} aria-label="Minimize" className="hud-window-btn">
+              −
+            </button>
             <button type="button" onClick={onClose} aria-label="Close README" className="hud-window-btn">
               ×
             </button>
@@ -595,6 +754,10 @@ function ReadmeWindow({ onClose }: { onClose: () => void }) {
             Password: <span className="text-primary">password123</span>
           </p>
           <p className="text-muted-foreground">Yes, really. It is a portfolio, not a bank.</p>
+          <p className="text-muted-foreground">
+            In a hurry? Press <span className="text-primary">Esc</span> or open{" "}
+            <span className="text-primary">Start → Open portfolio</span> to skip straight to the site.
+          </p>
         </div>
       </div>
     </div>
@@ -604,9 +767,17 @@ function ReadmeWindow({ onClose }: { onClose: () => void }) {
 function Taskbar({
   menuOpen,
   onStart,
+  openWindows,
+  activeWindowId,
+  minimizedWindows,
+  onSelectWindow,
 }: {
   menuOpen: boolean;
   onStart: () => void;
+  openWindows: { id: string; label: string }[];
+  activeWindowId: string | null;
+  minimizedWindows: ReadonlySet<string>;
+  onSelectWindow: (id: string) => void;
 }) {
   const [time, setTime] = useState("");
 
@@ -625,18 +796,40 @@ function Taskbar({
   }, []);
 
   return (
-    <div className="intro-taskbar relative flex h-10 items-center justify-between px-3 text-caption uppercase tracking-wider">
+    <div className="intro-taskbar relative flex h-10 items-center gap-2 px-3 text-caption uppercase tracking-wider">
       <button
         type="button"
         onClick={onStart}
         data-start-menu="toggle"
         aria-haspopup="menu"
         aria-expanded={menuOpen}
-        className={`hud-cta px-3 py-1 text-caption ${menuOpen ? "bg-primary-variant" : ""}`}
+        className={`hud-cta shrink-0 px-3 py-1 text-caption ${menuOpen ? "bg-primary-variant" : ""}`}
       >
         Start
       </button>
-      <span className="text-accent">{time}</span>
+      {/* One button per open window — click an inactive or minimized one to
+          bring it forward, click the active one again to minimize it. */}
+      <div className="flex flex-1 items-center gap-1.5 overflow-x-auto">
+        {openWindows.map((win) => {
+          const minimized = minimizedWindows.has(win.id);
+          const active = activeWindowId === win.id && !minimized;
+          return (
+            <button
+              key={win.id}
+              type="button"
+              onClick={() => onSelectWindow(win.id)}
+              aria-pressed={active}
+              title={win.label}
+              className={`intro-taskbar-item max-w-40 shrink-0 truncate px-3 py-1 text-caption ${
+                active ? "intro-taskbar-item--active" : ""
+              } ${minimized ? "intro-taskbar-item--minimized" : ""}`}
+            >
+              {win.label}
+            </button>
+          );
+        })}
+      </div>
+      <span className="text-accent shrink-0">{time}</span>
     </div>
   );
 }
@@ -646,7 +839,11 @@ function FolderWindow({
   onRun,
   onOpenCv,
   onOpenEvidence,
-}: {
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & {
   onClose: () => void;
   onRun: () => void;
   onOpenCv: () => void;
@@ -654,14 +851,24 @@ function FolderWindow({
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const drag = useWindowDrag();
+  const drag = useWindowDrag(undefined, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
+      <div
+        className="hud-window pointer-events-auto"
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
+      >
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>THARINDU_MUNASINGHE</span>
           <div className="hud-window-controls">
+            <button type="button" onClick={onMinimize} aria-label="Minimize" className="hud-window-btn">
+              −
+            </button>
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
             </button>
@@ -702,20 +909,17 @@ function FolderWindow({
 // shape with a small padlock in place of text lines.
 function ClassifiedIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      strokeLinecap="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 4h18l8 8v32H12z" />
-      <path d="M30 4v8h8" />
-      <rect x="18" y="26" width="12" height="9" rx="1" />
-      <path d="M20 26v-3a4 4 0 018 0v3" />
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M12 4h18l8 8v32H12z" fill="currentColor" />
+      <path d="M30 4v8h8z" fill="#fff" fillOpacity="0.3" />
+      <rect x="18" y="26" width="12" height="9" rx="1" fill="var(--background)" />
+      <path
+        d="M20 26v-3a4 4 0 018 0v3"
+        fill="none"
+        stroke="var(--background)"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -759,18 +963,11 @@ type EvidenceItem = (typeof EVIDENCE_ITEMS)[number];
 // A plain photo icon: frame, a "sun" and a mountain silhouette.
 function PhotoIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <rect x="5" y="8" width="38" height="32" />
-      <circle cx="17" cy="19" r="4" />
-      <path d="M5 33l11-10 9 8 7-7 11 10" />
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <rect x="5" y="8" width="38" height="32" rx="1" fill="currentColor" />
+      <rect x="9" y="12" width="30" height="24" fill="var(--background)" />
+      <circle cx="17" cy="19" r="4" fill="currentColor" />
+      <path d="M9 34l10-9 8 7 7-7 5 5v2H9z" fill="currentColor" />
     </svg>
   );
 }
@@ -779,20 +976,34 @@ function EvidenceWindow({
   onClose,
   openPhotos,
   onOpenPhoto,
-}: {
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & {
   onClose: () => void;
   openPhotos: ReadonlySet<string>;
   onOpenPhoto: (id: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const drag = useWindowDrag({ x: 210, y: 90 });
+  const drag = useWindowDrag({ x: 210, y: 90 }, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
-      <div className="hud-window pointer-events-auto" style={drag.style} {...drag.rootProps}>
+      <div
+        className="hud-window pointer-events-auto"
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
+      >
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>EVIDENCE</span>
           <div className="hud-window-controls">
+            <button type="button" onClick={onMinimize} aria-label="Minimize" className="hud-window-btn">
+              −
+            </button>
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
             </button>
@@ -825,23 +1036,38 @@ function PhotoWindow({
   item,
   index,
   onClose,
-}: {
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & {
   item: EvidenceItem;
   index: number;
   onClose: () => void;
 }) {
-  const drag = useWindowDrag({ x: 110 + index * 55, y: 260 + index * 40 });
+  const drag = useWindowDrag({ x: 110 + index * 55, y: 260 + index * 40 }, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
       <div
         className="hud-window pointer-events-auto w-[min(85vw,20rem)]"
-        style={drag.style}
-        {...drag.rootProps}
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
       >
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>{item.label}</span>
           <div className="hud-window-controls">
+            <button
+              type="button"
+              onClick={onMinimize}
+              aria-label={`Minimize ${item.label}`}
+              className="hud-window-btn"
+            >
+              −
+            </button>
             <button
               type="button"
               onClick={onClose}
@@ -868,15 +1094,24 @@ function PhotoWindow({
 // redaction bars — not just hidden with CSS, the real values never reach the
 // page at all. Purely in-fiction: the actual CV stays downloadable from the
 // Contact page as normal.
-function CvWindow({ onClose }: { onClose: () => void }) {
-  const drag = useWindowDrag({ x: -110, y: 160 });
+function CvWindow({
+  onClose,
+  minimized,
+  focusToken,
+  onFocus,
+  onMinimize,
+}: WindowChrome & { onClose: () => void }) {
+  const drag = useWindowDrag({ x: -110, y: 160 }, focusToken);
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
       <div
         className="hud-window pointer-events-auto relative w-[min(92vw,34rem)]"
-        style={drag.style}
-        {...drag.rootProps}
+        style={{ ...drag.style, display: minimized ? "none" : undefined }}
+        onPointerDownCapture={() => {
+          drag.rootProps.onPointerDownCapture();
+          onFocus();
+        }}
       >
         <span className="hud-stamp" aria-hidden="true">
           Classified
@@ -884,6 +1119,9 @@ function CvWindow({ onClose }: { onClose: () => void }) {
         <div className="hud-window-bar cursor-grab touch-none select-none" {...drag.handleProps}>
           <span>DOSSIER.CLASSIFIED · EYES ONLY</span>
           <div className="hud-window-controls">
+            <button type="button" onClick={onMinimize} aria-label="Minimize" className="hud-window-btn">
+              −
+            </button>
             <button type="button" onClick={onClose} aria-label="Close" className="hud-window-btn">
               ×
             </button>

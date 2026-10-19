@@ -23,7 +23,8 @@ function getSite(): HTMLAudioElement | null {
   if (!site && typeof Audio !== "undefined") {
     site = new Audio(SITE_MUSIC_SRC);
     site.loop = true;
-    site.volume = 0.35;
+    // Low enough to sit behind everything else as ambience, not compete with it.
+    site.volume = 0.12;
   }
   return site;
 }
