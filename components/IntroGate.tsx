@@ -250,17 +250,18 @@ export function IntroGate() {
   // fresh each render from the same booleans/set that already gate each
   // window below, rather than tracked separately and risking the two
   // drifting apart.
-  const openWindows: { id: string; label: string }[] = [
-    folderOpen && { id: "folder", label: "THARINDU_MUNASINGHE" },
-    readmeOpen && { id: "readme", label: "README.TXT" },
-    evidenceOpen && { id: "evidence", label: "EVIDENCE" },
-    cvOpen && { id: "cv", label: "DOSSIER.CLASSIFIED" },
-    notepadOpen && { id: "notepad", label: "CLI" },
+  const openWindows = [
+    folderOpen && { id: "folder", label: "THARINDU_MUNASINGHE", icon: <FolderIcon className="h-full w-full" /> },
+    readmeOpen && { id: "readme", label: "README.TXT", icon: <ReadmeIcon className="h-full w-full" /> },
+    evidenceOpen && { id: "evidence", label: "EVIDENCE", icon: <FolderIcon className="h-full w-full" /> },
+    cvOpen && { id: "cv", label: "DOSSIER.CLASSIFIED", icon: <ClassifiedIcon className="h-full w-full" /> },
+    notepadOpen && { id: "notepad", label: "CLI", icon: <ExeIcon className="h-full w-full" /> },
     ...EVIDENCE_ITEMS.filter((item) => openPhotos.has(item.id)).map((item) => ({
       id: `photo-${item.id}`,
       label: item.label,
+      icon: <PhotoIcon className="h-full w-full" />,
     })),
-  ].filter((entry): entry is { id: string; label: string } => Boolean(entry));
+  ].filter(Boolean) as { id: string; label: string; icon: ReactNode }[];
 
   return (
     <div
@@ -774,7 +775,7 @@ function Taskbar({
 }: {
   menuOpen: boolean;
   onStart: () => void;
-  openWindows: { id: string; label: string }[];
+  openWindows: { id: string; label: string; icon: ReactNode }[];
   activeWindowId: string | null;
   minimizedWindows: ReadonlySet<string>;
   onSelectWindow: (id: string) => void;
@@ -820,11 +821,14 @@ function Taskbar({
               onClick={() => onSelectWindow(win.id)}
               aria-pressed={active}
               title={win.label}
-              className={`intro-taskbar-item max-w-40 shrink-0 truncate px-3 py-1 text-caption ${
+              className={`intro-taskbar-item flex max-w-40 shrink-0 items-center gap-1.5 px-3 py-1 text-caption ${
                 active ? "intro-taskbar-item--active" : ""
               } ${minimized ? "intro-taskbar-item--minimized" : ""}`}
             >
-              {win.label}
+              <span className="h-4 w-4 shrink-0" aria-hidden="true">
+                {win.icon}
+              </span>
+              <span className="min-w-0 truncate">{win.label}</span>
             </button>
           );
         })}

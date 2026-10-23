@@ -44,6 +44,53 @@ export type ProjectLink = {
   href: string;
 };
 
+// One swatch in a project's design-system showcase. Every hex here is either
+// a real design token (where the project's own spec states one, e.g. Scam
+// Shield's measured verdict colors) or sampled directly from that project's
+// own shipped screenshots (lib/projects.ts's images) — never invented, so
+// what's shown always traces back to something real.
+export type ProjectDesignSystemColor = {
+  name: string;
+  hex: string;
+  usage: string;
+};
+
+// One named size/weight role, e.g. { name: "H1", spec: "700 · 48/56px" }.
+// Pulled from each project's own source (a documented type-scale token where
+// one exists, otherwise the role's real font-size/line-height/weight as
+// written in its CSS) rather than estimated from a screenshot.
+export type ProjectTypeRole = {
+  name: string;
+  spec: string;
+};
+
+export type ProjectTypography = {
+  // The real font family from that project's own next/font import or
+  // font-family declaration — never guessed from how a screenshot looks.
+  fontFamily: string;
+  roles?: ProjectTypeRole[];
+};
+
+// A real component, named after its actual source file. `image` — a PNG
+// cropped straight from that project's own screenshots or rendered design
+// files, never a mockup redrawn for this purpose — is only set for the few
+// that got an actual crop; the rest render as a plain name.
+export type ProjectComponentExample = {
+  name: string;
+  image?: string;
+};
+
+export type ProjectDesignSystem = {
+  // One line on the system's guiding idea, same spirit as each project's
+  // own "Design" section prose.
+  principle: string;
+  colors: ProjectDesignSystemColor[];
+  typography?: ProjectTypography;
+  // A representative sample of real components from that project's own
+  // components/ directory — not exhaustive, not invented.
+  components?: ProjectComponentExample[];
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -61,6 +108,9 @@ export type Project = {
   // (Problem, Approach, Real Issues Caught, Outcome, ...) rather than a
   // fixed set of fields every project has to fit into.
   sections: ProjectSection[];
+  // Shown as its own swatch section, between "At a glance" and "Sections" —
+  // not part of `sections` since it's a visual block, not body copy.
+  designSystem?: ProjectDesignSystem;
   // Real, working links (repo, docs, live site).
   links?: ProjectLink[];
   // Small print for links that aren't ready yet (e.g. a broken/private repo).
@@ -135,6 +185,20 @@ export const projects: Project[] = [
         body: "Delivered a complete set of user flows, a station categorization framework, and high-fidelity UI for the core experience. Using these designs, the development team built a working end-to-end flow for finding and booking a charging station, validating the core product concept as a functioning MVP.",
       },
     ],
+    designSystem: {
+      principle:
+        "A clean, utility-first palette for a real-world logistics app: near-white surfaces, a single confident green carrying every primary action and live-status marker, and light tints reserved for selected states.",
+      colors: [
+        { name: "Surface", hex: "#FCFCFC", usage: "Page background and cards" },
+        { name: "Primary Green", hex: "#30B430", usage: "Primary actions, live status, map pins" },
+        { name: "Selected Tint", hex: "#C0E4C0", usage: "Selected rows and light highlights" },
+        { name: "Border", hex: "#E4E4E4", usage: "Dividers and input borders" },
+      ],
+      components: [
+        { name: "Buttons", image: "/work/sri-charge/components/buttons.png" },
+        { name: "Form Input", image: "/work/sri-charge/components/input.png" },
+      ],
+    },
     // Both GitHub links in the source case study 404 (private repos or a
     // typo) — the case study itself suggests this wording instead of
     // publishing dead links.
@@ -221,6 +285,31 @@ export const projects: Project[] = [
         body: "A working full-stack booking platform (public site, customer booking flow, and admin portal) built on a real, constraint-enforced data model, with a companion mobile app sharing the same API. Not yet publicly deployed, but functionally complete for its core flows, with an honest account of what remains before production readiness.",
       },
     ],
+    designSystem: {
+      principle:
+        "A bold violet-on-navy identity for the court's marketing site, carried from the hero gradient through every primary button.",
+      colors: [
+        { name: "Deep Navy", hex: "#0C1824", usage: "Dark panels, hero and footer" },
+        { name: "Violet", hex: "#7824C0", usage: "Primary buttons and gradients" },
+        { name: "Bright Violet", hex: "#8430D8", usage: "Gradient highlight" },
+        { name: "Supporting Surface", hex: "#302454", usage: "Secondary panels over navy" },
+      ],
+      typography: {
+        fontFamily: "Geist, with Fraunces as a display serif for hero and section headings",
+      },
+      components: [
+        { name: "Card", image: "/work/kandy-1st-court/components/pricing-card.png" },
+        { name: "AdminDashboardContent", image: "/work/kandy-1st-court/components/stat-card.png" },
+        { name: "BookingForm" },
+        { name: "AdminBookingsTable" },
+        { name: "CustomerDashboard" },
+        { name: "MyBookingsList" },
+        { name: "LoginForm" },
+        { name: "Button" },
+        { name: "DatePicker" },
+        { name: "Badge" },
+      ],
+    },
     links: [
       {
         label: "GitHub",
@@ -277,6 +366,40 @@ export const projects: Project[] = [
         body: "A live, responsive portfolio with a real design system, working project case studies with an image carousel, and a working contact form, built with iterative assistance from Claude Code, with the developer checking claims and fixing what it got wrong along the way, rather than accepting output at face value.",
       },
     ],
+    designSystem: {
+      principle:
+        "The Forest & Mint system this whole site runs on: one green that gets brighter in dark mode, a warm accent reserved for small highlights, and the same tokens driving every page.",
+      colors: [
+        { name: "Forest Green", hex: "#2D6A4F", usage: "Primary actions and links, light mode" },
+        { name: "Mint Bright", hex: "#52B788", usage: "Primary actions and links, dark mode" },
+        { name: "Canvas", hex: "#FFFFFF", usage: "Page background, light mode" },
+        { name: "Deep Space", hex: "#1A1A2E", usage: "Page background, dark mode" },
+        { name: "Warm Clay", hex: "#D4A373", usage: "Small accents, light mode" },
+        { name: "Gold Accent", hex: "#E9C46A", usage: "Small accents, dark mode" },
+      ],
+      typography: {
+        fontFamily: "Inter (body/UI), with Rajdhani for the HUD's display headings and JetBrains Mono for its readouts",
+        roles: [
+          { name: "H1", spec: "700 · 48/56px" },
+          { name: "H2", spec: "700 · 36/44px" },
+          { name: "H3", spec: "700 · 28/36px" },
+          { name: "H4", spec: "700 · 22/30px" },
+          { name: "Body", spec: "400 · 16/24px" },
+          { name: "Caption", spec: "400 · 12/16px" },
+        ],
+      },
+      components: [
+        { name: "Button", image: "/work/portfolio/components/button.png" },
+        { name: "Tag", image: "/work/portfolio/components/tag.png" },
+        { name: "ProjectCard", image: "/work/portfolio/components/project-card.png" },
+        { name: "NavLink" },
+        { name: "Navbar" },
+        { name: "ThemeToggle" },
+        { name: "ImageCarousel" },
+        { name: "HudFrame" },
+        { name: "IntroGate" },
+      ],
+    },
     links: [
       {
         label: "GitHub",
@@ -355,6 +478,32 @@ export const projects: Project[] = [
         body: "A detailed plan arrives in about 20 seconds for roughly 3 cents of API-equivalent usage. An end-to-end Playwright script drives a real Chrome browser through the full flow: creating a project from a prompt plus an attached file, editing the plan before saving, ticking tasks and subtasks, using the keyboard shortcuts, renaming and adding tasks, restarting the server to confirm persistence, then completing and archiving the project. TypeScript, ESLint, and the production build all pass cleanly.",
       },
     ],
+    designSystem: {
+      principle:
+        "A deep-navy, electric-blue interface built for long focus sessions, with one accent color carrying every primary action, progress indicator and status tag.",
+      colors: [
+        { name: "Deep Navy", hex: "#0B1123", usage: "Page background" },
+        { name: "Slate Surface", hex: "#142037", usage: "Cards and panels" },
+        { name: "Electric Blue", hex: "#4F8FF7", usage: "Primary actions, links, progress" },
+        { name: "Priority Pink", hex: "#FFA1AD", usage: "High-priority tags" },
+      ],
+      typography: {
+        fontFamily: "Geist",
+      },
+      components: [
+        { name: "Button", image: "/work/mune-tasks/components/button.png" },
+        { name: "PriorityBadge", image: "/work/mune-tasks/components/task-row.png" },
+        { name: "AppShell" },
+        { name: "ProjectBrowser" },
+        { name: "PrioritySelect" },
+        { name: "AnimatedCheckbox" },
+        { name: "Progress" },
+        { name: "TaskFiles" },
+        { name: "UpNext" },
+        { name: "Sidebar" },
+        { name: "shadcn/ui primitives (Dialog, DropdownMenu, Tabs, Popover, Tooltip)" },
+      ],
+    },
     sourceNote: "Personal local-first tool; source available on request.",
   },
   {
@@ -426,6 +575,29 @@ export const projects: Project[] = [
         body: "A demo trip, Goa Trip, loads with four people, weighted shares, a multi-payer villa, every split mode and a partial settlement. The engine's unit tests cover equal, weighted with decimals, exact, percent, multi-payer, rounding remainders and partial settlements. The production build was run and the demo trip was walked through in Chrome, from the events list to the print report.",
       },
     ],
+    designSystem: {
+      principle:
+        "A dark-first interface with one warm accent color doing double duty for primary actions and category highlights, and mint-green reserved for positive balances.",
+      colors: [
+        { name: "Near Black", hex: "#121215", usage: "Page background" },
+        { name: "Surface", hex: "#343032", usage: "Cards and panels" },
+        { name: "Orange", hex: "#FFA66B", usage: "Primary actions and category highlights" },
+        { name: "Mint Green", hex: "#6FE3B4", usage: "Positive balances owed to you" },
+      ],
+      typography: {
+        fontFamily: "Geist",
+      },
+      components: [
+        { name: "Button", image: "/work/mune-splits/components/button.png" },
+        { name: "Money", image: "/work/mune-splits/components/balance-row.png" },
+        { name: "PeopleManager" },
+        { name: "Avatar" },
+        { name: "Fields" },
+        { name: "Screens" },
+        { name: "SettingsForm" },
+        { name: "shadcn/ui primitives (Dialog, DropdownMenu, Tabs, Popover, Tooltip)" },
+      ],
+    },
     sourceNote: "Personal local-first tool; source available on request.",
   },
   {
@@ -515,6 +687,179 @@ export const projects: Project[] = [
         body: "An end-to-end script drives a real Edge browser through both acceptance checklists in the spec, 23 steps in all: creating a project and answering the questions, drafting and editing personas, building a journey with an emotion curve and promoting a pain point, dragging tasks across the board and attaching a branch and PR, turning a failed test into a bug, generating a changelog and exporting Markdown, CSV and the handoff spec, and checking that data survives a reload. All 23 steps pass with zero browser console errors. Separate checks cover the background settings and the desktop launcher's full lifecycle: first-run install, build, hidden start, Quit, and auto-exit when the window closes. TypeScript, ESLint and the production build all pass cleanly. The portfolio screenshots come from a scripted capture of a demo project loaded through the app's own Import feature, so the set can be regenerated after any design change. Not yet verified: AI features against the live API with a real key, and GitHub sync on a private repo. The app hasn't been tested with users yet.",
       },
     ],
+    designSystem: {
+      principle:
+        "Dark glassmorphism over a full-screen generated wallpaper, with a purple accent by default and a green theme as an alternate, so the same frosted cards carry either one.",
+      colors: [
+        { name: "Glass Surface", hex: "#383E3C", usage: "Frosted cards over the wallpaper" },
+        { name: "Purple Accent", hex: "#A36DFB", usage: "Primary accent, purple theme" },
+        { name: "Green Accent", hex: "#3EDA85", usage: "Primary accent, green theme" },
+        { name: "Pain-Point Maroon", hex: "#3E2B2A", usage: "Journey pain-point cards" },
+      ],
+      typography: {
+        fontFamily: "Inter",
+      },
+      components: [
+        { name: "Glass/Button", image: "/work/mune-ux/components/buttons.png" },
+        { name: "Glass/Input", image: "/work/mune-ux/components/inputs.png" },
+        { name: "Glass/Notification", image: "/work/mune-ux/components/notifications.png" },
+        { name: "Glass/Tabs", image: "/work/mune-ux/components/tabs.png" },
+        { name: "Glass/Card" },
+        { name: "Glass/Dialog" },
+        { name: "Glass/Accordion" },
+        { name: "Glass/ChatBubble" },
+        { name: "EmotionCurve" },
+        { name: "ImpactMatrix" },
+        { name: "MoscowBoard" },
+        { name: "PersonaCard" },
+      ],
+    },
     sourceNote: "Personal local-first tool; source available on request.",
+  },
+  {
+    slug: "scam-shield",
+    title: "Scam Shield",
+    tagline:
+      "A fraud check for small shop owners, built in two weeks for the Google Cloud AI Builder Cup: paste a conversation or a payment-slip screenshot and get a STOP, VERIFY or SAFE verdict, the reasons, and what to do next.",
+    coverImage: "/work/scam-shield/05-stop-result.png",
+    images: [
+      { src: "/work/scam-shield/01-check-empty.png", alt: "Check screen in its empty state, with upload and type-or-paste options beside a list of demo examples" },
+      { src: "/work/scam-shield/02-check-filled-thread.png", alt: "Check screen with a multi-message conversation thread built up, ready to check" },
+      { src: "/work/scam-shield/03-check-image-only.png", alt: "Check screen with a payment-slip image attached and ready to check" },
+      { src: "/work/scam-shield/04-checking.png", alt: "Checking state: a designed waiting screen telling the owner what to avoid while the check runs" },
+      { src: "/work/scam-shield/05-stop-result.png", alt: "STOP verdict for the cake-shop scam conversation, with the source thread and an escalation banner" },
+      { src: "/work/scam-shield/06-verify-result.png", alt: "VERIFY verdict screen telling the owner to check before they act" },
+      { src: "/work/scam-shield/07-safe-result.png", alt: "SAFE verdict screen reading \"No red flags found\" rather than claiming the message is genuine" },
+      { src: "/work/scam-shield/08-long-thread-stop.png", alt: "STOP result for a long conversation thread with many evidence findings" },
+      { src: "/work/scam-shield/09-your-records.png", alt: "Your records screen listing past checks for the shop" },
+      { src: "/work/scam-shield/10-support-waiting.png", alt: "Supporting states board for waiting and validation errors" },
+      { src: "/work/scam-shield/11-support-recovery.png", alt: "Supporting states board for service recovery, including network and rate-limit errors" },
+      { src: "/work/scam-shield/12-mobile-stop-result.png", alt: "STOP verdict at mobile width, with the full source thread and image findings stacked below" },
+      { src: "/work/scam-shield/13-mobile-safe-result.png", alt: "SAFE verdict at mobile width" },
+      { src: "/work/scam-shield/14-color-palette.png", alt: "Design system color palette board, with trust blues and cool neutrals and their hex values" },
+    ],
+    role: "UI/UX designer and front-end engineer",
+    status: "Shipped on time and live on Google Cloud Run, submitted to the Google Cloud AI Builder Cup 2026",
+    platform: "Mobile-first web app, deployed on Google Cloud Run",
+    tools: "Figma · Claude Code · VS Code · Git",
+    techStack:
+      "Next.js 16 (static export) · React 19 · TypeScript · FastAPI · Python · Gemini 2.5 Flash on Vertex AI · Google Cloud Run",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Shop owners have seconds to decide whether to hand over goods or money, and scammers change tactics every time they're refused. Small merchants get fake payment slips, spoofed bank texts, phishing links, refund tricks and \"customer\" enquiries that push risky files, with no security team and a customer waiting at the counter. The project was shaped by a real case: a cake business was messaged on LinkedIn with a link to a fake meeting page, and when the owner refused to download it and asked to move to WhatsApp, the attacker switched approach and sent a disguised file with a two-hour payment deadline. A checker that reads one message at a time misses that kind of pattern; the owner doesn't need a threat report, she needs one word, the reasons, and what to do next. Existing checkers such as ARKA ScamCheck and Trend Micro ScamCheck are built for everyday consumers; Scam Shield is built for the merchant deciding whether to release goods or pay.",
+      },
+      {
+        title: "Approach",
+        body: "Built the front end and the whole design system in two weeks for the Google Cloud AI Builder Cup 2026, working alongside Sumala, who built the backend, security and evaluation. I owned everything the shop owner sees.",
+        points: [
+          "7 design-system boards in Figma: colour palette, typography, spacing and large controls, surfaces and accessibility, a component library of native Figma components, and composed examples.",
+          "22 screen designs across 11 flows, each at 1440px desktop and 390px mobile: the check screen in its empty, filled-thread and image-only states, checking, the STOP/VERIFY/SAFE results, a long-thread STOP result, Your records, and two boards of supporting states for waiting, validation and service recovery.",
+          "Every screen designed mobile-first, for someone standing at a counter with a phone in one hand: plain language instead of jargon like VBS or punycode, colour never used alone (every verdict pairs its colour with a word and an icon), calm pale-blue surfaces with red, amber and green kept strictly for verdicts, and room for longer Sinhala text to wrap instead of being cut off.",
+          "Shipped the front end myself as a Next.js app built to static files and served by the FastAPI backend from the same Cloud Run container, plus the slides and the under-3-minute demo video for submission.",
+        ],
+      },
+      {
+        title: "Key Design Decisions",
+        body: "The result screen had to be understood in about three seconds, and four decisions did most of that work.",
+        points: [
+          'SAFE never means "genuine." The system can only find red flags, not prove a slip or sender is real, so the best result reads "No red flags found" and tells the owner to confirm the payment in their banking app, and a payment-slip image always carries a note that a slip is not proof money arrived.',
+          'Show what we saw and what to look for. The verdict is set in code; Gemini only adds limited evidence and writes the explanation, and that only builds trust if people can see it — every finding card shows where it came from (a known scam pattern, the shop\'s own records, a pattern across the conversation, or "AI noticed"), its severity, and an Observed/Expected pair in plain words. AI-only findings are labelled tentative and written as a clue, never as proof.',
+          "Build a conversation, not a single message. The key signal is escalation, so the check screen builds an ordered thread of up to 20 items with a From them/From me toggle, and the owner's own replies let the system notice they pushed harder after you said no, which surfaces as a banner on the result.",
+          "A check that can't finish never becomes SAFE. Image checks can take over a minute, so waiting is a designed screen that says what to avoid, not a spinner on a button, and network errors, rate limits, a missing business profile, a rejected image and a fallback explanation each get their own state, always saying plainly that no verdict was returned and keeping the thread so the owner can retry without rebuilding it.",
+        ],
+      },
+      {
+        title: "How It Works",
+        body: "Scam Shield combines fixed security rules, knowledge of the shop's own business, and Gemini. The verdict is decided in code, so it comes with evidence rather than a guess.",
+        points: [
+          "A screenshot or payment slip is read into facts first (type, amount, date, reference, what it's asking the reader to do); Gemini only reads at this step, it never judges.",
+          "Deterministic rules check lookalike and shortened links, risky or disguised file names, fake installers, urgency paired with a payment request, untraceable payment methods, advance fees, sign-in lures and payment-slip arithmetic.",
+          "The message is compared against the shop's own suppliers' known domains, phones, bank accounts, normal amounts and usual channels, so a \"we changed our bank account\" message is judged against the shop's own history, not just against known scam patterns.",
+          "A Gemini analyst reads the whole conversation for tactics no rule knows, but every finding must quote the conversation exactly, and code discards any finding whose quote isn't really there.",
+          "One evidence-correlation engine tracks escalation across the thread, scores every piece of evidence, and sets the verdict: STOP needs a critical finding or a score of 60 or more together with at least one rule or business-context finding, VERIFY covers a score of 25 to 59 or any single high-severity rule, and SAFE means nothing was found.",
+          "AI-only evidence is capped at 30 points, can lift a result to VERIFY at most, and can never lower a verdict or remove a finding. Gemini then writes the plain-English explanation, but never for a SAFE result, and a fixed template takes over if it fails its guardrails or times out.",
+        ],
+      },
+      {
+        title: "Front-End Build",
+        body: "The front end is a Next.js app exported to static files and served by the FastAPI backend from the same Cloud Run container, so there's one deployment and no cross-origin setup. The browser sends the whole conversation with every check, and the server stores nothing between requests.",
+        points: [
+          "The UI never computes a verdict: it shows exactly the state the backend returns.",
+          "Figma variables map one-to-one to CSS variables in tokens.css, including the three verdict colours and five severity levels.",
+          "Static-export limits shaped the whole build: no API routes, server actions or dynamic result routes, so results live in client state, and trailingSlash stays on so reloading a route like /check still works.",
+          "Images are checked in the browser first, with type, size and HEIC handled before upload and a clear message for each problem, and requests get a 120-second timeout since a multi-image check can take over a minute, with the thread surviving errors and reloads.",
+          "labels.ts keeps the vocabulary in one place, turning API values like fake_page into words an owner actually understands.",
+          "Code is organised by job: components/ for the UI parts (VerdictCard, EvidenceCard, ActionsList, ImageReadCard, SupplierCard), features/ for the check, result and records screens, and lib/ for the API client, thread building and image handling.",
+        ],
+      },
+      {
+        title: "Components & Accessibility",
+        body: "Controls are at least 60px tall, focus is a 3px ring with a 3px offset, and contrast was measured for each exact colour pair rather than claimed for the system as a whole (exact hex values are in the design system above).",
+        points: [
+          'STOP: 6.85:1 contrast, "Do not open, click or pay."',
+          'VERIFY: 6.24:1 contrast, "Check before you act."',
+          'SAFE: 6.76:1 contrast, "No red flags found."',
+          "Core pairs: primary text at 14.27:1 on white, secondary text at 7.29:1, and white on the action blue at 5.37:1.",
+          "The component library covers buttons, text inputs, the conversation input with its direction toggle, image upload, verdict banners, evidence items tagged Rule or AI, tool-check rows, escalation and fallback banners, supplier cards and surfaces, every one a native Figma component with variants.",
+        ],
+      },
+      {
+        title: "Testing & Outcome",
+        body: "Scam Shield shipped on time and is live on Cloud Run. Results are from the live evaluation on 10 October 2026: 88 synthetic messages, part of them written by a teammate who never read the rules, split into a dev half used to find and fix problems and a holdout half never looked at while fixing.",
+        points: [
+          "Caught 17 of 20 scams on the held-out half, up from 12 to 13 of 20 on the first deployed version, an improvement made using only the dev half, which suggests the fixes generalised rather than memorised the test set.",
+          "1 of 7 harmless-but-pushy messages were wrongly flagged on the held-out half.",
+          "Median time per text check was 5.0 seconds (95th percentile 6.6s) with Gemini 2.5 Flash and thinking disabled; a harmless message typically returned in about 2 seconds. Gemini 3.8 Flash was tried too, but a one-word request took 11 to 14 seconds in testing, too slow for a counter-top check.",
+          "These are small samples, so a difference of one or two cases is within normal variation, and the tool finds red flags only: it can't confirm that anything is genuine.",
+          "Built in two weeks, 4 to 18 October 2026: wireframes and the design system first, then the front-end plan written against the live backend with every result state designed before building, then the Next.js build connected to the live API, then the deck and demo video for the 18 October submission deadline.",
+          "Next: test with real shop owners on their own phones, support Sinhala at scale, and read document content safely, which the prototype deliberately doesn't do yet.",
+        ],
+      },
+    ],
+    designSystem: {
+      principle:
+        "Calm pastel trust-blue with navy text, and red, amber and green used strictly as verdict colors, measured for contrast rather than claimed for the system as a whole.",
+      colors: [
+        { name: "Stop Red", hex: "#9E2828", usage: "Stop verdict text, on #FFF1F1" },
+        { name: "Verify Amber", hex: "#805200", usage: "Verify verdict text, on #FFF6DF" },
+        { name: "Safe Green", hex: "#17613F", usage: "Safe verdict text, on #EAF7EF" },
+        { name: "Action Blue", hex: "#416D9F", usage: "Primary buttons and links" },
+        { name: "Primary Text", hex: "#142B49", usage: "Headings and body text, on white" },
+      ],
+      typography: {
+        fontFamily: "Inter",
+        roles: [
+          { name: "Display", spec: "700 · 32/40px — page title" },
+          { name: "Title", spec: "700 · 22/30px — verdict word, section titles" },
+          { name: "Heading", spec: "600 · 18/26px — card titles" },
+          { name: "Body", spec: "400 · 18/28px" },
+          { name: "Body Small", spec: "400 · 16/24px — secondary body" },
+          { name: "Label", spec: "600 · 16/24px — field labels" },
+          { name: "Caption", spec: "400 · 14/20px — hints, metadata" },
+          { name: "Overline", spec: "600 · 13/18px — tags" },
+        ],
+      },
+      components: [
+        { name: "VerdictCard", image: "/work/scam-shield/components/verdict-banner.png" },
+        { name: "Button", image: "/work/scam-shield/components/buttons.png" },
+        { name: "Field", image: "/work/scam-shield/components/text-input.png" },
+        { name: "EvidenceCard" },
+        { name: "ActionsList" },
+        { name: "ImageReadCard" },
+        { name: "SourceThread" },
+        { name: "SupplierCard" },
+        { name: "DirectionToggle" },
+        { name: "Banner" },
+        { name: "Disclosure" },
+        { name: "Tag" },
+      ],
+    },
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/SumalaMannage/trust-engine",
+      },
+    ],
   },
 ];

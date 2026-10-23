@@ -349,15 +349,31 @@ body {
   pathname so React remounts this wrapper on every navigation, replaying
   the enter keyframe — a dependency-free stand-in for the browser's View
   Transitions API, which isn't available in this project's React build.
+  The brightness flicker partway through is what sells "a program just
+  finished loading this" rather than a plain fade — two quick dips as the
+  page settles in, like a CRT re-syncing, instead of one smooth ease.
 */
 @keyframes page-enter {
-  from {
+  0% {
     opacity: 0;
     transform: translateY(6px);
+    filter: brightness(1.6);
   }
-  to {
+  8% {
+    opacity: 1;
+    filter: brightness(0.75);
+  }
+  16% {
+    filter: brightness(1.25);
+  }
+  24% {
+    filter: brightness(0.95);
+    transform: translateY(1px);
+  }
+  100% {
     opacity: 1;
     transform: translateY(0);
+    filter: brightness(1);
   }
 }
 

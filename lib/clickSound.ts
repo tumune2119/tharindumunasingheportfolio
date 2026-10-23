@@ -40,3 +40,31 @@ export function playClickSound() {
   oscillator.start(now);
   oscillator.stop(now + 0.07);
 }
+
+// A two-note rising blip for page navigation — distinct from the click tick
+// above, so a route change reads as "request completed" rather than just
+// another click. Same reasoning as the click sound: synthesized, so there's
+// nothing to load, and it respects the same mute setting.
+export function playPageTransitionSound() {
+  if (getA11ySettings().musicMuted) return;
+  const audio = getContext();
+  if (!audio) return;
+  if (audio.state === "suspended") void audio.resume();
+
+  const now = audio.currentTime;
+  [
+    { freq: 620, start: 0 },
+    { freq: 980, start: 0.07 },
+  ].forEach(({ freq, start }) => {
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(freq, now + start);
+    gain.gain.setValueAtTime(0.06, now + start);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + start + 0.09);
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+    oscillator.start(now + start);
+    oscillator.stop(now + start + 0.1);
+  });
+}

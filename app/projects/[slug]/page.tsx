@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { MoreProjects } from "@/components/MoreProjects";
 import { JsonLd } from "@/components/JsonLd";
+import { ProjectDesignSystem } from "@/components/ProjectDesignSystem";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { ArrowLeftIcon, ExternalLinkIcon, GithubIcon, MailIcon } from "@/components/icons";
 import { projects, sectionSlug, sourceRequestMailto } from "@/lib/projects";
@@ -108,6 +109,8 @@ export default async function ProjectPage({
           </div>
         </dl>
       </section>
+
+      {project.designSystem && <ProjectDesignSystem designSystem={project.designSystem} />}
 
       {/* Same vertical-line-with-dots table of contents as the article
           pages; each entry jumps to its #section-slug anchor. */}
