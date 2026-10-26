@@ -483,7 +483,7 @@ export const articles: Article[] = [
     slug: "redesigning-mo-marketplace",
     title: "Redesigning MO Marketplace: Four Shops Behind One Home Screen",
     excerpt:
-      "How I audited a Sri Lankan marketplace app over ten days, found that three features I assumed were missing already existed, and redesigned its home screen and checkout flow for a take-home design assessment.",
+      "How I audited a Sri Lankan marketplace app, found that three features I assumed were missing already existed, and redesigned its home screen and checkout flow in four days for a take-home design assessment.",
     chapters: [
       {
         slug: "four-shops-wearing-one-coat",
@@ -514,9 +514,9 @@ export const articles: Article[] = [
       {
         slug: "walking-the-product-before-judging-it",
         title: "Walking the Product Before Judging It",
-        summary: "Three research passes in ten days, and three assumptions that turned out to be wrong.",
+        summary: "Three research passes packed into a four-day window, and three assumptions that turned out to be wrong.",
         content: [
-          "Before designing anything, I wanted to know what MO already did well and where it broke down, over three passes in ten days. An app walkthrough went from first launch to selling, capturing 61 iPhone screenshots and logging 32 checks in a spreadsheet, of which 21 turned up an issue. A website audit reviewed mo.lk at 1440 pixels wide and compared it with the app check by check, and 13 of the 32 checks had no web equivalent at all. An inspiration review studied Depop, Etsy, Facebook Marketplace and Pinterest for patterns that solved MO's specific problems, rather than layouts to copy.",
+          "Before designing anything, I wanted to know what MO already did well and where it broke down, so I spent part of the four days I had on three research passes before opening Figma. An app walkthrough went from first launch to selling, capturing 61 iPhone screenshots and logging 32 checks in a spreadsheet, of which 21 turned up an issue. A website audit reviewed mo.lk at 1440 pixels wide and compared it with the app check by check, and 13 of the 32 checks had no web equivalent at all. An inspiration review studied Depop, Etsy, Facebook Marketplace and Pinterest for patterns that solved MO's specific problems, rather than layouts to copy.",
           "The walkthrough corrected assumptions I had written down before ever opening the app. I had assumed MO had no wishlist, no meet-up option and no payment step. All three exist, just hard to find. The wishlist sits ninth in a profile menu, next to a second, separate \"Favourite Items\" list. Meet-up is a seller setting the buyer never sees. Payment happens after a button labelled \"Place Order.\" That shifted most of the fix list toward surfacing what MO already had, rather than inventing features it didn't need.",
           "Other findings were sharper. A seller with zero sales displayed a five-star rating, and all three of their reviews came from the same person. Free delivery started at Rs 599 in the app, Rs 2,500 in the website header, and Rs 3,000 in the website cart. The last thing before \"Place Order\" was an \"I agree to no refunds\" checkbox, and the button beneath it actually opened payment.",
           "Some things already worked well and stayed exactly as they were: typo-tolerant search, an editable AI listing draft, clear delivery choices for sellers, nine-step order tracking, and chat quick replies.",

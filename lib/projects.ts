@@ -903,7 +903,7 @@ export const projects: Project[] = [
       },
       {
         title: "How I Worked",
-        body: "Before designing anything, I wanted to understand what MO already does well and where it falls down, over three research passes in 10 days.",
+        body: "Before designing anything, I wanted to understand what MO already does well and where it falls down, so I spent part of the four days I had on three research passes before opening Figma.",
         points: [
           "App walkthrough: went through MO from first launch to selling, capturing 61 iPhone screenshots and logging 32 checks in a spreadsheet; 21 turned up an issue.",
           "Website audit: reviewed mo.lk at 1440px wide and compared it with the app check by check; 13 of the 32 checks had no web equivalent at all.",
