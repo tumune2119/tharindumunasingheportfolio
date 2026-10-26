@@ -86,6 +86,12 @@ export default async function ProjectPage({
         {project.tagline}
       </p>
 
+      {project.disclaimer && (
+        <p className="text-body-sm mt-6 rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-foreground">
+          {project.disclaimer}
+        </p>
+      )}
+
       <div className="mt-8 overflow-hidden rounded-2xl border border-foreground/10 bg-card">
         <ImageCarousel images={project.images} alt={project.title} />
       </div>

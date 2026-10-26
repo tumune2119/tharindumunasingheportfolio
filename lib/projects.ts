@@ -104,6 +104,12 @@ export type Project = {
   platform: string;
   tools: string;
   techStack: string;
+  // A standing notice that has to stay visible regardless of how far anyone
+  // scrolls into the sections below — e.g. an unaffiliated concept project
+  // naming the real company it reimagines. Rendered right under the
+  // tagline, before "At a glance", not tucked into a section where it could
+  // be missed.
+  disclaimer?: string;
   // Rendered in this order — each case study's own natural structure
   // (Problem, Approach, Real Issues Caught, Outcome, ...) rather than a
   // fixed set of fields every project has to fit into.
@@ -861,5 +867,147 @@ export const projects: Project[] = [
         href: "https://github.com/SumalaMannage/trust-engine",
       },
     ],
+  },
+  {
+    slug: "mo-marketplace",
+    title: "MO Marketplace",
+    tagline:
+      "An independent redesign concept for a Sri Lankan marketplace's home screen, built for a take-home assessment around one idea: understand first, then promote, then browse.",
+    coverImage: "/work/mo-marketplace/cover.jpg",
+    images: [
+      { src: "/work/mo-marketplace/cover.jpg", alt: "MO Marketplace redesign shown on desktop and iPhone: a greeting, a search bar, four entrance cards for Super Mall, Second Hand, Vehicles and Properties, and a campaign banner" },
+      { src: "/work/mo-marketplace/current-app.jpg", alt: "The current MO app: home screen, Vehicle category and Properties category, with Vehicles and Properties sitting as ordinary category circles beside Women's Fashion" },
+      { src: "/work/mo-marketplace/before-after.jpg", alt: "Before and after: the current app home screen next to the redesigned first viewport" },
+      { src: "/work/mo-marketplace/iphone-home-full.jpg", alt: "The full redesigned iPhone home screen, split into three columns" },
+      { src: "/work/mo-marketplace/desktop-home-top.jpg", alt: "Redesigned desktop home at 1440px, above the fold" },
+      { src: "/work/mo-marketplace/desktop-home-rest.jpg", alt: "Desktop home continued: shelves, seller story, official stores, picks and the end state" },
+      { src: "/work/mo-marketplace/design-system-foundations.jpg", alt: "Design system foundations: colour, typography, spacing and accessibility rules" },
+      { src: "/work/mo-marketplace/design-system-components.jpg", alt: "MO design system components and their states, built as reusable named frame specimens" },
+      { src: "/work/mo-marketplace/task2-discover.jpg", alt: "Task 2 screens: welcome, search results, pre-loved product detail and seller profile" },
+      { src: "/work/mo-marketplace/task2-buy.jpg", alt: "Task 2 screens: seller chat, checkout review, payment recovery and order tracking" },
+      { src: "/work/mo-marketplace/task2-after-sale.jpg", alt: "Task 2 screens: return request, sell review, account and Saved, and resilience states" },
+      { src: "/work/mo-marketplace/filters-vehicles-properties.jpg", alt: "Filter sheets for vehicles (make, year, mileage, fuel) and properties (rent or sale, type, bedrooms, district)" },
+      { src: "/work/mo-marketplace/desktop-product-detail.jpg", alt: "Desktop pre-loved product detail page" },
+    ],
+    role: "UI/UX Designer, working solo",
+    status: "Independent concept for a take-home design assessment, not shipped and not affiliated with MO Marketplace",
+    platform: "iOS app (390 × 844) and desktop web (1440)",
+    tools: "Figma · HTML/CSS/JavaScript · Excel",
+    techStack: "HTML · CSS · JavaScript (clickable prototype) · Figma (design & prototype)",
+    disclaimer:
+      "This is an independent concept I created for a take-home design assessment. I'm not affiliated with MO Marketplace, and the work was not shipped. Listings, prices, sellers and reviews in the designs are illustrative.",
+    sections: [
+      {
+        title: "The Problem",
+        body: "MO Marketplace is a Sri Lankan buy-and-sell app with four very different shops under one roof: Super Mall (brand-new stock from official stores), Second Hand (pre-loved and thrifted goods), Vehicles (cars, bikes and three-wheelers), and Properties (homes and land for sale or rent). Each serves a different shopper in a different frame of mind, but today a visitor can't tell that MO is four shops in one. In the app, Vehicles and Properties are category circles sitting next to Women's Fashion. Pre-loved items, MO's real differentiator, only appear at the bottom of an endless feed. On the website, the \"Vehicle\" category is 177 car accessories, and a banner says second-hand items are \"Available Only On APP\". The brief asked for a home screen redesign for app and web so a first-time visitor understands within seconds that MO offers four experiences and how to enter each one, plus a prioritised list of UX improvements across the rest of the app.",
+      },
+      {
+        title: "How I Worked",
+        body: "Before designing anything, I wanted to understand what MO already does well and where it falls down, over three research passes in 10 days.",
+        points: [
+          "App walkthrough: went through MO from first launch to selling, capturing 61 iPhone screenshots and logging 32 checks in a spreadsheet; 21 turned up an issue.",
+          "Website audit: reviewed mo.lk at 1440px wide and compared it with the app check by check; 13 of the 32 checks had no web equivalent at all.",
+          "Inspiration review: studied Depop, Etsy, Facebook Marketplace and Pinterest for patterns that solve MO's specific problems, rather than layouts to copy.",
+          'The walkthrough corrected early assumptions: I had written that MO had no wishlist, no meet-up option and no payment step. All three exist, just hard to find — the wishlist is ninth in a profile menu next to a second, separate "Favourite Items" list, meet-up is a seller setting the buyer never sees, and payment happens after a button labelled "Place Order." That shifted much of the fix list toward surfacing what MO already has, not inventing new features.',
+          "A seller with zero sales displayed a five-star rating, and all three of their reviews came from the same person. Free delivery started at Rs 599 in the app, Rs 2,500 in the website header and Rs 3,000 in the website cart. The last thing before \"Place Order\" was an \"I agree to no refunds\" checkbox, and the button actually opened payment.",
+          "Some things already work well and stayed: typo-tolerant search, an editable AI listing draft, clear delivery choices for sellers, nine-step order tracking and chat quick replies.",
+        ],
+      },
+      {
+        title: "Reframing the Reference",
+        body: 'MO supplied a reference design as a starting point: four tiles, a promotion, a flash sale and a shelf for each experience. It pointed in the right direction, but read closely it had seven problems, and I kept the structure and fixed these seven rather than starting over.',
+        points: [
+          "Two navigation systems: a chip row repeated the four tiles directly below it, with the last chip cut off.",
+          'Claims MO can\'t back up: badges like "Quality checked" and "Verified sellers," when second-hand condition is declared by the seller and ID checks confirm identity only.',
+          "Colour doing all the work: saturated blocks with small light text, and meaning carried by colour alone.",
+          "Super Mall owns the prime space: the promotion and the flash sale were both Super Mall, pushing Second Hand down.",
+          "Cards hide what decides a purchase: ratings without counts, no save button, illustrations instead of photos.",
+          'Personalisation without a reason: a selected "For you" chip implied MO already knew a first-time visitor.',
+          "No ending: the feed stopped without a next step, and the tab bar repeated Categories but had no Saved.",
+        ],
+      },
+      {
+        title: "The Home Screen",
+        body: "The page answers three questions in order: What is MO? What's happening now? What's here for me? Greeting and location come first, since location changes what MO can offer. Search follows immediately, so people who know what they want don't have to scroll. Then four entrances under the line \"One MO. Four ways to find it.\", each with a name, an icon and a one-line description so no meaning depends on colour. One campaign banner sits after the entrances, not before them — one banner, not a rotating carousel. Below that, one shelf per experience in the same order as the entrances (Flash sale, Fresh pre-loved finds, Vehicles near you, A place to call yours), then Shop by budget starting with Free Stuff (previously buried inside Women's Fashion), a seller story and official stores, reasoned picks, and an ending state: \"You're all caught up.\" Each shelf gets cards built for its buyers — condition, locality and seller for pre-loved; mileage and fuel for vehicles; sale or rent, beds and baths for properties — and every card has a save button.",
+        points: [
+          "The trade-off I made on purpose: no product is visible in the first iPhone viewport. The brief's first goal was understanding the four experiences within seconds, and four clear entrances do that better than two product cards would. Search and the entrances are both one tap from products. If testing showed people missing products, the campaign is the first thing I'd shrink.",
+        ],
+      },
+      {
+        title: "One Product, Two Platforms",
+        body: "The desktop version isn't a stretched phone. It keeps the same names, colours, icons, card anatomy and section order as the iPhone build, and uses the extra width for navigation and denser browsing: a top bar plus a row with the four experiences, Free Stuff and location (versus a tab bar for Home, Saved, Sell, Chat and Account on iPhone); one row of four entrances instead of a 2×2 grid; three to four cards per shelf row instead of two; and 64px gutters instead of 20pt gutters and 44pt touch targets. On desktop, the four experiences become permanent navigation on every page, not just on home. The current website only sells brand-new stock, so I labelled the desktop marketplace features as a phased concept rather than presenting them as a simple reskin.",
+      },
+      {
+        title: "Beyond the Home Screen",
+        body: "For the second task, I ranked 17 improvements from P0 to P2 by how directly they affect trust, cost or payment at the moment someone decides to buy, chat or sell, each with the evidence behind it, a business-impact hypothesis and a way to validate it. The top five:",
+        points: [
+          'Checkout wording and order: Review, then Payment, then Confirmation, with a buyer-protection summary instead of a "no refunds" checkbox.',
+          "Payment recovery: when a card fails, the message stays on screen, typed details are kept, and the buyer can retry or switch to Koko, with whether MO Coins and Koko can be combined shown before choosing.",
+          'Honest seller trust: identity is kept separate from rating, reviews are linked to real purchases, and new sellers show "New seller · Unrated."',
+          "One cost policy: one business-owned source feeds every delivery estimate.",
+          "Visible negotiation and safety: Chat and Make offer sit beside Buy on negotiable listings, and a safety notice appears in chat.",
+          "Vehicles and properties also got their own filters, because someone buying a car asks different questions from someone renting a house.",
+        ],
+      },
+      {
+        title: "A Prototype With Real States",
+        body: "Static click-throughs can't show what happens when something goes wrong, so alongside the Figma prototype I built a clickable HTML prototype for mobile and desktop, sharing one data set so saving an item on one shows up on the other. Reviewers can search for \"lether backpack\" and still find it, then filter by price, condition and location; make a low offer and get a counter-offer from the seller; ask the seller for a close-up of a mark and receive a photo in chat; have the first card payment fail on purpose, then recover without losing anything; track the order through four milestone groups and start a return; and turn on Reduce Transparency and larger text to see the accessible fallbacks.",
+      },
+      {
+        title: "Design System",
+        body: "A deliberately small system — warm, but with rules that make honest information easy to show. Pastel red is a warm surface colour only; deep red carries every action; text is always ink on opaque surfaces. Glass is reserved for chrome (the tab bar and navigation) — prices and trust information sit on solid surfaces, with an opaque fallback for Reduce Transparency. Components carry their own honesty rules: condition is labelled as seller-declared, \"NIC verified\" says \"Identity only,\" and ratings only appear with a review count, so a new seller shows \"New seller · Unrated\" rather than a fabricated empty five stars.",
+        points: [
+          "Contrast checked against WCAG: white text on deep red is 5.91:1, a pass; white on pastel red is 1.30:1, which is why that pairing is never used for text.",
+          "Accessibility targets: 44pt minimum touch targets, visible 2px focus rings, text that reflows at larger sizes, and Lucide outline icons with accessible names.",
+        ],
+      },
+      {
+        title: "Decisions, Testing & What I Learned",
+        body: 'Five decisions I\'d defend: removing the chip row (two routes to the same four places confuse people, and the entrances already do the job) over keeping chips as feed filters; entrances above products (comprehension within seconds was the first goal) over showing products above the fold; one campaign instead of an auto-rotating carousel (hidden slides get little attention and add motion); no "Verified sellers" badge (ID checks confirm identity, not quality, and badges must be true) over keeping the reference badge; and Saved in the tab bar rather than a Categories tab (categories are reachable through the entrances and search, while the existing wishlist was buried ninth in the profile menu).',
+        points: [
+          "Nothing here has been tested with users, and the business impacts are hypotheses. The first studies I'd run, with baselines from the current app: can people name MO's four experiences after five seconds on home? Can they find a pre-loved item and choose the right experience for a goal? Can they predict the total cost before paying? How do they read identity versus rating? I'd recruit across languages (Sinhala, Tamil and English), regions and accessibility needs.",
+          "Walk the product before judging it: my first pass assumed features were missing that only needed surfacing. Checking the real app turned \"build this\" into \"show this,\" cheaper to ship and more respectful of the team's existing work.",
+          "Honesty is a design material: the most valuable change on the home screen wasn't visual — it was removing claims the product couldn't keep, and designing components that can't display a misleading rating.",
+          "A trade-off is only a decision if you say what would change it: writing down \"what would change my mind\" for each call made the rationale stronger and easier to discuss.",
+        ],
+      },
+    ],
+    designSystem: {
+      principle:
+        "Soft atmosphere, strong foundations: pastel red as a warm surface only, deep red carrying every action, and ink text on opaque surfaces so trust information never sits on glass.",
+      colors: [
+        { name: "Action / Deep Red", hex: "#B92F45", usage: "Every primary action and button" },
+        { name: "Brand / Pastel Red", hex: "#F9DADD", usage: "Warm surface colour only, never small text" },
+        { name: "Canvas / Warm Blush", hex: "#FFF8F7", usage: "Page background" },
+        { name: "Content / White", hex: "#FFFFFF", usage: "Cards and content surfaces" },
+        { name: "Text / Ink", hex: "#272125", usage: "Body and heading text" },
+        { name: "Metadata / Muted", hex: "#73666B", usage: "Secondary and metadata text" },
+      ],
+      typography: {
+        fontFamily: "Inter for MO's own UI, with native SF Pro in iOS chrome",
+        roles: [
+          { name: "Display", spec: "700 · 52/58px" },
+          { name: "Section", spec: "650 · 32/38px" },
+          { name: "iPhone Title", spec: "650 · 24/31px" },
+          { name: "Body", spec: "400 · 17/24px" },
+          { name: "Metadata", spec: "400 · 14/20px" },
+          { name: "Label", spec: "600 · 12/17px" },
+        ],
+      },
+      components: [
+        { name: "Primary & Secondary Buttons", image: "/work/mo-marketplace/components/buttons.png" },
+        { name: "Item Card", image: "/work/mo-marketplace/components/item-card.png" },
+        { name: "Category Card", image: "/work/mo-marketplace/components/category-card.png" },
+        { name: "Glass iPhone Tab Bar", image: "/work/mo-marketplace/components/tab-bar.png" },
+        { name: "Search Field" },
+        { name: "Condition Chips & Filter States" },
+        { name: "Form Field" },
+        { name: "Seller Trust Card" },
+        { name: "Desktop Navigation" },
+        { name: "Alert & Recovery" },
+        { name: "Icon Library (Lucide outline)" },
+      ],
+    },
+    sourceNote: "Figma file (view-only) and the hosted HTML prototype available on request.",
   },
 ];
