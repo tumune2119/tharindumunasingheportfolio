@@ -173,6 +173,43 @@ export default function Home() {
           </div>
         </div>
 
+        {/* "How I actually work" card: every project below was designed
+            and built by the same person, with an AI pair programmer doing
+            the typing. Sits right under the hero, before the scroll-down
+            previews, since it's the throughline for everything those
+            previews link out to. */}
+        <ScrollFade>
+          <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8">
+            <p className="text-overline text-muted-foreground">
+              How I actually work
+            </p>
+            <h2 className="text-h3 mt-2">
+              Design and code stopped being two separate jobs.
+            </h2>
+            <p className="text-body mt-3 max-w-2xl text-muted-foreground">
+              Every project on this site was designed and shipped by the same
+              person, in the same sitting, with an AI pair programmer doing
+              the typing while I make the calls. That shows up in the work
+              itself, not just the job title:
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                "Prototyping in code",
+                "Pairing with Claude Code",
+                "Working in the real codebase",
+                "Building design systems, not just mockups",
+              ].map((item, index) => (
+                <Tag key={item} delay={index * 80}>
+                  {item}
+                </Tag>
+              ))}
+            </div>
+            <p className="text-caption mt-5 text-muted-foreground italic">
+              The job title is still catching up. The work already changed.
+            </p>
+          </section>
+        </ScrollFade>
+
         {/* Scroll-down summaries: most visitors scroll before they click a
             nav link, so Experience/Projects/Articles/Contact each get a
             preview right on the landing page (still linking out to their
