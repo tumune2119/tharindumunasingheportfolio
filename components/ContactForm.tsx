@@ -47,6 +47,15 @@ export function ContactForm() {
     event.preventDefault();
     const form = event.currentTarget;
 
+    // Honeypot: a field no sighted human can see or tab to, but bots that
+    // auto-fill every input land in it. Silently pretend success instead of
+    // sending, so scripted spam gets no signal to retry or adapt.
+    if ((form.elements.namedItem("company") as HTMLInputElement | null)?.value) {
+      setStatus("sent");
+      form.reset();
+      return;
+    }
+
     setStatus("sending");
     try {
       // sendForm reads each input's `name` directly as the template
@@ -66,6 +75,16 @@ export function ContactForm() {
   return (
     <>
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Honeypot: real visitors never see or reach this field. */}
+      <div className="absolute left-[-9999px]" aria-hidden="true">
+        <input
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       <div className="flex flex-col gap-1.5">
         <label htmlFor="name" className={labelClasses}>
           Name

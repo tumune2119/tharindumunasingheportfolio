@@ -51,6 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.7,
     },
+    {
+      url: `${SITE_URL}/privacy`,
+      lastModified: lastModifiedOf("app/privacy/page.tsx"),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   if (ARTICLES_ENABLED) {

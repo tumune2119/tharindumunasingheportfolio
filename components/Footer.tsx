@@ -43,6 +43,12 @@ export function Footer() {
         <p className="text-foreground/70" title="Portfolio · UI · build">
           {siteVersion}
         </p>
+        <Link
+          href="/privacy"
+          className="text-foreground/70 underline-offset-4 transition-colors duration-500 ease-in-out hover:text-primary hover:underline"
+        >
+          Privacy
+        </Link>
         <nav className="flex items-center gap-2">
           {socialLinks.map((link) => (
             <Link
