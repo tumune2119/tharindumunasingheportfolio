@@ -675,4 +675,171 @@ export const articles: Article[] = [
       },
     ],
   },
+  {
+    slug: "designing-fixnow",
+    title: "Designing FixNow: An Assistant That Guesses Out Loud, Never Quietly",
+    excerpt:
+      "How I designed a home-services marketplace and its AI assistant, Fixmon, for a take-home UI/UX assessment, and wrote a developer handoff that labels every claim by its evidence instead of letting a sample screen pass as a rule.",
+    chapters: [
+      {
+        slug: "a-marketplace-with-too-many-choices",
+        title: "A Marketplace With Too Many Choices",
+        summary: "A category-first home-services app, plus a second way in: an AI assistant that explains its matches.",
+        content: [
+          "The brief asked for FixNow: a reliable, minimal marketplace for home services. Someone browses categories such as plumbing, electrical, cleaning and appliance repair, opens one, and gets matched to nearby vendors ranked by expertise first and proximity second. The reference point named in the brief was Uber Eats' category-first discovery, but scaled down: fewer choices, and a clear next step on every screen rather than a dense filter panel.",
+          "The second entry point is Fixmon, an AI assistant that takes a written problem description and optional photos and turns that into a service category and a shortlist of vendors, with a reason given for each match. The two paths, manual browsing and Fixmon, were meant to converge on the same vendor list and the same profile screen, not fork into two separate products.",
+        ],
+      },
+      {
+        slug: "paper-first",
+        title: "Paper First",
+        summary: "Welcome, login, register, terms and an error state, sketched before any screen carried real colour.",
+        content: [
+          "Before opening Figma, I sketched the core screens on paper: welcome, login, register, terms and conditions, the home screen, and an error state. Nothing about the boxes and arrows was precious, which was the point. A wrong structural call on paper costs a few seconds to redraw. The same call caught after building out full colour and type in Figma costs a rebuild.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/reference-wireframes-01.png",
+            width: 606,
+            height: 1073,
+            alt: "Paper wireframes for the welcome, login, register and terms screens",
+            caption: "Welcome, login, register and terms, sketched on paper first.",
+          },
+          {
+            src: "/work/fixnow/reference-wireframes-02.png",
+            width: 606,
+            height: 1073,
+            alt: "Paper wireframes for the home screen and an error state",
+            caption: "The home screen and an error state, worked out before any Figma frame existed.",
+          },
+        ],
+      },
+      {
+        slug: "registering-without-overpromising",
+        title: "Registering Without Overpromising",
+        summary: "A ten-screen flow where the placeholder terms say so, and the error screen doesn't dead-end.",
+        content: [
+          "The registration and login flow runs ten screens: welcome, a choice between registering and logging in, account creation with name, email, phone, password and confirmation, a Google sign-in preview, Terms & Conditions, a final review-and-accept step, a returning-user login, a checking-your-details loading state, a couldn't-verify-your-account error, and arrival at the home screen.",
+          "Two small decisions mattered more than the visual polish. The Terms & Conditions screen is labelled on its own face as placeholder legal content for wireframe review, not a legal policy, so nobody downstream mistakes a filler paragraph for something legal signed off on. And the verification error offers a plain retry plus a way back to the registration or login choice, rather than stranding someone on a dead screen.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/registration-login.png",
+            width: 5217,
+            height: 3000,
+            alt: "Ten-screen registration and login flow from welcome through to the home screen",
+            caption: "The full registration and login flow, including the error and retry state.",
+          },
+        ],
+      },
+      {
+        slug: "finding-a-plumber-the-manual-way",
+        title: "Finding a Plumber the Manual Way",
+        summary: "Expertise ranked before distance, and a submit button that's honest about what it actually does.",
+        content: [
+          "The manual discovery flow also runs ten screens: find a service, browse services, what needs fixing, describe the problem, show us the issue with an optional photo, where is the job, when works for you, anything else to add, a ranked list of plumbers, and a vendor profile with service area, reviews and a primary action.",
+          "Vendors are ordered by expertise match first and proximity second, which is a direct answer to the brief's priority. The more important decision was in the copy, not the layout: submitting this criteria only finds matching vendors. It doesn't book or charge anything, and viewing or selecting a profile isn't a submission either. That distinction had to survive into the developer handoff word for word, since it's exactly the kind of thing a rushed implementation quietly gets wrong.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/find-a-service.png",
+            width: 6020,
+            height: 3000,
+            alt: "Ten-screen manual discovery flow from finding a service through to a vendor profile",
+            caption: "Find a service, browse, describe the problem, then a ranked list and a profile.",
+          },
+        ],
+      },
+      {
+        slug: "fixmon-a-guess-not-a-diagnosis",
+        title: "Fixmon: A Guess, Not a Diagnosis",
+        summary: "An AI assistant that says \"I'm not certain,\" and asks before sharing anything with a vendor.",
+        content: [
+          "The Fixmon flow is a chat. Someone describes their issue in free text or a voice note, attaches optional photos or video, and Fixmon reflects back a tentative interpretation worded as a guess, not a diagnosis: \"This may be a pipe or seal leak. I'm not certain.\" The person can confirm or correct that interpretation before address and timing are collected, and the vendor matches that follow explain the reasoning behind each one rather than just ranking silently.",
+          "Nothing is shared with a vendor until the user explicitly consents to sharing that description and those photos, and no booking happens automatically anywhere in the chat. An AI assistant that quietly acts on its own guess is a different, much riskier product than one that shows its work and asks first, and the brief was clear about wanting the second one.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/fixmon-assistant.png",
+            width: 5619,
+            height: 3000,
+            alt: "Ten-screen Fixmon AI assistant flow from describing the issue to matching vendors",
+            caption: "Fixmon's flow: describe, get a tentative interpretation, correct it if needed, then matches.",
+          },
+        ],
+      },
+      {
+        slug: "feedback-that-doesnt-oversell-itself",
+        title: "Feedback That Doesn't Oversell Itself",
+        summary: "\"Awaiting a response\" is not the same sentence as \"booking confirmed,\" and the copy has to prove it.",
+        content: [
+          "Both flows share one set of feedback states: location access denied, no matching professionals, loading, results unavailable, a failed upload, and a sent request. Every state pairs an icon with a label instead of relying on colour alone, and offers a recovery action rather than a dead end.",
+          "\"Request sent to Alex\" is deliberately followed by \"Awaiting a response. This is not a confirmed booking,\" so the wording never claims more than what actually happened at that point in the flow. Alongside the two main journeys, a separate 69-frame wireframe set covers secondary flows I kept intentionally low-fidelity on purpose: profile, settings, saved payments, language and region, login security, and account deletion. Static wireframes, not a prototype, because those screens needed to exist and be reviewable, not to look finished before the core flows were settled.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/edge-cases.png",
+            width: 3400,
+            height: 2182,
+            alt: "Edge case wireframes covering navigation, profile, settings and saved-payment flows",
+            caption: "A slice of the 69-frame edge-case set, kept deliberately low-fidelity.",
+          },
+        ],
+      },
+      {
+        slug: "a-six-colour-system-with-one-ai-only-accent",
+        title: "A Six-Colour System With One AI-Only Accent",
+        summary: "Teal for every action, and a cyan that only Fixmon is allowed to use.",
+        content: [
+          "Six colours carry the whole product: Deep Navy for trust and primary text, Teal for every action, Off-White for the page background, White for cards, Slate for secondary text and icons, and a Soft Cyan reserved only for Fixmon's own accents. That last rule matters more than it looks: if any button anywhere could turn cyan, Fixmon would stop reading as a distinct assistant and start reading as a colour variant of the same UI.",
+          "Inter runs the full type scale across seven named styles, from a 28/36 Title down to a 12/16 Caption. Spacing is a 4px-based scale from 0 to 64, radius runs from 0 to a full 999px pill, and every control respects a 44px minimum touch target. The icon library is one outline family, 81 product glyphs across 8 categories, Lucide-based at a 2px stroke, with one canonical source per glyph rather than a different icon showing up for the same meaning on different screens.",
+          "The component library itself is built as real Figma components, not pictures of components: a button with 14 variants, an input with 5 states, professional and chat cards, a 5-variant chip, 9 status labels, 6 feedback states, 3 AI-assistance variants, and the message composer.",
+        ],
+        images: [
+          {
+            src: "/work/fixnow/foundations.png",
+            width: 4411,
+            height: 3000,
+            alt: "Design system foundations board with colour roles, typography scale, spacing and radius",
+            caption: "Foundations: six colours, the type scale, spacing and radius, and the button and input hierarchy.",
+          },
+          {
+            src: "/work/fixnow/icon-library.png",
+            width: 4411,
+            height: 3000,
+            alt: "Icon library grouped into eight categories",
+            caption: "81 glyphs across 8 categories, one canonical source per icon.",
+          },
+          {
+            src: "/work/fixnow/component-library.png",
+            width: 3400,
+            height: 2182,
+            alt: "Native component library with button, input, professional card and chip variants",
+            caption: "The native component library: real Figma components, not static pictures of them.",
+          },
+        ],
+      },
+      {
+        slug: "writing-a-handoff-id-trust",
+        title: "Writing a Handoff I'd Trust",
+        summary: "Observed, implementation guidance, or open. Every line labelled by what it actually is.",
+        content: [
+          "I wrote a basic developer handoff, not a full production spec, and labelled every line by its evidence: \"Observed\" for what the designs actually show, \"Implementation guidance\" for a recommended handling that isn't a working feature yet, and \"Open\" for a product or engineering decision that still needs making. That one habit stopped a sample screen from quietly being read as a rule by whoever built from it next.",
+          "Some of what that labelling caught was uncomfortable to write down rather than smooth over. The final screens show white text on teal buttons, but the semantic token names navy as the colour that belongs on an action surface. The handoff names that conflict directly and asks for a measured contrast check, because a white override that merely looks fine is not the same thing as accessibility approval.",
+          "Request, job, payment and review status are kept as four separate states with a recommended event-by-event mapping, because the component library's own copy says \"Awaiting a response. This is not a confirmed booking\" in one place, while the checkout flow says \"Booking confirmed\" immediately in another. Shipping both meanings for the same event was flagged as a decision still to be made, not something to quietly resolve in code and hope nobody notices the gap.",
+          "Every piece of mismatched sample content got called out by name too: a profile screen pairing \"Average response\" with \"1 photo attached,\" an AI summary naming a different vendor than the one actually chosen. None of it is a valid content mapping, and the handoff says so instead of letting it slide through as an example to build from.",
+        ],
+      },
+      {
+        slug: "whats-still-open",
+        title: "What's Still Open",
+        summary: "A basic handoff, not a production sign-off, with the real gaps named instead of guessed shut.",
+        content: [
+          "Several categories of decision are explicitly left open rather than resolved by guesswork. The booking boundary: exactly when a request becomes a confirmed, paid booking, and what happens on a partial failure. Payment policy: processor hold and capture, wallet ledger behaviour, cancellation fees and refund timing, none of it verified against a real provider yet. An upload limits conflict: the manual flow states a 20MB cap per file, while another screen shows a 30.8MB example ready to send, two numbers that need reconciling rather than picking at random.",
+          "There are visual conflicts beyond the button colour too, like a card radius of 16 in one alias against 8 in the shipped UI. Every vendor, review, price, date and address in these screens is illustrative test data, not real coverage, identity or availability, and the assistant is still named Fixman in the foundations file even though the brief and most screens call it Fixmon. Registration rules, password and OTP policy, language support, and the support channel's response times are all unresolved too.",
+          "Labelling every claim by its evidence made these disagreements useful instead of something to paper over. Nobody building from this handoff has to guess whether a number is a rule or a one-off example. If I picked this back up, the booking-status conflict is where I'd start: the component library and the checkout screen currently promise two different things for the same event, and that's a product conversation, not a coin flip for whoever happens to write the backend first.",
+        ],
+      },
+    ],
+  },
 ];
