@@ -1147,8 +1147,10 @@ export const projects: Project[] = [
     title: "FixNow",
     tagline:
       "A category-first home services marketplace concept with an AI assistant, Fixmon, that turns a described problem into a reasoned shortlist, designed for a take-home UI/UX assessment.",
-    coverImage: "/work/fixnow/find-a-service.png",
+    coverImage: "/work/fixnow/cover.png",
     images: [
+      { src: "/work/fixnow/cover.png", alt: "FixNow cover: \"An assistant that guesses out loud, never quietly,\" with three Fixmon chat screens on a teal background" },
+      { src: "/work/fixnow/booking-flow-grid.png", alt: "A grid of Fixmon chat screens continuing past the vendor shortlist: choosing a plumber, the plumber being assigned, live job tracking, and a post-service rating" },
       { src: "/work/fixnow/reference-wireframes-01.png", alt: "Paper wireframes for the welcome, login, register and terms screens, sketched before opening Figma" },
       { src: "/work/fixnow/reference-wireframes-02.png", alt: "Paper wireframes for the home screen and an error state, sketched before opening Figma" },
       { src: "/work/fixnow/registration-login.png", alt: "Ten-screen registration and login flow: welcome, get started, create account, Google sign-in, terms and conditions, one last step, welcome back, checking your details, a verification error, and the home screen" },

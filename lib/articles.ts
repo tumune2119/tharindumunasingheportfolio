@@ -689,6 +689,15 @@ export const articles: Article[] = [
           "The brief asked for FixNow: a reliable, minimal marketplace for home services. Someone browses categories such as plumbing, electrical, cleaning and appliance repair, opens one, and gets matched to nearby vendors ranked by expertise first and proximity second. The reference point named in the brief was Uber Eats' category-first discovery, but scaled down: fewer choices, and a clear next step on every screen rather than a dense filter panel.",
           "The second entry point is Fixmon, an AI assistant that takes a written problem description and optional photos and turns that into a service category and a shortlist of vendors, with a reason given for each match. The two paths, manual browsing and Fixmon, were meant to converge on the same vendor list and the same profile screen, not fork into two separate products.",
         ],
+        images: [
+          {
+            src: "/work/fixnow/cover.png",
+            width: 1200,
+            height: 1500,
+            alt: "FixNow cover: \"An assistant that guesses out loud, never quietly,\" with three Fixmon chat screens on a teal background",
+            caption: "FixNow: a home-services app built around Fixmon, an assistant that explains its guesses instead of hiding them.",
+          },
+        ],
       },
       {
         slug: "paper-first",
@@ -774,9 +783,17 @@ export const articles: Article[] = [
         summary: "\"Awaiting a response\" is not the same sentence as \"booking confirmed,\" and the copy has to prove it.",
         content: [
           "Both flows share one set of feedback states: location access denied, no matching professionals, loading, results unavailable, a failed upload, and a sent request. Every state pairs an icon with a label instead of relying on colour alone, and offers a recovery action rather than a dead end.",
-          "\"Request sent to Alex\" is deliberately followed by \"Awaiting a response. This is not a confirmed booking,\" so the wording never claims more than what actually happened at that point in the flow. Alongside the two main journeys, a separate 69-frame wireframe set covers secondary flows I kept intentionally low-fidelity on purpose: profile, settings, saved payments, language and region, login security, and account deletion. Static wireframes, not a prototype, because those screens needed to exist and be reviewable, not to look finished before the core flows were settled.",
+          "\"Request sent to Alex\" is deliberately followed by \"Awaiting a response. This is not a confirmed booking,\" so the wording never claims more than what actually happened at that point in the flow. The same discipline carries through the rest of the booking lifecycle: a plumber being assigned, en route, on site, and the job marked complete are each their own status, not folded into one generic \"in progress\" label, and the request for a rating only appears once the work is actually done.",
+          "Alongside the two main journeys, a separate 69-frame wireframe set covers secondary flows I kept intentionally low-fidelity on purpose: profile, settings, saved payments, language and region, login security, and account deletion. Static wireframes, not a prototype, because those screens needed to exist and be reviewable, not to look finished before the core flows were settled.",
         ],
         images: [
+          {
+            src: "/work/fixnow/booking-flow-grid.png",
+            width: 1200,
+            height: 1500,
+            alt: "A grid of Fixmon chat screens continuing past the vendor shortlist: choosing a plumber, the plumber being assigned, live job tracking, and a post-service rating",
+            caption: "Choosing a plumber through to a post-service rating, each step its own named status.",
+          },
           {
             src: "/work/fixnow/edge-cases.png",
             width: 3400,
