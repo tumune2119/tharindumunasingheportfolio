@@ -407,6 +407,7 @@ export function IntroGate() {
         activeWindowId={activeWindowId}
         minimizedWindows={minimizedWindows}
         onSelectWindow={handleTaskbarClick}
+        onOpenSite={finish}
       />
     </div>
   );
@@ -772,6 +773,7 @@ function Taskbar({
   activeWindowId,
   minimizedWindows,
   onSelectWindow,
+  onOpenSite,
 }: {
   menuOpen: boolean;
   onStart: () => void;
@@ -779,6 +781,7 @@ function Taskbar({
   activeWindowId: string | null;
   minimizedWindows: ReadonlySet<string>;
   onSelectWindow: (id: string) => void;
+  onOpenSite: () => void;
 }) {
   const [time, setTime] = useState("");
 
@@ -833,6 +836,16 @@ function Taskbar({
           );
         })}
       </div>
+      {/* The one shortcut visitors actually need: straight to the real site,
+          no need to find the Start menu or know about Esc first. */}
+      <button
+        type="button"
+        onClick={onOpenSite}
+        title="Skip the intro and go straight to the portfolio"
+        className="hud-cta shrink-0 px-3 py-1 text-caption"
+      >
+        Skip to portfolio →
+      </button>
       <span className="text-accent shrink-0">{time}</span>
     </div>
   );
