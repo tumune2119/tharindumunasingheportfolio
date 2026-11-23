@@ -1265,4 +1265,111 @@ export const projects: Project[] = [
     },
     sourceNote: "Figma file (view-only) available on request; the full developer handoff and edge-case wireframe set are not included here.",
   },
+  {
+    slug: "fenrir-clips",
+    title: "Fenrir Clips",
+    tagline:
+      "A desktop AI editing desk that turns a raw stream clip into a captioned, reframed 9:16 short with per-platform post text, stopping to ask only when a decision needs a person.",
+    coverImage: "/work/fenrir-clips/pipeline-ready.png",
+    images: [
+      { src: "/work/fenrir-clips/pipeline-ready.png", alt: "Pipeline view of a finished clip at stage 7 of 7, Ready to post, with the 9:16 draft, a revision box and per-platform post text" },
+      { src: "/work/fenrir-clips/pipeline-new.png", alt: "Pipeline view of a brand new clip at stage 1 of 7, with the campaign picker and the raw footage preview" },
+      { src: "/work/fenrir-clips/library.png", alt: "Library grid of finished drafts with TikTok, Instagram and YouTube upload tracking under each one" },
+      { src: "/work/fenrir-clips/campaigns.png", alt: "Campaigns view listing four campaign rules files, each pasted in as a brief and read by the AI editor" },
+      { src: "/work/fenrir-clips/raw-frame.jpg", alt: "Raw 2560x1440 Twitch stream frame with the webcam inset, minimap and a burned-in live caption" },
+      { src: "/work/fenrir-clips/raw-crop-boxes.jpg", alt: "The same raw stream frame with the webcam and gameplay crop boxes marked for the 9:16 reframe" },
+      { src: "/work/fenrir-clips/short-after.jpg", alt: "Finished 1080x1920 short with the webcam on top, gameplay below, campaign logo and a word-by-word caption with one keyword in accent yellow" },
+      { src: "/work/fenrir-clips/logo.png", alt: "Fenrir Clips wolf-head logo mark" },
+    ],
+    role: "Product design, development and editing pipeline, working solo",
+    status: "Working personal tool, tested on real stream clips (local desktop app)",
+    platform: "Windows desktop app (Electron)",
+    tools: "Claude Code · VS Code · FFmpeg · faster-whisper",
+    techStack:
+      "Electron · Claude Code (headless) · FFmpeg 9.1 + libass · faster-whisper · Python 3.13 · Node 26 · yt-dlp · plain HTML, CSS and JavaScript, no front-end framework",
+    sections: [
+      {
+        title: "The Problem",
+        body: "Streamer clipping campaigns pay creators for views on short clips of a streamer's broadcast. ClipUp pays $0.30 per 1,000 views; marathon \"pool\" campaigns split a fixed prize pool by approved views. Volume and speed win, but every clip still needs the same careful work:",
+        points: [
+          "Watch and transcribe 30 to 60 seconds of stream audio buried under game sound.",
+          "Cut dead air and slips, but keep silences that are the punchline.",
+          "Reframe a 16:9 stream into 9:16: webcam on top, gameplay below.",
+          "Caption word by word; censor slurs, blur nudity.",
+          "Follow each campaign's rules: one requires its logo on every frame, others ban all logos.",
+          "Write and track posts for three platforms and keep them up for 60 days.",
+        ],
+      },
+      {
+        title: "The Goal",
+        body: "One folder in, finished shorts out. The editor, Claude Code, does the craft: it measures cut points against the audio level, checks its own renders frame by frame, and writes the post copy. The person makes the calls that matter, such as unclear words, censoring and which campaign a clip is for, and approves the result.",
+      },
+      {
+        title: "What I Built",
+        body: "An editing pipeline (transcription, audio-snapped cuts, captions, reframing, loudness), a desktop app that watches the raw folder and drives the AI editor step by step, and campaign management with per-platform post text and upload tracking. Tested against real stream clips: 9 finished 9:16 drafts, a 29% runtime cut overall (225 seconds raw down to 159 seconds), loudness normalized in two passes to a consistent −14 LUFS, across 4 campaigns, each its own rules file the editor follows.",
+      },
+      {
+        title: "Seven Stages, One Person in the Loop",
+        body: "The pipeline runs as seven stages, with exactly one of them mine. New: a file lands in raw/, gets an id and a NEW tag once it's fully copied. Transcribing: a contact sheet and word timestamps from Whisper with voice-activity detection. Needs answers, the one stage that waits on a person: doubtful words, censoring, blur, which campaign a clip fits. Planning cuts: cuts made by hand, snapped to the quietest 10 milliseconds. Rendering: reframe, captions, logo, bleeps, −14 LUFS. Self-check: frames, the logo on the first and last frame, loudness, notes. Ready to post: the draft plus TikTok, Instagram and YouTube text.",
+      },
+      {
+        title: "Files as the Contract",
+        body: "The desktop app, built in Electron, watches raw/, shows each clip's stage, progress and logs, collects answers and revision notes, and tracks uploads. It never talks to the AI editor directly. It starts or resumes Claude Code headless (claude -p --resume, one session per clip, so a revision keeps the clip's own context, streaming progress back as JSON), which runs Python and FFmpeg editing scripts (transcription, seam detection, cut snapping, a one-pass render with libass captions), which write plain files: status.json, questions.json, answers.json, post.json, draft-vN.mp4. Nothing is lost if the app closes, and every state is inspectable and testable without the UI.",
+        points: [
+          "Ask, don't guess: before burning in subtitles, the editor writes its doubts to questions.json and stops. The app turns them into a form, pre-filled with the editor's own guesses.",
+        ],
+      },
+      {
+        title: "From a 16:9 Stream to a Ready-to-Post Short",
+        body: "A raw 2560×1440 Twitch clip gets two crops: the webcam to a 1080×860 strip on top, the gameplay to a 1080×1060 strip below, leaving out the chat, minimap, donation alert and the stream's own live captions. Captions are written word by word, with one keyword in accent yellow, placed just under the campaign logo and never on top of it. The campaign's own logo file runs at a uniform scale from the first frame to the last, and the self-check verifies both ends. The hook line lands in the first 2.5 seconds, with the first word appearing within 0.15 seconds. Cuts snap to audio minima so no word gets clipped, while silence that is itself the payoff is kept. Sound is high-pass filtered, compressed, de-essed and loudness-normalized in two passes to −14 LUFS / −1 dBTP. Slurs are shown as **** and bleeped; nudity is blurred, except the facecam.",
+      },
+      {
+        title: "The App",
+        body: "Three views cover the whole job. Pipeline shows one clip at a time: a new file is locked to a campaign before editing starts, so it can never end up with the wrong logo rules, and the player shows raw footage letterboxed in a dashed frame until the first draft exists, so it's never mistaken for a finished edit. Once a draft is ready, the same view shows the seven-stage progress bar, a tab per version, a plain-language revision box, \"What should change?\", that resumes the clip's own AI session, and the per-platform post text underneath. Library is one grid for every clip, new drafts and the existing archive together, filterable by folder and posted state, with a \"Mark uploaded\" button per platform that starts a 60-day keep-up countdown, the minimum time campaigns require a post to stay live. Campaigns turns a pasted brief into the rules file the editor reads before cutting a clip for it; ClipUp requires its logo on every frame, while the Clix, Lacy and YourRAGE pools ban all logos, and the same render pipeline follows whichever rules file a clip was given. Deletes ask first and move the file to a _deleted folder, so a campaign can always be restored.",
+      },
+      {
+        title: "Under the Hood",
+        points: [
+          "Human-in-the-loop by default: the editor stops for answers instead of guessing at captions or censoring.",
+          "One session per clip: revisions resume the same AI session, so \"cut the first 2 seconds\" needs no re-explaining.",
+          "Campaign rules as text files: a new campaign is a pasted brief, not new code.",
+          "Safe by default: deletes are soft, moved to a _deleted folder, one app window open at a time, and links only open if they're real web links.",
+        ],
+      },
+      {
+        title: "What Testing Caught",
+        body: "Automated tests cover the file contract itself: broken or half-written JSON, half-copied videos, upload marks, campaign names. The editor checks its own renders too: the logo on the first and last frame, caption overlap, loudness, and that every bleep fully replaces the word it covers. Every app screen was verified from real screenshots during development, which caught a script crash and two layout bugs before release.",
+      },
+      {
+        title: "What's Next",
+        body: "A Windows installer, view tracking per post to see which hooks actually perform, and a batch start for a whole raw folder at once.",
+      },
+    ],
+    designSystem: {
+      principle:
+        "A dark command-deck interface: near-black panels, one sky-blue accent for every primary action, and a muted status palette, so the editor's attention-grabbing colours stay reserved for the footage, not the chrome.",
+      colors: [
+        { name: "Canvas / Near Black", hex: "#080C10", usage: "App background" },
+        { name: "Surface / Panel", hex: "#101820", usage: "Sidebar, cards and panels" },
+        { name: "Accent / Sky Blue", hex: "#6CC4FC", usage: "Every primary action and button" },
+        { name: "Status / Ready Green", hex: "#7FD8A4", usage: "Ready to post status" },
+        { name: "Caption / Hook Yellow", hex: "#F5C451", usage: "The one highlighted keyword in burned-in captions" },
+        { name: "Text / Muted", hex: "#8898AC", usage: "Secondary text, filenames, metadata" },
+      ],
+      typography: {
+        fontFamily: "Segoe UI / system-ui for the app itself; Cascadia Mono for filenames, stage numbers and campaign rules files",
+      },
+      components: [
+        { name: "Primary Button", image: "/work/fenrir-clips/components/button.png" },
+        { name: "Status Pills (New / Ready to Post)", image: "/work/fenrir-clips/components/status-pills.png" },
+        { name: "Seven-Stage Tracker", image: "/work/fenrir-clips/components/stage-tracker.png" },
+        { name: "Campaign Rules Card", image: "/work/fenrir-clips/components/campaign-card.png" },
+        { name: "Revision Box" },
+        { name: "Version Tabs" },
+        { name: "Upload Tracking Row" },
+        { name: "Clip List Item" },
+      ],
+    },
+    sourceNote: "Personal tool built for real clipping campaigns; source available on request.",
+  },
 ];
